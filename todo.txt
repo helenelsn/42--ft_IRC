@@ -1,0 +1,35 @@
+1) classe Client et classe Server
+2) Faire en sorte que le client puisse envoyer une requete au serveur, et que ce dernier puisse la recevoir
+3) au debut : renvoyer la requete (message) telle quelle, histoire de vérifier son intégrité dans la chaine de communication
+4) puis : traiter la requete : parsing
+
+Parsing : se référer au rfc 
+
+select() (ou poll()): 
+Côté serveur : checker si le descripteur de fichier prêt a etre lu correspond a la socket qui listen() ou a une socket client :
+Suivant la socket, il faudra donc soit 1) accepter une connexion ou 2) lire le message reçu pour ensuite le relayer à toutes les autres sockets connectées.
+
+
+1) créer la socket serveur, qui écoutera pour de nouvelles connections client (si échoue, renvoie exception). 
+2) La rendre non bloquante avec fcntl(), puis appel à listen() 
+3) boucle principale : poll()
+    -> check le status de retour de poll(), envoie une exception en conséquence
+    -> si tvb, itère sur chaque pollfd, et effectue l'action appropriée en conséquence (accepter une nouvelle connection client,
+    broadcaster un message, ...). Checker si un client a shutdown() sa socket ?
+    -> pour chaque nouvelle connection, ajouter la socket au tableau de struct pollfd, renseigner les flags
+
+
+
+
+Client socket (active socket) :
+Handles user input, sends messages to the server, processes server responses
+
+Server socket (passive socket / server-side listening socket) :
+Manages multiple clients connections simultaneously : handles commands and messages from each connected client, 
+broadcasts messages to all clients as needed
+-> server socket is made passive using listen()
+
+
+---------------------------------------------------
+
+Revoir ce que signifie une socket non bloquante, et quand dit on l'utiliser 
