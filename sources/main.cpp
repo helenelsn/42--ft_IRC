@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:24:09 by Helene            #+#    #+#             */
-/*   Updated: 2024/08/22 17:03:05 by Helene           ###   ########.fr       */
+/*   Updated: 2024/08/23 16:56:55 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int main(int argc, char **argv)
         IrcServer.RunServer();
     }
     catch (std::exception const& e) {
-        // si erreurs dans les appels à socket(), bind(), listen(), accept(), ...
+        std::cout << "Error : " << e.what() << std::endl;
     }
     
 }

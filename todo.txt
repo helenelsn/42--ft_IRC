@@ -1,24 +1,47 @@
-1) classe Client et classe Server
-2) Faire en sorte que le client puisse envoyer une requete au serveur, et que ce dernier puisse la recevoir
-3) au debut : renvoyer la requete (message) telle quelle, histoire de vérifier son intégrité dans la chaine de communication
-4) puis : traiter la requete : parsing
 
-Parsing : se référer au rfc 
+1) Parsing simple des commandes : identifier quels sont les mots clés importants, en déduire les arguments de la commande
 
-select() (ou poll()): 
-Côté serveur : checker si le descripteur de fichier prêt a etre lu correspond a la socket qui listen() ou a une socket client :
-Suivant la socket, il faudra donc soit 1) accepter une connexion ou 2) lire le message reçu pour ensuite le relayer à toutes les autres sockets connectées.
+---------------------------------------------------
+
+-   Signals must be handled (ctrl+C, ctrl+D, what else ?)
+-   Create a Channel class
+-   'Regular user' : JOIN, 
+
+-   You must be able to authenticate, set a nickname, a username, join a channel,
+    send and receive private messages using your reference client.
+-   All the messages sent from one client to a channel have to be forwarded to
+    every other client that joined the channel.
+-   You must have operators and regular users : 
+    -> both should inherit from a base class (or is 'regular user' the base class 'operator' would inherit from ?)
+-   You have to implement the commands that are specific to channel operators
+    -> KICK, INVITE, TOPIC, MODE
 
 
-1) créer la socket serveur, qui écoutera pour de nouvelles connections client (si échoue, renvoie exception). 
-2) La rendre non bloquante avec fcntl(), puis appel à listen() 
-3) boucle principale : poll()
+---------------------------------------------------
+
+
+Côté serveur : 
+Crée la socket serveur, la rend non bloquante, la lie au port renseigné, et la rend passive avec listen().
+Boucle principale poll() : agit à chaque fois sur chaque fd étant "dispo" en conséquence
+S'il s'agit d'une demande de connection : vérifier les data (password, si le username est libre, etc), puis accept(), 
+créant une nouvelle eocket pour communiquer avec ce client
+S'il s'agit d'une requete d'un client déjà connecté : lire la commande avec recv(), puis la parser
+En profiter pour checker si un client s'est déconnecté : quel flag pour pollfd.events ? 
+
+Côté client : 
+Crée une socket client, puis effectue une demande de connection au serveur, avec connect().
+
+Quand un client se déconnecte, le supprimer de la liste des clients du serveur, ou simplement l'ajouter à
+une liste contenant les clients déconnectés ? Dépend de ce que ca implique de recréer à chaque fois qu'un client se connecte 
+
+
+---------------------------------------------------
+
+boucle principale : poll()
     -> check le status de retour de poll(), envoie une exception en conséquence
     -> si tvb, itère sur chaque pollfd, et effectue l'action appropriée en conséquence (accepter une nouvelle connection client,
     broadcaster un message, ...). Checker si un client a shutdown() sa socket ?
     -> pour chaque nouvelle connection, ajouter la socket au tableau de struct pollfd, renseigner les flags
-
-
 
 
 Client socket (active socket) :
@@ -32,4 +55,3 @@ broadcasts messages to all clients as needed
 
 ---------------------------------------------------
 
-Revoir ce que signifie une socket non bloquante, et quand dit on l'utiliser 
