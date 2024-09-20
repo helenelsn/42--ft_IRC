@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:29 by Helene            #+#    #+#             */
-/*   Updated: 2024/08/25 12:48:42 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/20 22:43:09 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@
 # define    BACKLOG 10 // nombre max de demandes de connexions dans la file d'attente
 # define    BUFFERSIZE 3
 
+extern bool serverShutdown;
 
 class Server
 {
@@ -220,11 +221,16 @@ void    Server::ReadData(int fd)
 void    Server::RunServer()
 { 
     printf("in RunServer()\n");
-    while (1) // à modifier : doit gérer les signaux 
+    while (!serverShutdown) // à modifier : doit gérer les signaux 
     {
         // The poll() API allows the process to wait for an event to occur and to wake up the process when the event occurs.
         if (poll(&this->_sockets[0], _sockets.size(), -1) == -1)
-            throw(std::runtime_error("poll() failed"));
+        {
+            int errNum = errno;
+            if (errNum != EINTR) // EINTR : A signal occurred before any requested event
+                throw(std::runtime_error("poll() failed"));
+                // throw IOException(poll, errNum); ?
+        }
         
         //for (poll_it it = _sockets.begin(); it != _sockets.end(); it++)
         for (size_t i = 0; i < _sockets.size(); i++)
@@ -247,6 +253,7 @@ void    Server::RunServer()
                 ;
         }
     }
+    
     //shutdown(_server_socket)
     // Fermer tous les fd ici, ou le faire dans le destructeur ?
 }
