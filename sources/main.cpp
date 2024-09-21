@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:24:09 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/21 11:50:56 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/21 12:52:46 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,11 @@ void handleSignal(int signal)
     (void) signal;
     serverShutdown = true;
 
-    printf("wesh la zone ici le SIGINT\n");
-    
+    // if (signal == SIGINT)
+    //     printf("wesh la zone ici le SIGINT\n");
+    // else if (signal == SIGQUIT)
+    //     printf("wesh la zone ici le SIGQUIT\n");
+
     // reset signal handler ? signal(signal, SIG_DFL); 
 }
 
@@ -38,7 +41,7 @@ void setSignalHandlers()
     act.sa_handler = handleSignal;
     
     sigaction(SIGINT, &act, NULL); // Applique cette structure avec la fonction à invoquer au signal SIGINT 
-    // sigaction(SIGQUIT, &act, NULL);
+    sigaction(SIGQUIT, &act, NULL);
 }
 
 int main(int argc, char **argv)

@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: Helene <Helene@student.42.fr>              +#+  +:+       +#+         #
+#    By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/21 14:23:25 by Helene            #+#    #+#              #
-#    Updated: 2024/08/22 11:16:41 by Helene           ###   ########.fr        #
+#    Updated: 2024/09/21 14:02:19 by hlesny           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,9 @@ OBJS_DIR = ./objects/
 INCS_DIR = ./includes/
 
 SRCS = 	main.cpp \
-		\
+		Server.cpp \
+		Client.cpp \
+		Channel.cpp 
 		
 OBJS = $(addprefix $(OBJS_DIR), $(SRCS:.cpp=.o))
 DEPS = $(addprefix $(OBJS_DIR), $(SRCS:.cpp=.d))
