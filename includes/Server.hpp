@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:29 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/21 11:53:46 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/21 12:46:55 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,12 @@
 #include <netinet/in.h> // for sockaddr_in
 #include <arpa/inet.h> // for inet_ntoa()
 #include <csignal> // for signal()
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <errno.h>
+
 
 
 #include "Client.hpp"
@@ -88,11 +94,13 @@ void    Server::RemoveFromPoll(int fd)
 {
     for (poll_it it = _sockets.begin(); it != _sockets.end(); it++)
     {
+        // printf("DEBUG : removeFromPoll, *it (ie fd) = %d\n", it->fd);
+        
         if (it->fd == fd)
         {
             _sockets.erase(it); // vérifier que fait pas de la merde
             close(fd);
-            //break;
+            break;
         }
     }
 }
@@ -233,7 +241,7 @@ void    Server::RunServer()
                 // throw IOException(poll, errNum); ?
         }
         
-        printf("\'while(serverShutdown)\', serverShutdown = %i\n", serverShutdown);
+        // printf("\'while(serverShutdown)\', serverShutdown = %i\n", serverShutdown);
         
         //for (poll_it it = _sockets.begin(); it != _sockets.end(); it++)
         for (size_t i = 0; i < _sockets.size(); i++)
@@ -245,10 +253,10 @@ void    Server::RunServer()
             else if (_sockets[i].revents & POLL_IN) // data is ready to recv() on this socket.
             {
                 //printf("POLL_IN event, fd = %d\n", it->fd);
-                if (_sockets[i].fd == _server_socket)
+                if (_sockets[i].fd == _server_socket) // server side
                     AcceptClientConnection();
                 else
-                    ReadData(_sockets[i].fd);
+                    ReadData(_sockets[i].fd); // client side
             }
             else if (_sockets[i].revents & POLL_OUT) // we can send() data to this socket without blocking.
                 ;
