@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:24:09 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/20 22:23:51 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/21 11:50:56 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ void setSignalHandlers()
     act.sa_handler = handleSignal;
     
     sigaction(SIGINT, &act, NULL); // Applique cette structure avec la fonction à invoquer au signal SIGINT 
+    // sigaction(SIGQUIT, &act, NULL);
 }
 
 int main(int argc, char **argv)

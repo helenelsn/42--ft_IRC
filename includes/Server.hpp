@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:29 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/20 22:43:09 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/21 11:53:46 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,8 +221,9 @@ void    Server::ReadData(int fd)
 void    Server::RunServer()
 { 
     printf("in RunServer()\n");
-    while (!serverShutdown) // à modifier : doit gérer les signaux 
+    while (!serverShutdown)
     {
+
         // The poll() API allows the process to wait for an event to occur and to wake up the process when the event occurs.
         if (poll(&this->_sockets[0], _sockets.size(), -1) == -1)
         {
@@ -231,6 +232,8 @@ void    Server::RunServer()
                 throw(std::runtime_error("poll() failed"));
                 // throw IOException(poll, errNum); ?
         }
+        
+        printf("\'while(serverShutdown)\', serverShutdown = %i\n", serverShutdown);
         
         //for (poll_it it = _sockets.begin(); it != _sockets.end(); it++)
         for (size_t i = 0; i < _sockets.size(); i++)
