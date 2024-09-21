@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:29 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/21 14:03:18 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/09/21 15:16:31 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,15 +57,15 @@ class Server
         std::string         _password;
         int                 _server_socket;
         pollfds             _sockets;
-        clients _clients; // std::vector<Client> _clients ? 
+        clients             _clients; // std::vector<Client> _clients ? 
         
     public :  
-        Server(std::string const& port, std::string const& password); // Lier la socket à une adresse et un port de la machine locale, puis écouter pour détecter des demandes de connexion via la socket.
-        ~Server(); // Fermer toutes les sockets.
+        Server(std::string const& port, std::string const& password);
+        ~Server(); 
         void                InitServer(); // creates server socket and binds it to the given port
         void                RunServer(); // listen() on server socket, and makes looping calls to poll()
         Client              *getClient(int fd);
-        void                AddClient();
+        void                AddClient(int fd);
         void                RemoveClient(int fd);
         void                AddToPoll(int fd, int events); 
         void                RemoveFromPoll(int fd); // removes corresponding fd from pollfds' vector and closes it, decrements poll_size

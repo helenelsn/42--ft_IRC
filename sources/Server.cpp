@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:49 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/21 14:14:54 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/09/21 15:36:56 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,17 +18,24 @@
 // quel type renvoyer ? pointeur, iterateur, ... ?
 Client              *Server::getClient(int fd)
 {
+    // printf("DEBUG : list of current clients in map : \n");
+    // for (clients_it it = this->_clients.begin(); it != this->_clients.end(); it++)
+    //     printf("\tclient : fd = %d, client address = %p\n", it->first, &it->second);
+    
     clients_it cli = this->_clients.find(fd);
-    if (cli == _clients.end()) // ca couille ici, renvoie true alors qu a bien un client dans la liste.
+    printf("DEBUG : in getClient, fd = %d, foundClient.fd = %d\n", fd, cli->first);
+    if (cli == _clients.end())
         return NULL;
     return &(cli->second);
 }
 
 /* -------------------------- ADD, REMOVE ------------------------------- */
 
-void    Server::AddClient()
+void    Server::AddClient(int fd)
 {
-    
+    Client cli(fd);
+    this->_clients.insert(std::map<int, Client>::value_type(fd, cli));
+    // this->_clients[fd] = cli; // pourquoi donne une erreur de compilation ?
 }
 
 void    Server::RemoveClient(int fd)
@@ -120,8 +127,8 @@ void    Server::AcceptClientConnection(void)
         close(newClient);
     }
         
-    AddToPoll(newClient, POLL_IN);
-    AddClient();
+    AddToPoll(newClient, POLL_IN); // POLL_IN | POLL_OUT ?
+    AddClient(newClient);
     
     printf("New connection! Socket fd: %d, client fd: %d\n", _server_socket, newClient);
 }
@@ -177,8 +184,16 @@ void    Server::ReadData(int fd)
 /* -------------------------- MAIN METHOD ------------------------------- */
 
 /* 
+POLLIN : there is data to read
+POLLOUT : Writing is now possible
+POLLHUP : Hang up. When reading from a stream socket, this event merely indicates that the peer
+    closed its end of the channel.  Subsequent reads from the channel will return 0 (end of file) 
+    only after all outstanding data in the channel has been consumed.
+POLLERR : Error condition
+
 * poll : 
 * The accept() and recv() APIs are completed when the EWOULDBLOCK is returned.
+
 */
 void    Server::RunServer()
 { 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:26 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/21 14:10:25 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/09/21 16:20:05 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,24 +41,23 @@ class Client
         std::string _hostname;
         std::string _nickname;
         std::string _realname;
-        std::string _sendBuffer; // data sent by client
+        std::string _readBuffer; // data sent by client
+        std::string _writeBuffer; // data to be sent to client
         
         // int state; logged in, registered, disconnected, ?
         
 
     public :
-        Client();
+        Client(int fd);
         ~Client();
         Client(Client const& other) {} // private ?
         Client operator==(Client const& other) {return *this;} // private ?
         int getSockFd(void) {printf("client fd = %d\n", _sockFd); return this->_sockFd;}
-        std::string getSendBuffer(void) {return this->_sendBuffer;}
-        void writeToSendBuffer(std::string data) {_sendBuffer += data; }
+        std::string getSendBuffer(void) {return this->_readBuffer;}
+        void writeToSendBuffer(std::string data) {_readBuffer += data; }
         
         void    connect_to_s(std::string const& port);
         void    send_msg();
         void    receive_msg();
         
 };
-
-
