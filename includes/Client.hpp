@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:26 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/21 16:20:05 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/22 19:22:39 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,10 @@ class Client
     public :
         Client(int fd);
         ~Client();
-        Client(Client const& other) {} // private ?
-        Client operator==(Client const& other) {return *this;} // private ?
-        int getSockFd(void) {printf("client fd = %d\n", _sockFd); return this->_sockFd;}
+        Client(Client const& other) {*this = other;} // private ?
+        Client operator==(Client const& other); // private ? 
+        int getSockFd(void) { //printf("client fd = %d\n", _sockFd);
+            return this->_sockFd;}
         std::string getSendBuffer(void) {return this->_readBuffer;}
         void writeToSendBuffer(std::string data) {_readBuffer += data; }
         

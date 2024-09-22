@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:29 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/21 15:16:31 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/22 19:56:28 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,13 @@
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
-
 #include <map>
 
+#include "../includes/Client.hpp"
+#include "../includes/Channel.hpp"
 
 
-class Client;
+// class Client;
 
 # define    BACKLOG 10 // nombre max de demandes de connexions dans la file d'attente
 # define    BUFFERSIZE 3
@@ -51,13 +52,18 @@ class Server
         typedef pollfds::iterator   poll_it;
         typedef std::map<int, Client> clients;
         typedef clients::iterator clients_it;
+        typedef std::map<std::string, Channel> channels;
+        typedef channels::iterator channels_it;
         
     private :
         std::string         _port;
         std::string         _password;
         int                 _server_socket;
-        pollfds             _sockets;
+        pollfds             _sockets; // server-clients sockets 
         clients             _clients; // std::vector<Client> _clients ? 
+        channels            _channels;
+        void                RemoveClient(int fd);
+        void                RemoveFromPoll(int fd); // removes corresponding fd from pollfds' vector and closes it, decrements poll_size
         
     public :  
         Server(std::string const& port, std::string const& password);
@@ -66,12 +72,11 @@ class Server
         void                RunServer(); // listen() on server socket, and makes looping calls to poll()
         Client              *getClient(int fd);
         void                AddClient(int fd);
-        void                RemoveClient(int fd);
-        void                AddToPoll(int fd, int events); 
-        void                RemoveFromPoll(int fd); // removes corresponding fd from pollfds' vector and closes it, decrements poll_size
+        void                AddToPoll(int fd, int events);
+        void                RemoveClientFromAll(Client *client);
         void                AcceptClientConnection();
         void                ReadData(int fd);
-        void                Parser(int fd, std::string data) {}
+        void                Parser(int fd, std::string data) { (void)fd; (void)data; }
 };
 
 /*
