@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:29 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/22 19:56:28 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/22 22:47:42 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,8 @@ class Server
     public :  
         Server(std::string const& port, std::string const& password);
         ~Server(); 
-        void                InitServer(); // creates server socket and binds it to the given port
-        void                RunServer(); // listen() on server socket, and makes looping calls to poll()
+        void                InitServer(); // creates server socket, binds it to the given port, listen() on server socket
+        void                RunServer(); // looping calls to poll()
         Client              *getClient(int fd);
         void                AddClient(int fd);
         void                AddToPoll(int fd, int events);

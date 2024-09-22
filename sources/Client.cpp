@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:46 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/22 19:25:40 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/22 23:10:46 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,4 +114,24 @@ Client Client::operator==(Client const& other)
     this->_writeBuffer = other._writeBuffer;
     
     return *this;
+}
+
+int Client::getSockFd(void)
+{
+    return this->_sockFd;
+}
+
+std::string Client::getReadBuffer(void)
+{
+    return this->_readBuffer;
+}
+
+void    Client::writeToReadBuffer(std::string data)
+{
+    _readBuffer += data; 
+}
+
+void    Client::clearReadBuffer(void)
+{
+    _readBuffer.clear();
 }

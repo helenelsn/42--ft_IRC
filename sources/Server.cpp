@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:49 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/22 21:06:47 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/22 23:12:33 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,7 @@ void    Server::RunServer()
             if (errNum != EINTR) // EINTR : A signal occurred before any requested event
                 throw(std::runtime_error("poll() failed"));
                 // throw IOException(poll, errNum); ?
+            break;
         }
         
         // printf("\'while(serverShutdown)\', serverShutdown = %i\n", serverShutdown);
@@ -126,6 +127,7 @@ void    Server::RunServer()
                 ;
         }
     }
+    
     
     //shutdown(_server_socket)
     // Fermer tous les fd ici, ou le faire dans le destructeur ?
@@ -187,7 +189,7 @@ void    Server::RemoveFromPoll(int fd)
         if (it->fd == fd)
         {
             _sockets.erase(it); // vérifier que fait pas de la merde
-            close(fd);
+            // close(fd);
             break;
         }
     }
@@ -244,7 +246,10 @@ void    Server::ReadData(int fd)
 
     int bytes_read = recv(client->getSockFd(), buffer, BUFSIZ, 0);
     if (bytes_read == -1)
+    {
+        RemoveClientFromAll(client);
         ; // throw exception
+    }
     if (!bytes_read) // EOF, ie closed connection on the other side (shutdown)
     {
         // que faire dans le cas ou a juste envoyé un buffer vide ?
@@ -265,17 +270,19 @@ void    Server::ReadData(int fd)
         // }
         // if (bytes_read == -1)
         //     ; // throw exception
-        
-        // parse data contained in msg
-        
         msg += buffer;
         
         
-        printf("[Server] Data received from %d : --- %s --- \n", client->getSockFd(), buffer);
-
-        // send back to client for now, to check data integrity via sockets communication
+        client->writeToReadBuffer(buffer);
+        size_t pos = (client->getReadBuffer()).find_first_of("\r\n");
+        if (pos == std::string::npos)
+            return ;
+                
         
-        send(client->getSockFd(), msg.c_str(), msg.size(), 0);
+        printf("[Server] Data received from %d : --- %s --- \n", client->getSockFd(), client->getReadBuffer().c_str());
+        
+        send(client->getSockFd(),client->getReadBuffer().c_str(), client->getReadBuffer().size(), 0);
+        client->clearReadBuffer();
     }
 }
 

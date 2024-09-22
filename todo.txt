@@ -26,7 +26,7 @@ Boucle principale poll() : agit à chaque fois sur chaque fd étant "dispo" en c
 S'il s'agit d'une demande de connection : vérifier les data (password, si le username est libre, etc), puis accept(), 
 créant une nouvelle eocket pour communiquer avec ce client
 S'il s'agit d'une requete d'un client déjà connecté : lire la commande avec recv(), puis la parser
-En profiter pour checker si un client s'est déconnecté : quel flag pour pollfd.events ? 
+En profiter pour checker si un client s'est déconnecté : quel flag pour pollfd.revents ? 
 
 Côté client : 
 Crée une socket client, puis effectue une demande de connection au serveur, avec connect().
