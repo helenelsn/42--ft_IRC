@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 22:10:00 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/23 22:10:24 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/23 23:21:17 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,4 +33,6 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <map>
+
+#include <sstream> // std::stringstream
 
