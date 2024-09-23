@@ -1,5 +1,6 @@
 todo.txt
 .nfs*
+*.dSYM
 ircserv
 .vscode
 tests.txt

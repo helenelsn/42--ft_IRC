@@ -6,34 +6,13 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:29 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/22 22:47:42 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/23 22:10:43 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once // tester si suffit pour les inclusions multiples, 
 
-#include <iostream>
-#include <vector>
-#include <unistd.h> // for close()
-#include <netdb.h> // for struct addrinfo
-#include <fcntl.h> // for fcntl()
-#include <poll.h> // for poll()
-#include <sys/socket.h> // for socket()
-#include <sys/types.h> // for socket()
-
-#include <sys/select.h> // for select()
-#include <sys/time.h> // for select()
-
-#include <netinet/in.h> // for sockaddr_in
-#include <arpa/inet.h> // for inet_ntoa()
-#include <csignal> // for signal()
-
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <errno.h>
-#include <map>
-
+#include "../includes/irc.hpp"
 #include "../includes/Client.hpp"
 #include "../includes/Channel.hpp"
 
