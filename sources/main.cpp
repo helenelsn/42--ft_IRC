@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:24:09 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/21 12:52:46 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/09/24 12:08:28 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,7 @@ void handleSignal(int signal)
 
     (void) signal;
     serverShutdown = true;
-
-    // if (signal == SIGINT)
-    //     printf("wesh la zone ici le SIGINT\n");
-    // else if (signal == SIGQUIT)
-    //     printf("wesh la zone ici le SIGQUIT\n");
-
+    
     // reset signal handler ? signal(signal, SIG_DFL); 
 }
 
@@ -65,7 +60,5 @@ int main(int argc, char **argv)
             std::cout << "Error : " << e.what() << std::endl;
         }
     }
-    
-    
     
 }

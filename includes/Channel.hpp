@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 15:10:41 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/23 22:14:16 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/24 12:11:11 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,13 @@ class Channel
         std::string _topic;
         std::string _currentlySetModes;
         std::vector<Client> _clients; // ? // std::vector<std::string, Client> pout <nick, client>
+        
         // creation time 
         // amount of users in the channel (if zero, channel is deleted)
         // channel users, and their privileges
         // channel modes
 
-    // protected :
-
     public :
+        // constructeurs etc 
+        
 };

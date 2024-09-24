@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:49 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/22 23:12:33 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/24 12:16:54 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,10 +103,8 @@ void    Server::RunServer()
                 // throw IOException(poll, errNum); ?
             break;
         }
-        
-        // printf("\'while(serverShutdown)\', serverShutdown = %i\n", serverShutdown);
-        
-        //for (poll_it it = _sockets.begin(); it != _sockets.end(); it++)
+                
+        //for (poll_it it = _sockets.begin(); it != _sockets.end(); it++) // ca couille avec les iterateurs, regarder pourquoi 
         for (size_t i = 0; i < _sockets.size(); i++)
         {            
             //printf("in the for(pollfd) loop\n");
@@ -128,9 +126,7 @@ void    Server::RunServer()
         }
     }
     
-    
-    //shutdown(_server_socket)
-    // Fermer tous les fd ici, ou le faire dans le destructeur ?
+    // Fermer tous les fd 
 }
 
 
@@ -149,6 +145,8 @@ Client              *Server::getClient(int fd)
         return NULL;
     return &(cli->second);
 }
+
+
 
 /* -------------------------- ADD, REMOVE ------------------------------- */
 
@@ -204,10 +202,8 @@ void    Server::RemoveClientFromAll(Client *client)
 }
 
 
-/* -------------------------- EVENTS ------------------------------- */
+/* -------------------------- POLL REVENTS ------------------------------- */
 
-// todo : gerer les commandes PASS, NICK et USER. 
-// Ou alors crée deja la socket serveur-client, puis voit la première commande entrée ? 
 void    Server::AcceptClientConnection(void)
 {
     struct sockaddr_in  client_addr;
@@ -247,18 +243,15 @@ void    Server::ReadData(int fd)
     int bytes_read = recv(client->getSockFd(), buffer, BUFSIZ, 0);
     if (bytes_read == -1)
     {
+        printf("INFO : Client (fd %d) exited the server\n", client->getSockFd());
         RemoveClientFromAll(client);
         ; // throw exception
     }
     if (!bytes_read) // EOF, ie closed connection on the other side (shutdown)
     {
         // que faire dans le cas ou a juste envoyé un buffer vide ?
-        
         printf("DEBUG : in ReadData(), recv() returned 0\n");
         RemoveClientFromAll(client);
-        // close(client->getSockFd());
-        // RemoveFromPoll(client->getSockFd());
-        // RemoveClient(client->getSockFd());
     }
     else
     {
@@ -270,7 +263,6 @@ void    Server::ReadData(int fd)
         // }
         // if (bytes_read == -1)
         //     ; // throw exception
-        msg += buffer;
         
         
         client->writeToReadBuffer(buffer);
@@ -278,9 +270,10 @@ void    Server::ReadData(int fd)
         if (pos == std::string::npos)
             return ;
                 
-        
         printf("[Server] Data received from %d : --- %s --- \n", client->getSockFd(), client->getReadBuffer().c_str());
         
+
+        // renvoie pour l'instant le message dans son intégralité à l'envoyeur, pour vérifier l'intégrité
         send(client->getSockFd(),client->getReadBuffer().c_str(), client->getReadBuffer().size(), 0);
         client->clearReadBuffer();
     }

@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 19:03:14 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/24 11:09:18 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/24 12:12:07 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 # define CRLF "\r\n"
 
-/* -------------------------- Command responses ------------------------------- */
+/* -------------------------- Command responses & Error replies ------------------------------- */
 
 # define ERR_NEEDMOREPARAMS(client, command) (": 461 " + client + " " + command + " :Not enough parameters" + CRLF)
 # define ERR_ALREADYREGISTERED(client) (": 462 " + client + " :You may not reregister" + CRLF) // 462
@@ -141,6 +141,3 @@
 
 
 // (":  " + client + " " + subject + " :" + CRLF)
-
-
-/* -------------------------- Error replies ------------------------------- */

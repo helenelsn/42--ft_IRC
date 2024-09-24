@@ -6,21 +6,17 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:29 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/23 22:10:43 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/24 12:11:43 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once // tester si suffit pour les inclusions multiples, 
+#pragma once // tester si suffit pour les inclusions multiples
 
 #include "../includes/irc.hpp"
 #include "../includes/Client.hpp"
 #include "../includes/Channel.hpp"
 
-
-// class Client;
-
 # define    BACKLOG 10 // nombre max de demandes de connexions dans la file d'attente
-# define    BUFFERSIZE 3
 
 extern bool serverShutdown;
 
@@ -62,7 +58,3 @@ class Server
 Functionalities that might have to be implemented :
 The server pings its clients periodically in order to identify timed out clients. 
 */
-
-
-
-

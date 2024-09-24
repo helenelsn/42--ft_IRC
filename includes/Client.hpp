@@ -6,29 +6,11 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:26 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/23 22:11:14 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/24 12:07:28 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once // tester si suffit pour les inclusions multiples, 
-
-// #include <iostream>
-// #include <vector>
-// #include <sys/socket.h> //-> for socket()
-// #include <sys/types.h> //-> for socket()
-// #include <netinet/in.h> //-> for sockaddr_in
-// #include <fcntl.h> //-> for fcntl()
-// #include <unistd.h> //-> for close()
-// #include <arpa/inet.h> //-> for inet_ntoa()
-// #include <poll.h> //-> for poll()
-// #include <csignal> //-> for signal()
-
-// #include <netdb.h> // for struct addrinfo
-
-// #include <stdio.h>
-// #include <string.h>
-// #include <stdlib.h>
-// #include <errno.h>
+#pragma once // tester si suffit pour les inclusions multiples 
 
 #include "../includes/irc.hpp"
 
@@ -59,9 +41,4 @@ class Client
         std::string getReadBuffer(void);
         void        writeToReadBuffer(std::string data);
         void        clearReadBuffer(void); 
-        
-        void        connect_to_s(std::string const& port);
-        void        send_msg();
-        void        receive_msg();
-        
 };
