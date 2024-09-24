@@ -1,8 +1,4 @@
 
-1) Parsing simple des commandes : identifier quels sont les mots clés importants, en déduire les arguments de la commande
-
----------------------------------------------------
-
 -   Signals must be handled (ctrl+C, ctrl+D, what else ?)
 -   Create a Channel class
 -   'Regular user' : JOIN, 
