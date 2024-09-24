@@ -6,7 +6,7 @@
 #    By: Helene <Helene@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/21 14:23:25 by Helene            #+#    #+#              #
-#    Updated: 2024/09/23 23:18:06 by Helene           ###   ########.fr        #
+#    Updated: 2024/09/24 11:10:07 by Helene           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,7 +36,7 @@ $(NAME) : $(OBJS)
 
 $(OBJS_DIR)%.o : $(SRCS_DIR)%.cpp
 	mkdir -p $(OBJS_DIR)
-	mkdir -p $(OBJS_DIR)/Commands
+	mkdir -p $(OBJS_DIR)Commands/
 	$(CC) $(CFLAGS) -MMD -I $(INCS_DIR) -c $< -o $@
 
 -include $(DEPS)
