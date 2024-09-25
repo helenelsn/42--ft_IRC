@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:29 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/25 17:05:30 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/25 20:37:39 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,8 @@ class Server
         void                AcceptClientConnection();
         void                ReadData(int fd);
 
-        void                parseMessage(std::string msg);
+        void                ParseBuffer(std::string msg);
+        void                ParseCommand(std::string command);
 
         void                RestartServer() { this->_logger.log(INFO, "Restarting server"); }
         void                ShutdownServer() { close(_server_socket); this->_logger.log(INFO, "Shutting down server"); } // à coder

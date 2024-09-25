@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 22:10:00 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/25 15:20:31 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/25 17:32:59 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@
 #include <map>
 
 #include <sstream> // std::stringstream
+
+# define CRLF "\r\n"
 
 typedef struct  s_command {
     std::string prefix;

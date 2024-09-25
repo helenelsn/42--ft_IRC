@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:49 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/25 17:05:55 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/25 20:38:14 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -226,7 +226,7 @@ void    Server::AcceptClientConnection(void)
 }
 
 
-void    parseMessage(std::string msg);
+void    ParseBuffer(std::string msg);
 
 // avec nc, deux manieres d envoier de la data : avec ctrl+d et la touche enter. pour continuer a lire jusqu a avoir la commande complete, recv() jusqu a lire un '\n\r', ou EOF 
 void    Server::ReadData(int fd)
@@ -249,7 +249,6 @@ void    Server::ReadData(int fd)
     }
     if (!bytes_read) // EOF, ie closed connection on the other side (shutdown)
     {
-        // que faire dans le cas ou a juste envoyé un buffer vide ?
         this->_logger.log(DEBUG, "in ReadData(), recv() returned 0");
         RemoveClientFromAll(client);
     }
@@ -272,25 +271,90 @@ void    Server::ReadData(int fd)
         if (pos == std::string::npos)
             return ;
                 
-        // printf("[Server] Data received from %d : --- %s --- \n", client->getSockFd(), client->getReadBuffer().c_str());
-        this->_logger.log(DEBUG, "[Server] Data received from " + std::to_string(client->getSockFd()) + " : ---" + client->getReadBuffer() + "---");
+        // this->_logger.log(DEBUG, "[Server] Data received from " + std::to_string(client->getSockFd()) + " : ---" + client->getReadBuffer() + "---");
 
         // renvoie pour l'instant le message dans son intégralité à l'envoyeur, pour vérifier l'intégrité
         send(client->getSockFd(),client->getReadBuffer().c_str(), client->getReadBuffer().size(), 0);
 
-        parseMessage(client->getReadBuffer());
+        ParseBuffer(client->getReadBuffer());
 
         client->clearReadBuffer();
         
     }
 }
 
-
-void    Server::parseMessage(std::string msg) 
+void    Server::ParseCommand(std::string line)
 {
-    this->_logger.log(DEBUG, "in parseMessage(), received string = " + msg);
+    std::string temp;
+    std::string prefix;
+    std::string command;
+    std::vector<std::string> parameters;
 
-    std::stringstream ss(msg.substr(0, msg.size() - 2));
+    std::string::iterator begin = line.begin();
+    std::string::iterator it;
+
     
+    if (line[0] == ':')
+    {
+        it = std::find(begin, line.end(), ' ');
+        prefix = std::string(begin, it);
+        begin = it;
+        if (it != line.end()) 
+            begin++;
+    }
 
+    it = std::find(begin, line.end(), ' ');
+    command = std::string(begin, it);
+
+    begin = it;
+    if (it != line.end())
+        begin++;
+    
+    this->_logger.log(DEBUG, "prefix = " + prefix);
+    this->_logger.log(DEBUG, "command = " + command);
+    
+    while (it != line.end())
+    {
+        if ((*begin) == ':')
+        {
+            parameters.push_back(std::string(begin, line.end()));
+            break;
+        }
+        it = std::find(begin, line.end(), ' ');
+        parameters.push_back(std::string(begin, it));
+        begin = it;
+        if (it != line.end())
+            begin++;
+    }
+    
+    for (size_t i = 0; i < parameters.size(); i++)
+        this->_logger.log(DEBUG, "parameter " + std::to_string(i) + " = " + parameters[i]);
+
+}
+
+
+/* 
+si la socket etait bloquée, peut avoir écrit plusieurs messages à la suite qui doivent etre traités en meme temps
+ -> split selon les "\r\n"
+ -> s'il reste des trucs après le dernier CRLF, les laisser dans le ReadBuffer du client (il ne restera donc à ce jour
+    dedans plus que le début de message ne finissant pas encore par un CRLF, le reste aura été éffacé)
+->  pour chaque message reçu, le parser et éxecuter la commande correspondante 
+ */
+void    Server::ParseBuffer(std::string msg) 
+{
+    size_t pos;
+    std::string temp;
+    std::vector<std::string> commands;
+    while ((pos = msg.find_first_of(CRLF)) != std::string::npos)
+    {
+        temp = msg.substr(0, pos);
+        // this->_logger.log(DEBUG, "temp = " + temp);
+        commands.push_back(temp);
+        
+        msg.erase(msg.begin(), msg.begin() + pos + 1);
+    }
+
+    for (std::vector<std::string>::iterator it = commands.begin(); it != commands.end(); it++)
+        ParseCommand(*it);
+    
 }

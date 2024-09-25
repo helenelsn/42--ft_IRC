@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 22:58:57 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/25 15:22:49 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/25 20:37:39 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 
 
 // peut avoir plusieurs "\r\n" dans un meme message ? 
-struct s_command   Parser::parseMessage(std::string message) const
+struct s_command   Parser::ParseBuffer(std::string message) const
 {
     // tej le "\r\n" de fin
     std::stringstream sstream(message.substr(0, message.size() - 2)); //std::string(&message[0], &message[message.size() - 3]));
@@ -39,10 +39,10 @@ struct s_command   Parser::parseMessage(std::string message) const
     //std::getline(sstream, temp, ' '); // reads characters until it encounters the specified delimiter (or '\n' if not specified), or the end of the stream.
     
 
-    // printf("DEBUG : in parseMessage(), initial msg = %s\n", message.c_str());
+    // printf("DEBUG : in ParseBuffer(), initial msg = %s\n", message.c_str());
     // ?
     // std::stringstream ss(message);
-    // ss << "DEBUG : in parseMessage(), initial message = ";
+    // ss << "DEBUG : in ParseBuffer(), initial message = ";
     // std::cout << ss.str() << std::endl;
     
 }

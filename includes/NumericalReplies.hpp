@@ -6,15 +6,13 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 19:03:14 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/24 12:12:07 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/25 17:32:49 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 // dynamic macros for server 'command responses' (RPL_...) and error replies (ERR_...)
-
-# define CRLF "\r\n"
 
 /* -------------------------- Command responses & Error replies ------------------------------- */
 
