@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:26 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/24 12:07:28 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/25 21:35:40 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,5 +40,6 @@ class Client
         int         getSockFd(void);
         std::string getReadBuffer(void);
         void        writeToReadBuffer(std::string data);
-        void        clearReadBuffer(void); 
+        void        clearReadBuffer(void);
+        void        rewriteBuffer(std::string const& newBuffer);
 };

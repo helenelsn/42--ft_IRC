@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:49 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/25 20:38:14 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/25 22:20:36 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -225,9 +225,6 @@ void    Server::AcceptClientConnection(void)
     this->_logger.log(INFO, "New connection! Client-server socket : " + std::to_string(newClient));
 }
 
-
-void    ParseBuffer(std::string msg);
-
 // avec nc, deux manieres d envoier de la data : avec ctrl+d et la touche enter. pour continuer a lire jusqu a avoir la commande complete, recv() jusqu a lire un '\n\r', ou EOF 
 void    Server::ReadData(int fd)
 {
@@ -276,12 +273,30 @@ void    Server::ReadData(int fd)
         // renvoie pour l'instant le message dans son intégralité à l'envoyeur, pour vérifier l'intégrité
         send(client->getSockFd(),client->getReadBuffer().c_str(), client->getReadBuffer().size(), 0);
 
-        ParseBuffer(client->getReadBuffer());
 
-        client->clearReadBuffer();
+
+        ParseBuffer(client); // ParseBuffer : Client or Server method ? Dans tous les cas, a besoin d'avoir acces au client 
+
+        //client->clearReadBuffer();
         
     }
 }
+
+
+
+/*  A message contains at least two parts: the command and the command parameters. There may be at most 15 parameters. 
+    The command and the parameters are all separated by a single ASCII space character. 
+    
+    Some messages also include a prefix before the command and the command parameters. 
+    The presence of a prefix is indicated with a single leading colon character. 
+    The prefix is used to indicate the origin of the message. 
+    For example, when a user sends a message to a channel, the server will forward that message to all the users in the channel,
+    and will include a prefix to specify the user that sent that message originally.
+
+    When the last parameter is prefixed with a colon character,
+    the value of that parameter will be the remainder of the message (including space characters).
+    ex -> PRIVMSG rory :Hey Rory...
+*/
 
 void    Server::ParseCommand(std::string line)
 {
@@ -340,21 +355,25 @@ si la socket etait bloquée, peut avoir écrit plusieurs messages à la suite qu
     dedans plus que le début de message ne finissant pas encore par un CRLF, le reste aura été éffacé)
 ->  pour chaque message reçu, le parser et éxecuter la commande correspondante 
  */
-void    Server::ParseBuffer(std::string msg) 
+/*
+Reflechir a la structure du code : Où faire le parsing ? 
+    -> méthode serveur : doit alors écrire une méthode Client qui permette de modifier son ReadBuffer
+    -> méthode client : pour chaque commande extraite, devra repasser par le Serveur pour l'executer (avoir un pointeur vers le Serveur pour chaque client ?)
+*/
+void    Server::ParseBuffer(Client* &client) 
 {
+    std::string::iterator it;
+    std::string updatedBuffer;
     size_t pos;
-    std::string temp;
-    std::vector<std::string> commands;
-    while ((pos = msg.find_first_of(CRLF)) != std::string::npos)
-    {
-        temp = msg.substr(0, pos);
-        // this->_logger.log(DEBUG, "temp = " + temp);
-        commands.push_back(temp);
-        
-        msg.erase(msg.begin(), msg.begin() + pos + 1);
-    }
-
-    for (std::vector<std::string>::iterator it = commands.begin(); it != commands.end(); it++)
-        ParseCommand(*it);
     
+    pos = client->getReadBuffer().find_first_of(CRLF); 
+    while (pos != std::string::npos)
+    {
+        it = client->getReadBuffer().begin();
+        ParseCommand(std::string(it, it + pos));
+        
+        updatedBuffer = client->getReadBuffer().substr(pos + 1);
+        client->rewriteBuffer(updatedBuffer);
+        pos = client->getReadBuffer().find_first_of(CRLF);
+    }
 }

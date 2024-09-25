@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:29 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/25 20:37:39 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/25 21:40:29 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 #include "irc.hpp"
 #include "Client.hpp"
 #include "Channel.hpp"
-#include "Parser.hpp"
 #include "Logger.hpp"
 
 # define    BACKLOG 10 // nombre max de demandes de connexions dans la file d'attente
@@ -56,7 +55,7 @@ class Server
         void                AcceptClientConnection();
         void                ReadData(int fd);
 
-        void                ParseBuffer(std::string msg);
+        void                ParseBuffer(Client* &client);
         void                ParseCommand(std::string command);
 
         void                RestartServer() { this->_logger.log(INFO, "Restarting server"); }
