@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:24:09 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/24 12:08:28 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/25 17:06:10 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ bool serverShutdown = false;
 
 void handleSignal(int signal)
 {
-    // print message sur console ?
+    // print message sur Logger ?
 
     (void) signal;
     serverShutdown = true;
@@ -48,17 +48,21 @@ int main(int argc, char **argv)
     }
 
     setSignalHandlers();
+
+    Server IrcServer(argv[1], argv[2]);
     
+    // boucle while utile que si peut restart le serveur. sinon, un seul appel a initServer et runServer suffit.
+    // dans le cas où peut restart, un booléen ne suffira plus (running, restarting, to be stopped)
     while (!serverShutdown)
     {
         try {
-            Server IrcServer(argv[1], argv[2]);
             IrcServer.InitServer();
             IrcServer.RunServer();
         }
         catch (std::exception const& e) {
-            std::cout << "Error : " << e.what() << std::endl;
+            std::cout << "Error (main): " << e.what() << std::endl;
         }
     }
-    
+    // shutdown server
+    IrcServer.ShutdownServer();
 }

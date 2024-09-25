@@ -1,0 +1,2 @@
+Quand quitte avec SIGQUIT en utilisant netcat, lance une exception (catch dans le main), avec e.what() = basic_string 
+

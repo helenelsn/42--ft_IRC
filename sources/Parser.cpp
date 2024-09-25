@@ -6,13 +6,11 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 22:58:57 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/23 23:46:24 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/25 15:22:49 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/irc.hpp"
-
-// class Parser, avec un tableau de pointeurs sur fonctions, chaque fonction gérant une commande
+#include "../includes/Parser.hpp"
 
 /*  A message contains at least two parts: the command and the command parameters. There may be at most 15 parameters. 
     The command and the parameters are all separated by a single ASCII space character. 
@@ -28,37 +26,23 @@
     ex -> PRIVMSG rory :Hey Rory...
 */
 
-typedef struct  s_command {
-    std::string prefix;
-    std::string command;
-    std::string parameters;
-}       t_command;
 
-
-
-class Parser // executes the command as well ? Or just formats the command in a more usable way ? ie shound it be a class or function ?
+// peut avoir plusieurs "\r\n" dans un meme message ? 
+struct s_command   Parser::parseMessage(std::string message) const
 {
-    public :
-        t_command   parseCommand(std::string message) const;
-
-    private :
-        
-};
-
-// tout remplir, puis check apres si a un prefix avec prefix.empty() ?
-struct s_command   Parser::parseCommand(std::string message) const
-{
-    std::stringstream sstream(message);
+    // tej le "\r\n" de fin
+    std::stringstream sstream(message.substr(0, message.size() - 2)); //std::string(&message[0], &message[message.size() - 3]));
+    std::string temp;
+    std::vector<std::string> msgElems;
     t_command command;
 
-    // skip le(s) espaces du début 
-    // si a un ':', le mot suivant est le prefix
-    // sinon, le mot suivant est la commande
-
-    // syntaxe : [<' ' (?)><:><prefix><' '><command><' '><parameters (up to 15)>]
+    //std::getline(sstream, temp, ' '); // reads characters until it encounters the specified delimiter (or '\n' if not specified), or the end of the stream.
     
-    size_t pos = message.find_first_not_of(' ');
-    if (pos == std::string::npos)
-        ; // ?
+
+    // printf("DEBUG : in parseMessage(), initial msg = %s\n", message.c_str());
+    // ?
+    // std::stringstream ss(message);
+    // ss << "DEBUG : in parseMessage(), initial message = ";
+    // std::cout << ss.str() << std::endl;
     
 }

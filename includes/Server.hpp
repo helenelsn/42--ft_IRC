@@ -6,17 +6,20 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:29 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/24 12:11:43 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/25 17:05:30 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once // tester si suffit pour les inclusions multiples
 
-#include "../includes/irc.hpp"
-#include "../includes/Client.hpp"
-#include "../includes/Channel.hpp"
+#include "irc.hpp"
+#include "Client.hpp"
+#include "Channel.hpp"
+#include "Parser.hpp"
+#include "Logger.hpp"
 
 # define    BACKLOG 10 // nombre max de demandes de connexions dans la file d'attente
+// -> voir comment la gérer
 
 extern bool serverShutdown;
 
@@ -37,6 +40,7 @@ class Server
         pollfds             _sockets; // server-clients sockets 
         clients             _clients; // std::vector<Client> _clients ? 
         channels            _channels;
+        Logger              _logger;
         void                RemoveClient(int fd);
         void                RemoveFromPoll(int fd); // removes corresponding fd from pollfds' vector and closes it, decrements poll_size
         
@@ -51,7 +55,11 @@ class Server
         void                RemoveClientFromAll(Client *client);
         void                AcceptClientConnection();
         void                ReadData(int fd);
-        void                Parser(int fd, std::string data) { (void)fd; (void)data; }
+
+        void                parseMessage(std::string msg);
+
+        void                RestartServer() { this->_logger.log(INFO, "Restarting server"); }
+        void                ShutdownServer() { close(_server_socket); this->_logger.log(INFO, "Shutting down server"); } // à coder
 };
 
 /*

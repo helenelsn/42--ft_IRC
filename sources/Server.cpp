@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:49 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/24 12:16:54 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/25 17:05:55 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,12 @@
 Server::Server(std::string const& port, std::string const& password)
 : _port(port), _password(password)
 {
-    // ?
+    this->_logger.log(INFO, "Server created");
 }
 
 Server::~Server()
 {
-    close(_server_socket);
+    // close(_server_socket);
 }
 
 /* -------------------------- INIT SERVER ------------------------------- */
@@ -45,7 +45,7 @@ void    Server::InitServer(void)
         ;// throw exception
     _server_socket = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
     
-    std::cout << "Connection socket created" << std::endl;
+    this->_logger.log(INFO, "Connection socket created");
 
     int en = 1;
     // The setsockopt() API allows the application to reuse the local address when the server is restarted before the required wait time expires.
@@ -71,7 +71,7 @@ void    Server::InitServer(void)
 
     freeaddrinfo(res);
 
-    std::cout << "Connection socket listening on port " << this->_port << std::endl;
+    this->_logger.log(INFO, "Server listening on port " + this->_port + ", with socketFd " + std::to_string(_server_socket));
 }
 
 
@@ -91,7 +91,7 @@ POLLERR : Error condition
 */
 void    Server::RunServer()
 { 
-    printf("in RunServer()\n");
+    this->_logger.log(DEBUG, "In RunServer()");
     while (!serverShutdown)
     {
         // The poll() API allows the process to wait for an event to occur and to wake up the process when the event occurs.
@@ -104,24 +104,22 @@ void    Server::RunServer()
             break;
         }
                 
-        //for (poll_it it = _sockets.begin(); it != _sockets.end(); it++) // ca couille avec les iterateurs, regarder pourquoi 
-        for (size_t i = 0; i < _sockets.size(); i++)
+        //for (poll_it it = _sockets.begin(); it != _sockets.end() && !serverShutdown; it++) // ca couille avec les iterateurs, regarder pourquoi 
+        for (size_t i = 0; i < _sockets.size() && !serverShutdown; i++)
         {            
-            //printf("in the for(pollfd) loop\n");
-            // if, if, if,... ou if, else if, else if, ... ? Peut avoir (revents & POLL_IN) && (revents & POLL_OUT) ?
+            // Peut avoir (revents & POLL_IN) && (revents & POLL_OUT) ? Tout doit passer par le serveur, peut partir du principe que doit etre sequentiel ? 
             if (_sockets[i].revents & POLL_ERR)
                 ;
             else if (_sockets[i].revents & POLL_IN) // data is ready to recv() on this socket.
             {
-                // printf("POLL_IN event, fd = %d\n", _sockets[i].fd);
                 if (_sockets[i].fd == _server_socket) // server side
                     AcceptClientConnection();
                 else
                     ReadData(_sockets[i].fd); // client side
             }
             else if (_sockets[i].revents & POLL_OUT) // we can send() data to this socket without blocking.
-                ;
-            else if (_sockets[i].revents & POLLHUP)
+                ; // send() le writeBuffer du client associé à la socket 
+            else if (_sockets[i].revents & POLLHUP) 
                 ;
         }
     }
@@ -224,9 +222,11 @@ void    Server::AcceptClientConnection(void)
     AddToPoll(newClient, POLL_IN | POLL_OUT);
     AddClient(newClient);
     
-    printf("New connection! Socket fd: %d, client fd: %d\n", _server_socket, newClient);
+    this->_logger.log(INFO, "New connection! Client-server socket : " + std::to_string(newClient));
 }
 
+
+void    parseMessage(std::string msg);
 
 // avec nc, deux manieres d envoier de la data : avec ctrl+d et la touche enter. pour continuer a lire jusqu a avoir la commande complete, recv() jusqu a lire un '\n\r', ou EOF 
 void    Server::ReadData(int fd)
@@ -243,14 +243,14 @@ void    Server::ReadData(int fd)
     int bytes_read = recv(client->getSockFd(), buffer, BUFSIZ, 0);
     if (bytes_read == -1)
     {
-        printf("INFO : Client (fd %d) exited the server\n", client->getSockFd());
+        this->_logger.log(INFO, "Client " + std::to_string(client->getSockFd()) + " exited the server");
         RemoveClientFromAll(client);
         ; // throw exception
     }
     if (!bytes_read) // EOF, ie closed connection on the other side (shutdown)
     {
         // que faire dans le cas ou a juste envoyé un buffer vide ?
-        printf("DEBUG : in ReadData(), recv() returned 0\n");
+        this->_logger.log(DEBUG, "in ReadData(), recv() returned 0");
         RemoveClientFromAll(client);
     }
     else
@@ -264,18 +264,33 @@ void    Server::ReadData(int fd)
         // if (bytes_read == -1)
         //     ; // throw exception
         
+        // check limite des 512 caractères ou balec ?
+        client->writeToReadBuffer(std::string(&buffer[0], &buffer[bytes_read]));
         
-        client->writeToReadBuffer(buffer);
+        // Gestion Ctrl+D
         size_t pos = (client->getReadBuffer()).find_first_of("\r\n");
         if (pos == std::string::npos)
             return ;
                 
-        printf("[Server] Data received from %d : --- %s --- \n", client->getSockFd(), client->getReadBuffer().c_str());
-        
+        // printf("[Server] Data received from %d : --- %s --- \n", client->getSockFd(), client->getReadBuffer().c_str());
+        this->_logger.log(DEBUG, "[Server] Data received from " + std::to_string(client->getSockFd()) + " : ---" + client->getReadBuffer() + "---");
 
         // renvoie pour l'instant le message dans son intégralité à l'envoyeur, pour vérifier l'intégrité
         send(client->getSockFd(),client->getReadBuffer().c_str(), client->getReadBuffer().size(), 0);
+
+        parseMessage(client->getReadBuffer());
+
         client->clearReadBuffer();
+        
     }
 }
 
+
+void    Server::parseMessage(std::string msg) 
+{
+    this->_logger.log(DEBUG, "in parseMessage(), received string = " + msg);
+
+    std::stringstream ss(msg.substr(0, msg.size() - 2));
+    
+
+}

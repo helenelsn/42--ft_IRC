@@ -6,7 +6,7 @@
 #    By: Helene <Helene@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/21 14:23:25 by Helene            #+#    #+#              #
-#    Updated: 2024/09/24 11:10:07 by Helene           ###   ########.fr        #
+#    Updated: 2024/09/25 16:19:53 by Helene           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,6 +24,7 @@ SRCS = 	main.cpp \
 		Client.cpp \
 		Channel.cpp \
 		Parser.cpp \
+		Logger.cpp \
 		# Commands/Authenticate.cpp
 		
 OBJS = $(addprefix $(OBJS_DIR), $(SRCS:.cpp=.o))
