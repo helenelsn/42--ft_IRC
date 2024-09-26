@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:24:09 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/25 17:06:10 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/26 22:17:53 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,6 @@ int main(int argc, char **argv)
             std::cout << "Error (main): " << e.what() << std::endl;
         }
     }
-    // shutdown server
+    
     IrcServer.ShutdownServer();
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:26 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/26 18:07:14 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/09/26 21:50:32 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ class Client
         std::string _readBuffer; // data sent by client
         std::string _writeBuffer; // data to be sent to client
         std::string _modes; // user's currently set modes
+
+        // un client a la liste des channels dans lesquels il est
         
         // int state; logged in, registered, disconnected, ?
         

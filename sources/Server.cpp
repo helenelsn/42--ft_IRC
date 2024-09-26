@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:49 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/26 18:09:23 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/09/26 23:05:29 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,14 +60,22 @@ void    Server::InitServer(void)
     // if (bind(_server_socket, (struct sockaddr *)&toAdd, sizeof(toAdd)))
     //         close(_server_socket);// throw an exception
     if (bind(_server_socket, res->ai_addr, res->ai_addrlen))
-            close(_server_socket);// throw an exception
+            close(_server_socket);
+            // throw an exception
     
     // makes the socker passive
     if (listen(_server_socket, BACKLOG))
-        close(_server_socket);// throw an exception
+        close(_server_socket);
+        // throw an exception
     
+    pollfd newPoll;
+
+    newPoll.fd = _server_socket;
+    newPoll.events = POLL_IN;
+    newPoll.revents = 0;
+    (this->_sockets).push_back(newPoll);
     
-    AddToPoll(_server_socket, POLL_IN);
+    // AddToPoll(_server_socket, POLL_IN);
 
     freeaddrinfo(res);
 
@@ -109,15 +117,14 @@ void    Server::RunServer()
         //for (poll_it it = _sockets.begin(); it != _sockets.end() && !serverShutdown; it++) // ca couille avec les iterateurs, regarder pourquoi 
         for (size_t i = 0; i < _sockets.size() && !serverShutdown; i++)
         {            
-            // Peut avoir (revents & POLL_IN) && (revents & POLL_OUT) ? Tout doit passer par le serveur, peut partir du principe que doit etre sequentiel ? 
             if (_sockets[i].revents & POLL_ERR)
                 ;
             else if (_sockets[i].revents & POLL_IN) // data is ready to recv() on this socket.
             {
-                if (_sockets[i].fd == _server_socket) // server side
+                if (_sockets[i].fd == _server_socket)
                     AcceptClientConnection();
                 else
-                    ReadData(_sockets[i].fd); // client side
+                    ReadData(_sockets[i].fd);
             }
             else if (_sockets[i].revents & POLL_OUT) // we can send() data to this socket without blocking.
                 ; // send() le writeBuffer du client associé à la socket 
@@ -126,7 +133,7 @@ void    Server::RunServer()
         }
     }
     
-    // Fermer tous les fd 
+    // ShutdownServer();
 }
 
 
@@ -152,52 +159,60 @@ Client              *Server::getClient(int fd)
 
 void    Server::AddClient(int fd)
 {
+    pollfd newClient;
+
+    newClient.fd = fd;
+    newClient.events = POLL_IN | POLL_OUT;
+    newClient.revents = 0;
+    (this->_sockets).push_back(newClient);
+    
     Client cli(fd);
     this->_clients.insert(std::pair<int, Client>(fd, cli));
-    // this->_clients.insert(std::map<int, Client>::value_type(fd, cli)); // ca met la _sockFd du client inséré à 0, alors qu'est à 4 dans cli, pourquoi ? 
-    // this->_clients[fd] = cli; // pourquoi donne une erreur de compilation ?
+
 }
 
-void    Server::RemoveClient(int fd)
+// void    Server::RemoveClient(int fd)
+// {
+//     clients_it it = _clients.find(fd);
+//     if (it == _clients.end())
+//         ;// error msg
+//     _clients.erase(it);
+//     // _clients.erase(fd);
+// }
+
+// void    Server::RemoveFromPoll(int fd)
+// {
+//     for (poll_it it = _sockets.begin(); it != _sockets.end(); it++)
+//     {        
+//         if (it->fd == fd)
+//         {
+//             _sockets.erase(it);
+//             // close(fd);
+//             break;
+//         }
+//     }
+// }
+
+void    Server::RemoveClient(Client *client)
 {
-    clients_it it = _clients.find(fd);
+    int client_fd = client->getSockFd();
+    clients_it it = _clients.find(client_fd);
+    
     if (it == _clients.end())
         ;// error msg
     _clients.erase(it);
-    // _clients.erase(fd);
-}
 
-
-void    Server::AddToPoll(int fd, int events)
-{
-    pollfd newPoll;
-
-    newPoll.fd = fd;
-    newPoll.events = events;
-    newPoll.revents = 0;
-    (this->_sockets).push_back(newPoll);
-}
-
-void    Server::RemoveFromPoll(int fd)
-{
     for (poll_it it = _sockets.begin(); it != _sockets.end(); it++)
-    {
-        // printf("DEBUG : removeFromPoll, *it (ie fd) = %d\n", it->fd);
-        
-        if (it->fd == fd)
+    {        
+        if (it->fd == client_fd)
         {
-            _sockets.erase(it); // vérifier que fait pas de la merde
-            // close(fd);
+            _sockets.erase(it);
             break;
         }
     }
-}
-
-void    Server::RemoveClientFromAll(Client *client)
-{
-    int client_fd = client->getSockFd();
-    this->RemoveClient(client_fd);
-    this->RemoveFromPoll(client_fd);
+    
+    // this->RemoveClient(client_fd);
+    // this->RemoveFromPoll(client_fd);
     close(client_fd); // verifier retour de close
 }
 
@@ -212,7 +227,10 @@ void    Server::AcceptClientConnection(void)
     // printf("DEBUG : in AcceptClientConnection()\n");
     int newClient = accept(_server_socket, (struct sockaddr *)&client_addr, &addr_size);
     if (newClient == -1)
-        ;
+    {
+        int errNum = errno;
+        this->_logger.log(INFO, std::string("Could not accept connection : ") + std::strerror(errNum));
+    }
     
     // la rend non bloquante, car accept() est une fonction bloquante 
     if (fcntl(newClient, F_SETFL, O_NONBLOCK))
@@ -221,7 +239,7 @@ void    Server::AcceptClientConnection(void)
         close(newClient);
     }
     
-    AddToPoll(newClient, POLL_IN | POLL_OUT);
+    // AddToPoll(newClient, POLL_IN | POLL_OUT);
     AddClient(newClient);
     
     std::stringstream ss;
@@ -235,7 +253,6 @@ void    Server::ReadData(int fd)
     Client *client = getClient(fd); 
     if (!client)
         ; // fd pas dans la liste des server-clients sockets sur ecoute
-    // printf("in ReadData(), fd = %d\n", client->getSockFd());
 
     char        buffer[BUFSIZ];
     std::string msg;
@@ -246,14 +263,16 @@ void    Server::ReadData(int fd)
     {
         std::stringstream ss;
         ss << client->getSockFd();
-        this->_logger.log(INFO, "Client " + ss.str() + " exited the server");
-        RemoveClientFromAll(client);
-        ; // throw exception
+        this->_logger.log(INFO, "Client " + ss.str() + " : recv() failed");
+        RemoveClient(client); // ?
+        ; // throw exception ?
     }
-    if (!bytes_read) // EOF, ie closed connection on the other side (shutdown)
+    else if (!bytes_read) // EOF, ie closed connection on the other side
     {
-        this->_logger.log(DEBUG, "in ReadData(), recv() returned 0");
-        RemoveClientFromAll(client);
+        std::stringstream ss;
+        ss << client->getSockFd();
+        this->_logger.log(DEBUG, "Client " + ss.str() + " disconnected"); 
+        RemoveClient(client);
     }
     else
     {
@@ -278,7 +297,6 @@ void    Server::ReadData(int fd)
         ss << client->getSockFd();
         this->_logger.log(DEBUG, "[Server] Data received from " + ss.str() + " : ---" + client->getReadBuffer() + "---");
 
-        
         //send(client->getSockFd(),client->getReadBuffer().c_str(), client->getReadBuffer().size(), 0);
 
 
@@ -391,4 +409,26 @@ void    Server::ParseBuffer(Client* &client)
         client->rewriteBuffer(updatedBuffer);
         pos = client->getReadBuffer().find(CRLF);
     }
+}
+
+
+
+
+// à coder
+void    Server::RestartServer() 
+{
+    this->_logger.log(INFO, "Restarting server");
+}
+
+
+void    Server::ShutdownServer() 
+{
+    for (poll_it it = _sockets.begin(); it != _sockets.end(); it++)
+        close(it->fd);
+
+    // delete clients (autre chose a faire que juste close les sockets ?)
+
+    // delete channels -> is there anything to do about that here ?
+    
+    this->_logger.log(INFO, "Shutting down server");
 }

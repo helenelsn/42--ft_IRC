@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:29 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/25 21:40:29 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/26 23:05:29 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,29 +37,31 @@ class Server
         std::string         _password;
         int                 _server_socket;
         pollfds             _sockets; // server-clients sockets 
-        clients             _clients; // std::vector<Client> _clients ? 
+        pollfds             _newSockets; // utile ? // sockets from new connections, to add tp _sockets at the end of the for() loop
+        clients             _clients;
         channels            _channels;
         Logger              _logger;
-        void                RemoveClient(int fd);
-        void                RemoveFromPoll(int fd); // removes corresponding fd from pollfds' vector and closes it, decrements poll_size
+        // void                RemoveClient(int fd);
+        // void                RemoveFromPoll(int fd); // removes corresponding fd from pollfds' vector and closes it, decrements poll_size
         
     public :  
         Server(std::string const& port, std::string const& password);
         ~Server(); 
         void                InitServer(); // creates server socket, binds it to the given port, listen() on server socket
         void                RunServer(); // looping calls to poll()
+        
         Client              *getClient(int fd);
         void                AddClient(int fd);
         void                AddToPoll(int fd, int events);
-        void                RemoveClientFromAll(Client *client);
+        void                RemoveClient(Client *client);
         void                AcceptClientConnection();
         void                ReadData(int fd);
 
         void                ParseBuffer(Client* &client);
         void                ParseCommand(std::string command);
 
-        void                RestartServer() { this->_logger.log(INFO, "Restarting server"); }
-        void                ShutdownServer() { close(_server_socket); this->_logger.log(INFO, "Shutting down server"); } // à coder
+        void                RestartServer();
+        void                ShutdownServer();
 };
 
 /*

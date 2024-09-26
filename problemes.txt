@@ -1,3 +1,4 @@
-Quand quitte netcat avec SIGQUIT, lance une exception (catch dans le main), avec e.what() = basic_string 
+Quand quitte netcat avec SIGQUIT, lance une exception (catch dans le main), avec e.what() = basic_string
+    (-> normalement c'est good mtn)
 
-Affichage chelou avec input ":ciaeif aiefhgaife aihfgeia :adhaf aiugaf" -> print le prefixe quand run avec avec lldb, sinon print une empty string
++ Pourquoi, quand quitte netcat avec SIGQUIT, est-ce que recv() renvoie -1 dans ReadData() ?
