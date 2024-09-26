@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:26 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/25 21:35:40 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/26 18:07:14 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,10 @@ class Client
         Client(int fd);
         ~Client();
         Client(Client const& other) {*this = other;} // private ?
-        Client      operator==(Client const& other); // private ? 
-        int         getSockFd(void);
-        std::string getReadBuffer(void);
-        void        writeToReadBuffer(std::string data);
-        void        clearReadBuffer(void);
-        void        rewriteBuffer(std::string const& newBuffer);
+        Client          operator==(Client const& other); // private ? 
+        int             getSockFd(void);
+        std::string&    getReadBuffer(void);
+        void            writeToReadBuffer(std::string data);
+        void            clearReadBuffer(void);
+        void            rewriteBuffer(std::string const& newBuffer);
 };

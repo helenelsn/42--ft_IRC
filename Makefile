@@ -3,15 +3,15 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: Helene <Helene@student.42.fr>              +#+  +:+       +#+         #
+#    By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/21 14:23:25 by Helene            #+#    #+#              #
-#    Updated: 2024/09/25 21:43:35 by Helene           ###   ########.fr        #
+#    Updated: 2024/09/26 18:03:17 by hlesny           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = ircserv
-CC = c++
+CC = g++ # c++ ? std::string incomplete type error when compiling using c++ 
 CFLAGS = -std=c++98 -Wall -Wextra -g3 #-Werror -fsanitize=address
 RM = rm -f
 

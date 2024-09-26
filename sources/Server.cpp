@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:49 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/26 17:35:19 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/09/26 18:09:23 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -270,7 +270,7 @@ void    Server::ReadData(int fd)
         client->writeToReadBuffer(std::string(&buffer[0], &buffer[bytes_read]));
         
         // Gestion Ctrl+D
-        size_t pos = (client->getReadBuffer()).find_first_of("\r\n");
+        size_t pos = (client->getReadBuffer()).find("\r\n");
         if (pos == std::string::npos)
             return ;
         
@@ -283,9 +283,9 @@ void    Server::ReadData(int fd)
 
 
 
-        //ParseBuffer(client); // ParseBuffer : Client or Server method ? Dans tous les cas, a besoin d'avoir acces au client 
+        ParseBuffer(client); // ParseBuffer : Client or Server method ? Dans tous les cas, a besoin d'avoir acces au client 
 
-        
+        // client->clearReadBuffer();
         
     }
 }
@@ -378,14 +378,17 @@ void    Server::ParseBuffer(Client* &client)
     std::string updatedBuffer;
     size_t pos;
     
-    pos = client->getReadBuffer().find_first_of(CRLF); 
+    pos = client->getReadBuffer().find(CRLF); 
     while (pos != std::string::npos)
     {
         it = client->getReadBuffer().begin();
+        std::string test = std::string(it, it + pos);
+
+        this->_logger.log(DEBUG, "current parsed command : " + std::string(it, it + pos));
         ParseCommand(std::string(it, it + pos));
         
-        updatedBuffer = client->getReadBuffer().substr(pos + 1);
+        updatedBuffer = client->getReadBuffer().substr(pos + 2);
         client->rewriteBuffer(updatedBuffer);
-        pos = client->getReadBuffer().find_first_of(CRLF);
+        pos = client->getReadBuffer().find(CRLF);
     }
 }

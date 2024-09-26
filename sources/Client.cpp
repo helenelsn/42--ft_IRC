@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:46 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/25 21:35:19 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/26 18:07:34 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int Client::getSockFd(void)
     return this->_sockFd;
 }
 
-std::string Client::getReadBuffer(void)
+std::string& Client::getReadBuffer(void)
 {
     return this->_readBuffer;
 }
