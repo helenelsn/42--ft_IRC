@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:49 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/25 22:20:36 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/26 17:35:19 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,9 @@ void    Server::InitServer(void)
 
     freeaddrinfo(res);
 
-    this->_logger.log(INFO, "Server listening on port " + this->_port + ", with socketFd " + std::to_string(_server_socket));
+    std::stringstream ss;
+    ss << _server_socket;
+    this->_logger.log(INFO, "Server listening on port " + this->_port + ", with socketFd " + ss.str());
 }
 
 
@@ -222,10 +224,12 @@ void    Server::AcceptClientConnection(void)
     AddToPoll(newClient, POLL_IN | POLL_OUT);
     AddClient(newClient);
     
-    this->_logger.log(INFO, "New connection! Client-server socket : " + std::to_string(newClient));
+    std::stringstream ss;
+    ss << newClient;
+    this->_logger.log(INFO, "New connection! Client-server socket : " + ss.str());
 }
 
-// avec nc, deux manieres d envoier de la data : avec ctrl+d et la touche enter. pour continuer a lire jusqu a avoir la commande complete, recv() jusqu a lire un '\n\r', ou EOF 
+
 void    Server::ReadData(int fd)
 {
     Client *client = getClient(fd); 
@@ -240,7 +244,9 @@ void    Server::ReadData(int fd)
     int bytes_read = recv(client->getSockFd(), buffer, BUFSIZ, 0);
     if (bytes_read == -1)
     {
-        this->_logger.log(INFO, "Client " + std::to_string(client->getSockFd()) + " exited the server");
+        std::stringstream ss;
+        ss << client->getSockFd();
+        this->_logger.log(INFO, "Client " + ss.str() + " exited the server");
         RemoveClientFromAll(client);
         ; // throw exception
     }
@@ -267,17 +273,19 @@ void    Server::ReadData(int fd)
         size_t pos = (client->getReadBuffer()).find_first_of("\r\n");
         if (pos == std::string::npos)
             return ;
-                
-        // this->_logger.log(DEBUG, "[Server] Data received from " + std::to_string(client->getSockFd()) + " : ---" + client->getReadBuffer() + "---");
+        
+        std::stringstream ss;
+        ss << client->getSockFd();
+        this->_logger.log(DEBUG, "[Server] Data received from " + ss.str() + " : ---" + client->getReadBuffer() + "---");
 
-        // renvoie pour l'instant le message dans son intégralité à l'envoyeur, pour vérifier l'intégrité
-        send(client->getSockFd(),client->getReadBuffer().c_str(), client->getReadBuffer().size(), 0);
+        
+        //send(client->getSockFd(),client->getReadBuffer().c_str(), client->getReadBuffer().size(), 0);
 
 
 
-        ParseBuffer(client); // ParseBuffer : Client or Server method ? Dans tous les cas, a besoin d'avoir acces au client 
+        //ParseBuffer(client); // ParseBuffer : Client or Server method ? Dans tous les cas, a besoin d'avoir acces au client 
 
-        //client->clearReadBuffer();
+        
         
     }
 }
@@ -343,7 +351,11 @@ void    Server::ParseCommand(std::string line)
     }
     
     for (size_t i = 0; i < parameters.size(); i++)
-        this->_logger.log(DEBUG, "parameter " + std::to_string(i) + " = " + parameters[i]);
+    {
+        std::stringstream ss;
+        ss << i;
+        this->_logger.log(DEBUG, "parameter " + ss.str() + " = " + parameters[i]);
+    }
 
 }
 

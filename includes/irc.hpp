@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   irc.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 22:10:00 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/25 17:32:59 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/26 15:51:25 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,14 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <string>
 #include <stdlib.h>
 #include <errno.h>
 #include <map>
 
 #include <sstream> // std::stringstream
+#include <algorithm>
+#include <stdlib.h>
 
 # define CRLF "\r\n"
 

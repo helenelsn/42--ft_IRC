@@ -14,7 +14,7 @@
 
 Logger::Logger(std::string const& logFileName)
 {
-    _logFile.open(logFileName, std::ofstream::out | std::ofstream::app); // if open fails, the failbit state flag if set for the stream (how do we check the stream's state flags ?)
+    _logFile.open(logFileName.c_str(), std::ofstream::out | std::ofstream::app); // if open fails, the failbit state flag if set for the stream (how do we check the stream's state flags ?)
     if (!_logFile.is_open())
         std::cerr << "[Logger Error] : failed to open the given log file" << std::endl;
 }
