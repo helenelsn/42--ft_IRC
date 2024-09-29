@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:49 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/26 23:05:29 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/29 15:48:52 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,9 @@ Server::Server(std::string const& port, std::string const& password)
 : _port(port), _password(password)
 {
     this->_logger.log(INFO, "Server created");
+    std::stringstream ss;
+    ss << &(*this);
+    this->_logger.log(INFO, "Server address : " + ss.str());
 }
 
 Server::~Server()
@@ -143,19 +146,14 @@ void    Server::RunServer()
 // quel type renvoyer ? pointeur, iterateur, ... ?
 Client              *Server::getClient(int fd)
 {
-    // printf("DEBUG : list of current clients in map : \n");
-    // for (clients_it it = this->_clients.begin(); it != this->_clients.end(); it++)
-    //     printf("\tclient : fd = %d, client address = %p\n", it->first, &it->second);
-    
     clients_it cli = this->_clients.find(fd);
     if (cli == _clients.end())
         return NULL;
     return &(cli->second);
 }
 
-
-
 /* -------------------------- ADD, REMOVE ------------------------------- */
+
 
 void    Server::AddClient(int fd)
 {
@@ -166,32 +164,12 @@ void    Server::AddClient(int fd)
     newClient.revents = 0;
     (this->_sockets).push_back(newClient);
     
-    Client cli(fd);
+    Client cli(fd, this);
+    // this->_clients[fd] = cli; // erreur de compilation liée aux constructeurs, pourquoi ?
+    
     this->_clients.insert(std::pair<int, Client>(fd, cli));
 
 }
-
-// void    Server::RemoveClient(int fd)
-// {
-//     clients_it it = _clients.find(fd);
-//     if (it == _clients.end())
-//         ;// error msg
-//     _clients.erase(it);
-//     // _clients.erase(fd);
-// }
-
-// void    Server::RemoveFromPoll(int fd)
-// {
-//     for (poll_it it = _sockets.begin(); it != _sockets.end(); it++)
-//     {        
-//         if (it->fd == fd)
-//         {
-//             _sockets.erase(it);
-//             // close(fd);
-//             break;
-//         }
-//     }
-// }
 
 void    Server::RemoveClient(Client *client)
 {
@@ -210,9 +188,6 @@ void    Server::RemoveClient(Client *client)
             break;
         }
     }
-    
-    // this->RemoveClient(client_fd);
-    // this->RemoveFromPoll(client_fd);
     close(client_fd); // verifier retour de close
 }
 
@@ -286,7 +261,7 @@ void    Server::ReadData(int fd)
         //     ; // throw exception
         
         // check limite des 512 caractères ou balec ?
-        client->writeToReadBuffer(std::string(&buffer[0], &buffer[bytes_read]));
+        client->addToReadBuffer(std::string(&buffer[0], &buffer[bytes_read]));
         
         // Gestion Ctrl+D
         size_t pos = (client->getReadBuffer()).find("\r\n");
@@ -296,15 +271,9 @@ void    Server::ReadData(int fd)
         std::stringstream ss;
         ss << client->getSockFd();
         this->_logger.log(DEBUG, "[Server] Data received from " + ss.str() + " : ---" + client->getReadBuffer() + "---");
-
         //send(client->getSockFd(),client->getReadBuffer().c_str(), client->getReadBuffer().size(), 0);
 
-
-
-        ParseBuffer(client); // ParseBuffer : Client or Server method ? Dans tous les cas, a besoin d'avoir acces au client 
-
-        // client->clearReadBuffer();
-        
+        ProcessBuffer(client); // ProcessBuffer : Client or Server method ? Dans tous les cas, a besoin d'avoir acces au client         
     }
 }
 
@@ -324,9 +293,9 @@ void    Server::ReadData(int fd)
     ex -> PRIVMSG rory :Hey Rory...
 */
 
-void    Server::ParseCommand(std::string line)
+void    Server::ParseLine(std::string line, CommandContext &ctx)
 {
-    std::string temp;
+    // std::string temp;
     std::string prefix;
     std::string command;
     std::vector<std::string> parameters;
@@ -334,7 +303,7 @@ void    Server::ParseCommand(std::string line)
     std::string::iterator begin = line.begin();
     std::string::iterator it;
 
-    
+    // if prefix
     if (line[0] == ':')
     {
         it = std::find(begin, line.end(), ' ');
@@ -344,9 +313,10 @@ void    Server::ParseCommand(std::string line)
             begin++;
     }
 
+    // find command
     it = std::find(begin, line.end(), ' ');
     command = std::string(begin, it);
-
+    // update iterator
     begin = it;
     if (it != line.end())
         begin++;
@@ -354,6 +324,8 @@ void    Server::ParseCommand(std::string line)
     this->_logger.log(DEBUG, "prefix = " + prefix);
     this->_logger.log(DEBUG, "command = " + command);
     
+
+    // put parameters in vector of strings
     while (it != line.end())
     {
         if ((*begin) == ':')
@@ -367,14 +339,40 @@ void    Server::ParseCommand(std::string line)
         if (it != line.end())
             begin++;
     }
+
+    ctx.fillCommand(prefix, command, parameters);
     
+    // logger
     for (size_t i = 0; i < parameters.size(); i++)
     {
         std::stringstream ss;
         ss << i;
         this->_logger.log(DEBUG, "parameter " + ss.str() + " = " + parameters[i]);
     }
+}
 
+// a faire dans CommandsHandler directement plutôt, non ?
+void Server::ProcessCommand(std::string const& line, Client* &client) // Client* &client ?? verifier syntaxe, et si comprend bien ce qu'a écrit 
+{
+    CommandContext ctx(*client); // est ce que le client pourra ensuite bien etre modifié via CommandContext ? Ou faut il passer un pointeur ? Pas encore tres au clair sur l'utilisation references/pointeurs 
+
+    // extract prefix, command and command parameters from the line sent by client. update command's context ctx
+    ParseLine(line, ctx);
+    
+    // enlever les ' ' en trop, ou considère que ça en fait une commande inconnue si il y en a ? -> tester le comportement avec irssi et un serveur existant
+    std::string cmd = ctx.getCommand();
+    std::transform(cmd.begin(), cmd.end(), cmd.begin(), toupper);
+    // peut utiliser std::transform directement sur ctx.cmd, suffit juste de renvoyer une référence pour getCommand(), et non pas une copie de cmd
+    ctx.setCommand(cmd);
+    
+    std::map<std::string, CommandExecutor>::iterator it = _commandsHandler._commands.find(cmd);
+    if (it == _commandsHandler._commands.end())
+        ; // unknown command
+    
+    this->_logger.log(DEBUG, "Processing command <" + cmd + ">");
+    if (it->second)
+        it->second(ctx);
+    
 }
 
 
@@ -390,7 +388,7 @@ Reflechir a la structure du code : Où faire le parsing ?
     -> méthode serveur : doit alors écrire une méthode Client qui permette de modifier son ReadBuffer
     -> méthode client : pour chaque commande extraite, devra repasser par le Serveur pour l'executer (avoir un pointeur vers le Serveur pour chaque client ?)
 */
-void    Server::ParseBuffer(Client* &client) 
+void    Server::ProcessBuffer(Client* &client) 
 {
     std::string::iterator it;
     std::string updatedBuffer;
@@ -403,10 +401,12 @@ void    Server::ParseBuffer(Client* &client)
         std::string test = std::string(it, it + pos);
 
         this->_logger.log(DEBUG, "current parsed command : " + std::string(it, it + pos));
-        ParseCommand(std::string(it, it + pos));
+        
+        ProcessCommand(std::string(it, it + pos), client);
+        // ParseLine(std::string(it, it + pos));
         
         updatedBuffer = client->getReadBuffer().substr(pos + 2);
-        client->rewriteBuffer(updatedBuffer);
+        client->resetReadBuffer(updatedBuffer);
         pos = client->getReadBuffer().find(CRLF);
     }
 }

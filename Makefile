@@ -3,16 +3,16 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+         #
+#    By: Helene <Helene@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/21 14:23:25 by Helene            #+#    #+#              #
-#    Updated: 2024/09/26 18:03:17 by hlesny           ###   ########.fr        #
+#    Updated: 2024/09/29 15:46:02 by Helene           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = ircserv
 CC = g++ # c++ ? std::string incomplete type error when compiling using c++ 
-CFLAGS = -std=c++98 -Wall -Wextra -g3 #-Werror -fsanitize=address
+CFLAGS = -std=c++98 -Wall -Wextra -g3 #-v (verbose) #-Werror -fsanitize=address
 RM = rm -f
 
 SRCS_DIR = ./sources/
@@ -24,7 +24,11 @@ SRCS = 	main.cpp \
 		Client.cpp \
 		Channel.cpp \
 		Logger.cpp \
-		# Commands/Authenticate.cpp
+		CommandsHandler.cpp \
+		Commands/pass.cpp \
+		Commands/user.cpp \
+		Commands/nick.cpp \
+		Commands/join.cpp 
 		
 OBJS = $(addprefix $(OBJS_DIR), $(SRCS:.cpp=.o))
 DEPS = $(addprefix $(OBJS_DIR), $(SRCS:.cpp=.d))

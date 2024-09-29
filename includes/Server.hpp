@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:29 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/26 23:05:29 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/27 18:17:51 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include "Client.hpp"
 #include "Channel.hpp"
 #include "Logger.hpp"
+#include "CommandsHandler.hpp"
 
 # define    BACKLOG 10 // nombre max de demandes de connexions dans la file d'attente
 // -> voir comment la gérer
@@ -41,8 +42,7 @@ class Server
         clients             _clients;
         channels            _channels;
         Logger              _logger;
-        // void                RemoveClient(int fd);
-        // void                RemoveFromPoll(int fd); // removes corresponding fd from pollfds' vector and closes it, decrements poll_size
+        CommandsHandler     _commandsHandler; 
         
     public :  
         Server(std::string const& port, std::string const& password);
@@ -57,8 +57,9 @@ class Server
         void                AcceptClientConnection();
         void                ReadData(int fd);
 
-        void                ParseBuffer(Client* &client);
-        void                ParseCommand(std::string command);
+        void                ProcessBuffer(Client* &client);
+        void                ProcessCommand(std::string const& line, Client* &client);
+        void                ParseLine(std::string line, CommandContext &ctx);
 
         void                RestartServer();
         void                ShutdownServer();
