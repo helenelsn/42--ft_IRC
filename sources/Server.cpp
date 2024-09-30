@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:49 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/30 14:33:31 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/09/30 15:05:05 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,11 +74,11 @@ void    Server::InitServer(void)
     pollfd newPoll;
 
     newPoll.fd = _server_socket;
-    newPoll.events = POLL_IN;
+    newPoll.events = POLLIN;
     newPoll.revents = 0;
     (this->_sockets).push_back(newPoll);
     
-    // AddToPoll(_server_socket, POLL_IN);
+    // AddToPoll(_server_socket, POLLIN);
 
     freeaddrinfo(res);
 
@@ -120,17 +120,17 @@ void    Server::RunServer()
         //for (poll_it it = _sockets.begin(); it != _sockets.end() && !serverShutdown; it++) // ca couille avec les iterateurs, regarder pourquoi 
         for (size_t i = 0; i < _sockets.size() && !serverShutdown; i++)
         {            
-            if (_sockets[i].revents & POLL_ERR)
-                ;
-            else if (_sockets[i].revents & POLL_IN) // data is ready to recv() on this socket.
+            if (_sockets[i].revents & POLLIN) // data is ready to recv() on this socket.
             {
                 if (_sockets[i].fd == _server_socket)
                     AcceptClientConnection();
                 else
                     ReadData(_sockets[i].fd);
             }
-            else if (_sockets[i].revents & POLL_OUT) // we can send() data to this socket without blocking.
+            else if (_sockets[i].revents & POLLOUT) // we can send() data to this socket without blocking.
                 SendWriteBuffer(_sockets[i].fd); // send() le writeBuffer du client associé à la socket 
+            else if (_sockets[i].revents & POLL_ERR)
+                ;
             else if (_sockets[i].revents & POLLHUP) 
                 ;
         }
@@ -160,7 +160,7 @@ void    Server::AddClient(int fd)
     pollfd newClient;
 
     newClient.fd = fd;
-    newClient.events = POLL_IN | POLL_OUT;
+    newClient.events = POLLIN | POLLOUT;
     newClient.revents = 0;
     (this->_sockets).push_back(newClient);
     
@@ -195,7 +195,7 @@ void    Server::RemoveClient(Client *client)
 /* -------------------------- POLL REVENTS ------------------------------- */
 
 
-/* ------------------ POLL_OUT ----------------------- */
+/* ------------------ POLLOUT ----------------------- */
 
 void    Server::SendWriteBuffer(int fd)
 {
@@ -206,18 +206,26 @@ void    Server::SendWriteBuffer(int fd)
         ; // which exception
 
     // parse le WriteBuffer car peut avoir plusieurs CRLF, et donc plusieurs appels à send() (ou un seul ?)
+
+    if (client->getWriteBuffer().empty())
+        return ;
     
     int bytes_sent = send(fd, client->getWriteBuffer().c_str(), client->getWriteBuffer().size(), 0);
 
     if (bytes_sent == -1)
         ;
     else
-        printf("sent %s (%d bytes) to client %d\n", client->getWriteBuffer().c_str(), bytes_sent, client->getSockFd());
+    {
+        std::stringstream ss;
+        ss << client->getSockFd();
+        _logger.log(DEBUG, "<Client " + ss.str() + "><SEND> " + client->getWriteBuffer());
+    }
+        // printf("sent %s (%d bytes) to client %d\n", client->getWriteBuffer().substr(0, client->getWriteBuffer().size() - 2).c_str(), bytes_sent, client->getSockFd());
     
     client->clearWriteBuffer(); 
 }
 
-/* ------------------ POLL_IN ----------------------- */
+/* ------------------ POLLIN ----------------------- */
 
 void    Server::AcceptClientConnection(void)
 {
@@ -239,7 +247,7 @@ void    Server::AcceptClientConnection(void)
         close(newClient);
     }
     
-    // AddToPoll(newClient, POLL_IN | POLL_OUT);
+    // AddToPoll(newClient, POLLIN | POLLOUT);
     AddClient(newClient);
     
     std::stringstream ss;
@@ -295,7 +303,7 @@ void    Server::ReadData(int fd)
         
         std::stringstream ss;
         ss << client->getSockFd();
-        this->_logger.log(DEBUG, "[Server] Data received from " + ss.str() + " : ---" + client->getReadBuffer() + "---");
+        _logger.log(DEBUG, "<Client " + ss.str() + "><RECV> " + client->getWriteBuffer());
         //send(client->getSockFd(),client->getReadBuffer().c_str(), client->getReadBuffer().size(), 0);
 
         ProcessBuffer(client); // ProcessBuffer : Client or Server method ? Dans tous les cas, a besoin d'avoir acces au client         

@@ -1,0 +1,4 @@
+The password supplied must match the one defined in the server configuration.
+It is possible to send multiple PASS commands before registering but only the last one sent
+is used for verification and it may not be changed once the client has been registered.
+-> signifie que va reutiliser le password supplied par le client a un autre moment ? 

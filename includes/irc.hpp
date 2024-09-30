@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 22:10:00 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/30 14:41:36 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/09/30 14:43:17 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,3 @@
 #include <algorithm>
 
 # define CRLF "\r\n"
-
-typedef struct  s_command {
-    std::string prefix;
-    std::string command;
-    std::string parameters;
-}       t_command;

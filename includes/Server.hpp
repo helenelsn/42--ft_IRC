@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:29 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/29 23:43:16 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/30 14:44:29 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ class Server
         std::string         getPasswd(void) { return _password; }
         Client              *getClient(int fd);
         
-        // POLL_IN        
+        // POLLIN        
         void                AcceptClientConnection();
         void                AddClient(int fd);
         
@@ -62,7 +62,7 @@ class Server
         void                ProcessCommand(std::string const& line, Client* &client);
         void                ParseLine(std::string line, CommandContext &ctx);
 
-        // POLL_OUT
+        // POLLOUT
         void                SendWriteBuffer(int fd);
 
         void                RemoveClient(Client *client);

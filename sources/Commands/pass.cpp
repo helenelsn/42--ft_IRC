@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 16:46:03 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/30 13:51:49 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/09/30 15:12:01 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void    cmdPass(CommandContext &ctx)
 
     int cState = ctx._client.getState();
     int unreg = Unregistered;
-    if ((ctx._client.getState() & Unregistered) != Unregistered)
+    if ((ctx._client.getState() & Unregistered) != Unregistered) // ie if is already registering or registered, cannot submit another passwd
     {
         // ERR_ALREADYREGISTERED
         ctx._client.addToWriteBuffer(ERR_ALREADYREGISTERED(ctx._client.getNick()));
@@ -69,5 +69,6 @@ void    cmdPass(CommandContext &ctx)
         return ;
     }   
 
+    
     // garder en memoire le password supplied ?
 }
