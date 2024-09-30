@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   irc.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 22:10:00 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/26 21:21:11 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/30 14:41:36 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include <unistd.h> // for close()
 #include <netdb.h> // for struct addrinfo
 #include <fcntl.h> // for fcntl()
-#include <poll.h> // for poll()
+#include <sys/poll.h> // for poll()
 #include <sys/socket.h> // for socket()
 #include <sys/types.h> // for socket()
 

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Pass.cpp                                           :+:      :+:    :+:   */
+/*   pass.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 16:46:03 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/29 18:49:31 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/30 13:51:49 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,16 +43,20 @@ void    cmdPass(CommandContext &ctx)
 
     // tester si check d'abord si a assez de parametres, ou si est deja registered
 
+    int cState = ctx._client.getState();
+    int unreg = Unregistered;
     if ((ctx._client.getState() & Unregistered) != Unregistered)
     {
         // ERR_ALREADYREGISTERED
         ctx._client.addToWriteBuffer(ERR_ALREADYREGISTERED(ctx._client.getNick()));
+        return ;
     }
 
     if (ctx._parameters.empty())
     {
         // ERR_NEEDMOREPARAMS
         ctx._client.addToWriteBuffer(ERR_NEEDMOREPARAMS(ctx._client.getNick(), ctx._command));
+        return ;
     }
 
     std::vector<std::string> params = ctx._parameters;
@@ -62,5 +66,8 @@ void    cmdPass(CommandContext &ctx)
     {
         // ERR_PASSWDMISMATCH
         ctx._client.addToWriteBuffer(ERR_PASSWDMISMATCH(ctx._client.getNick()));
+        return ;
     }   
+
+    // garder en memoire le password supplied ?
 }

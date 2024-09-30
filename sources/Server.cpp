@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:49 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/30 12:31:29 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/30 14:33:31 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -229,7 +229,7 @@ void    Server::AcceptClientConnection(void)
     if (newClient == -1)
     {
         int errNum = errno;
-        this->_logger.log(INFO, std::string("Could not accept connection : ") + std::strerror(errNum));
+        this->_logger.log(INFO, std::string("Could not accept connection : ") + strerror(errNum));
     }
     
     // la rend non bloquante, car accept() est une fonction bloquante 
@@ -316,6 +316,9 @@ void    Server::ReadData(int fd)
     When the last parameter is prefixed with a colon character,
     the value of that parameter will be the remainder of the message (including space characters).
     ex -> PRIVMSG rory :Hey Rory...
+
+    
+    These message parts, and parameters themselves, are separated by one, OR MORE, ASCII SPACE characters (' ', 0x20).
 */
 
 void    Server::ParseLine(std::string line, CommandContext &ctx)
@@ -331,6 +334,8 @@ void    Server::ParseLine(std::string line, CommandContext &ctx)
     // if prefix
     if (line[0] == ':')
     {
+        while (begin != line.end() && *begin == ' ')
+            begin++;
         it = std::find(begin, line.end(), ' ');
         prefix = std::string(begin, it);
         begin = it;
@@ -339,9 +344,10 @@ void    Server::ParseLine(std::string line, CommandContext &ctx)
     }
 
     // find command
+    while (begin != line.end() && *begin == ' ')
+            begin++;
     it = std::find(begin, line.end(), ' ');
     command = std::string(begin, it);
-    // update iterator
     begin = it;
     if (it != line.end())
         begin++;
@@ -353,9 +359,11 @@ void    Server::ParseLine(std::string line, CommandContext &ctx)
     // put parameters in vector of strings
     while (it != line.end())
     {
+        while (begin != line.end() && *begin == ' ')
+            begin++;
         if ((*begin) == ':')
         {
-            parameters.push_back(std::string(begin, line.end()));
+            parameters.push_back(std::string(begin, line.end())); // tej le ':' du debut ?
             break;
         }
         it = std::find(begin, line.end(), ' ');
@@ -387,7 +395,6 @@ void Server::ProcessCommand(std::string const& line, Client* &client) // Client*
     // extract prefix, command and command parameters from the line sent by client. update command's context ctx
     ParseLine(line, ctx);
     
-    // enlever les ' ' en trop, ou considère que ça en fait une commande inconnue si il y en a ? -> tester le comportement avec irssi et un serveur existant
     std::string cmd = ctx.getCommand();
     std::transform(cmd.begin(), cmd.end(), cmd.begin(), toupper);
     // peut utiliser std::transform directement sur ctx.cmd, suffit juste de renvoyer une référence pour getCommand(), et non pas une copie de cmd
@@ -395,7 +402,10 @@ void Server::ProcessCommand(std::string const& line, Client* &client) // Client*
     
     std::map<std::string, CommandExecutor>::iterator it = _commandsHandler._commands.find(cmd);
     if (it == _commandsHandler._commands.end())
-        ; // unknown command
+    {
+        client->addToWriteBuffer(ERR_UNKNOWNCOMMAND(cmd));
+        return ; // unknown command
+    }
     
     this->_logger.log(DEBUG, "Processing command <" + cmd + ">");
     if (it->second)

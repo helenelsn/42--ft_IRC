@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:46 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/29 23:23:21 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/30 13:50:04 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Client.hpp"
 
 Client::Client(int fd, Server *server)
-: _sockFd(fd), _state(Disconnected & Unregistered), _server(server)
+: _sockFd(fd), _state(Unregistered), _server(server)
 {
     printf("Client constructor, _server address : %p\n", &(*(this->_server)));
 }
@@ -40,6 +40,8 @@ Client& Client::operator=(Client const& other)
     
     this->_server = other._server;
     this->_sockFd = other._sockFd;
+    this->_state = other._state;
+    this->_modes = other._modes;
     
     this->_hostname = other._hostname;
     this->_nickname = other._nickname;
