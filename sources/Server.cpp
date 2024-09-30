@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:49 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/30 15:05:05 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/09/30 15:40:26 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,8 +205,6 @@ void    Server::SendWriteBuffer(int fd)
     if (client == NULL) // client does not exist 
         ; // which exception
 
-    // parse le WriteBuffer car peut avoir plusieurs CRLF, et donc plusieurs appels à send() (ou un seul ?)
-
     if (client->getWriteBuffer().empty())
         return ;
     
@@ -220,9 +218,10 @@ void    Server::SendWriteBuffer(int fd)
         ss << client->getSockFd();
         _logger.log(DEBUG, "<Client " + ss.str() + "><SEND> " + client->getWriteBuffer());
     }
-        // printf("sent %s (%d bytes) to client %d\n", client->getWriteBuffer().substr(0, client->getWriteBuffer().size() - 2).c_str(), bytes_sent, client->getSockFd());
     
     client->clearWriteBuffer(); 
+
+    // check if client is disconnected ? or is there another place to do it ?
 }
 
 /* ------------------ POLLIN ----------------------- */
@@ -232,7 +231,6 @@ void    Server::AcceptClientConnection(void)
     struct sockaddr_in  client_addr;
     socklen_t           addr_size = sizeof(client_addr);
 
-    // printf("DEBUG : in AcceptClientConnection()\n");
     int newClient = accept(_server_socket, (struct sockaddr *)&client_addr, &addr_size);
     if (newClient == -1)
     {

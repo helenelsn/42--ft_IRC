@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:26 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/29 23:18:21 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/30 16:12:06 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,11 @@ typedef enum
 {
     None = 0, // It is a good practice to also include the enum constant None = 0 because enum fields are initialized to default(MyEnum) == 0, otherwise resulting in a value having no corresponding enum constant.
     Unregistered = 1 << 0,
-    Registering = 1 << 1,
-    Registered = 1 << 2,
+    Registering = 1 << 1, // Nick, IncorrectNick, User
+    Registered = 1 << 2, // Nick && User ( | operator ?)
     Disconnected = 1 << 3,
-    Connected = 1 << 4
+    Connected = 1 << 4,
+    PassIncorrect = 1 << 5
     // Connected & Unregistered (?)
     // ... 
 }       e_state; 
@@ -60,6 +61,8 @@ class Client
         bool            operator!=(Client const& other);
         int             getState(void) const;
         void            setState(int newState);
+        void            addState(int state);
+        void            removeState(int state);
         int             getSockFd(void);
         Server&         getServer();
         std::string     getNick(void) const; // retourner une référence ?

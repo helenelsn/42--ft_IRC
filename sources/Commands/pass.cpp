@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 16:46:03 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/30 15:12:01 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/09/30 15:50:27 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,14 +37,13 @@ Numeric replies:
     - if the client is already registered, or is currently registering (has already sent the NICK command)
     
 */
-void    cmdPass(CommandContext &ctx)
+void    cmdPass(CommandContext &ctx) // what about when an empty string is supplied as the server password ?
 {
     printf("in cmdPass()\n");
 
     // tester si check d'abord si a assez de parametres, ou si est deja registered
+    
 
-    int cState = ctx._client.getState();
-    int unreg = Unregistered;
     if ((ctx._client.getState() & Unregistered) != Unregistered) // ie if is already registering or registered, cannot submit another passwd
     {
         // ERR_ALREADYREGISTERED
@@ -61,7 +60,7 @@ void    cmdPass(CommandContext &ctx)
 
     std::vector<std::string> params = ctx._parameters;
     std::string passwd = params[params.size() - 1];
-    // juste çàa ou doit faire du parsing en plus pour tej (par ex) les potentiels ' ' avant et apres ?
+    // juste ça ou doit faire du parsing en plus pour tej (par ex) les potentiels ' ' avant et apres ? -> doit tej les ' ', mais est normalement deja fait
     if (passwd != ctx._server.getPasswd())
     {
         // ERR_PASSWDMISMATCH
@@ -69,6 +68,7 @@ void    cmdPass(CommandContext &ctx)
         return ;
     }   
 
+    
     
     // garder en memoire le password supplied ?
 }
