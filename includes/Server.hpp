@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:29 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/27 18:17:51 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/29 23:43:16 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,19 +50,29 @@ class Server
         void                InitServer(); // creates server socket, binds it to the given port, listen() on server socket
         void                RunServer(); // looping calls to poll()
         
+        std::string         getPasswd(void) { return _password; }
         Client              *getClient(int fd);
-        void                AddClient(int fd);
-        void                AddToPoll(int fd, int events);
-        void                RemoveClient(Client *client);
+        
+        // POLL_IN        
         void                AcceptClientConnection();
+        void                AddClient(int fd);
+        
         void                ReadData(int fd);
-
         void                ProcessBuffer(Client* &client);
         void                ProcessCommand(std::string const& line, Client* &client);
         void                ParseLine(std::string line, CommandContext &ctx);
 
+        // POLL_OUT
+        void                SendWriteBuffer(int fd);
+
+        void                RemoveClient(Client *client);
         void                RestartServer();
         void                ShutdownServer();
+
+        void                _log(e_logLevel level, std::string const& msg) { _logger.log(level, msg); }
+
+        // USEFUL FOR COMMANDS PROCESSING
+        bool                NickAlreadyUsed(std::string const& newNick);
 };
 
 /*

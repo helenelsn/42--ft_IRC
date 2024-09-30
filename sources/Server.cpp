@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:49 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/29 15:48:52 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/30 12:31:29 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,7 @@ void    Server::RunServer()
                     ReadData(_sockets[i].fd);
             }
             else if (_sockets[i].revents & POLL_OUT) // we can send() data to this socket without blocking.
-                ; // send() le writeBuffer du client associé à la socket 
+                SendWriteBuffer(_sockets[i].fd); // send() le writeBuffer du client associé à la socket 
             else if (_sockets[i].revents & POLLHUP) 
                 ;
         }
@@ -152,7 +152,7 @@ Client              *Server::getClient(int fd)
     return &(cli->second);
 }
 
-/* -------------------------- ADD, REMOVE ------------------------------- */
+/* -------------------------- ADD, REMOVE CLIENT ------------------------------- */
 
 
 void    Server::AddClient(int fd)
@@ -193,6 +193,31 @@ void    Server::RemoveClient(Client *client)
 
 
 /* -------------------------- POLL REVENTS ------------------------------- */
+
+
+/* ------------------ POLL_OUT ----------------------- */
+
+void    Server::SendWriteBuffer(int fd)
+{
+    Client  *client;
+    
+    client = this->getClient(fd);
+    if (client == NULL) // client does not exist 
+        ; // which exception
+
+    // parse le WriteBuffer car peut avoir plusieurs CRLF, et donc plusieurs appels à send() (ou un seul ?)
+    
+    int bytes_sent = send(fd, client->getWriteBuffer().c_str(), client->getWriteBuffer().size(), 0);
+
+    if (bytes_sent == -1)
+        ;
+    else
+        printf("sent %s (%d bytes) to client %d\n", client->getWriteBuffer().c_str(), bytes_sent, client->getSockFd());
+    
+    client->clearWriteBuffer(); 
+}
+
+/* ------------------ POLL_IN ----------------------- */
 
 void    Server::AcceptClientConnection(void)
 {
@@ -354,6 +379,9 @@ void    Server::ParseLine(std::string line, CommandContext &ctx)
 // a faire dans CommandsHandler directement plutôt, non ?
 void Server::ProcessCommand(std::string const& line, Client* &client) // Client* &client ?? verifier syntaxe, et si comprend bien ce qu'a écrit 
 {
+    if (line.empty()) // Empty messages are silently ignored (rfc 2812)
+        return ;
+        
     CommandContext ctx(*client); // est ce que le client pourra ensuite bien etre modifié via CommandContext ? Ou faut il passer un pointeur ? Pas encore tres au clair sur l'utilisation references/pointeurs 
 
     // extract prefix, command and command parameters from the line sent by client. update command's context ctx
@@ -412,7 +440,21 @@ void    Server::ProcessBuffer(Client* &client)
 }
 
 
+/* -------------------------- COMMANDS ADDITIONAL METHODS ------------------------------- */
 
+bool    Server::NickAlreadyUsed(std::string const& newNick)
+{
+    for (clients_it it = this->_clients.begin(); it != this->_clients.end(); it++)
+    {
+        if (it->second.getNick() == newNick) // check si it->seconf.getNick().empty() ?
+            return true;
+    }
+    return false;
+}
+
+
+
+/* --------------------------  ------------------------------- */
 
 // à coder
 void    Server::RestartServer() 

@@ -6,14 +6,14 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:46 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/28 20:47:52 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/29 23:23:21 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Client.hpp"
 
 Client::Client(int fd, Server *server)
-: _sockFd(fd), _state(disconnected & unregistered), _server(server)
+: _sockFd(fd), _state(Disconnected & Unregistered), _server(server)
 {
     printf("Client constructor, _server address : %p\n", &(*(this->_server)));
 }
@@ -21,6 +21,11 @@ Client::Client(int fd, Server *server)
 Client::~Client()
 {
     //close(_sockFd);
+}
+
+bool Client::operator!=(Client const& other)
+{
+    return !(*this == other);
 }
 
 Client::Client(Client const& other)
@@ -33,7 +38,9 @@ Client& Client::operator=(Client const& other)
     if (this == &other) // operator== a coder  
         return *this;
     
+    this->_server = other._server;
     this->_sockFd = other._sockFd;
+    
     this->_hostname = other._hostname;
     this->_nickname = other._nickname;
     this->_realname = other._realname;
@@ -48,6 +55,17 @@ Client& Client::operator=(Client const& other)
 bool Client::operator==(Client const& other)
 {
     return (this->_nickname == other._nickname); // autre chose ?
+}
+
+// ou juste int& getState(), renvoie une reference au state que peut direct modifier, et pas besoin de setState() ?
+int             Client::getState(void) const
+{
+    return _state;
+}
+
+void            Client::setState(int newState)
+{
+    _state = newState;
 }
 
 Server& Client::getServer()

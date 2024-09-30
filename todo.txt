@@ -51,3 +51,12 @@ broadcasts messages to all clients as needed
 
 ---------------------------------------------------
 
+
+
+
+Checks a faire :
+    - vérifier ce qu'est le 'client' dans les server rpl et error responses (user_id ? et pas juste nickname)
+    - vérifier les caractères autorisés pour le nickname (commence par un caractère alphabétique, 
+        puis des caractères alphabétiques ou numériques, pour un total de 9 caractères max ?)
+    - vérifier si prend en compte les potentiels espaces supplémentaires autour de la commande et des parametres 
+        (ie si " JOIN" equivaut a "JOIN", et que doit skip les ' ' nous meme), ou si c'est une commande inconnue

@@ -6,11 +6,13 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:51:07 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/28 18:19:47 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/29 18:37:41 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/CommandsHandler.hpp"
+#include "../includes/Server.hpp"
+#include "../includes/Client.hpp"
 
 CommandContext::CommandContext(std::string const& prefix, std::string const& cmd, std::vector<std::string> const& parameters, Client &client)
 : _prefix(prefix), _command(cmd), _parameters(parameters), _client(client), _server(client.getServer())

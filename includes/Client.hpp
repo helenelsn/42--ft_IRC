@@ -6,24 +6,28 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:26 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/29 15:43:24 by Helene           ###   ########.fr       */
+/*   Updated: 2024/09/29 23:18:21 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once // tester si suffit pour les inclusions multiples 
+#pragma once
 
 #include "../includes/irc.hpp"
 
-class Server; // enough ?
+class Server;
 
+// values = powers of 2s to be able to perform & and | operations 
 typedef enum 
 {
-    unregistered = 1,
-    registering = 2,
-    registered = 4,
-    disconnected = 8, // ?
-    connected = 16 // ?
-}       e_state; // values = powers of 2s to be able to perform & and | operations 
+    None = 0, // It is a good practice to also include the enum constant None = 0 because enum fields are initialized to default(MyEnum) == 0, otherwise resulting in a value having no corresponding enum constant.
+    Unregistered = 1 << 0,
+    Registering = 1 << 1,
+    Registered = 1 << 2,
+    Disconnected = 1 << 3,
+    Connected = 1 << 4
+    // Connected & Unregistered (?)
+    // ... 
+}       e_state; 
 
 /* Contains all informations about a client inside a server. 
 Read incoming data on the associated socket and parse the messages. */
@@ -51,8 +55,11 @@ class Client
         Client(int fd, Server *server);
         ~Client();
         Client(Client const& other);
-        Client&          operator=(Client const& other);
+        Client&         operator=(Client const& other);
         bool            operator==(Client const& other);
+        bool            operator!=(Client const& other);
+        int             getState(void) const;
+        void            setState(int newState);
         int             getSockFd(void);
         Server&         getServer();
         std::string     getNick(void) const; // retourner une référence ?
