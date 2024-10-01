@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   user.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 16:54:21 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/01 13:06:31 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/01 19:59:24 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ void    cmdUser(CommandContext &ctx)
         ctx._client.addToWriteBuffer(ERR_ALREADYREGISTERED(ctx._client.getNickname()));
         return ;
     }
+    
     std::vector<std::string> params = ctx._parameters;
     if (params.empty() || params.size() < 4 || params[3].empty())
     {
@@ -47,7 +48,7 @@ void    cmdUser(CommandContext &ctx)
     */
     int mode = atoi(params[1].c_str());
     std::string modes;
-    if (mode & (1 << 3))
+    if (mode & (1 << 3)) // ie si if (mode == 8)
         modes += "i"; // ou "+i" ? 
     // if (mode & (1 << 2)) 
         // modes += "w"; // ou "+w" ?
@@ -58,4 +59,30 @@ void    cmdUser(CommandContext &ctx)
     ctx._client.setRealname(params[3]);
     
     ctx._client.addState(User);
+    if ((ctx._client.getState() & Registering) == Registering) // a rentre NICK et USER
+    {
+        // try to login 
+        // ctx._server.tryLogin(ctx._client)
+        
+        // check for passwd validity
+        if (ctx._server.getPasswd() != ctx._client.getPassword())
+        {
+            ctx._client.addToWriteBuffer(ERR_PASSWDMISMATCH(ctx._client.getNickname()));
+            // le client ne peut plus se connecter, et doit etre disconnected ?
+            return ;
+        }
+        // else : registering completed
+        /* 
+        RPL_WELCOME
+        RPL_YOURHOST
+        RPL_CREATED
+        RPL_MYINFO
+        RPL_MOTDSTART // first line of MOTD
+        RPL_MOTD // MOTD line by line
+        ...
+        RPL_MOTD // last line of MOTD
+        RPL_ENDOFMOTD
+        */
+        
+    }
 }

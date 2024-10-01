@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Pass.cpp                                           :+:      :+:    :+:   */
+/*   pass.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 16:46:03 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/30 18:07:17 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/01 19:49:58 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void    cmdPass(CommandContext &ctx) // what about when an empty string is suppl
     // tester si check d'abord si a assez de parametres, ou si est deja registered
     
 
-    if ((ctx._client.getState() & Unregistered) != Unregistered)
+    if ((ctx._client.getState() & Registering) == Registering)
     {
         // ERR_ALREADYREGISTERED
         ctx._client.addToWriteBuffer(ERR_ALREADYREGISTERED(ctx._client.getNickname()));
@@ -60,16 +60,14 @@ void    cmdPass(CommandContext &ctx) // what about when an empty string is suppl
 
     std::vector<std::string> params = ctx._parameters;
     std::string passwd = params[params.size() - 1];
-    // juste ça ou doit faire du parsing en plus pour tej (par ex) les potentiels ' ' avant et apres ? -> doit tej les ' ', mais est normalement deja fait
-    if (passwd != ctx._server.getPasswd())
-    {
-        // ERR_PASSWDMISMATCH
-        ctx._client.addToWriteBuffer(ERR_PASSWDMISMATCH(ctx._client.getNickname()));
-        return ;
-    }   
+    
+    // if (passwd != ctx._server.getPasswd())
+    // {
+    //     // ERR_PASSWDMISMATCH
+    //     ctx._client.addToWriteBuffer(ERR_PASSWDMISMATCH(ctx._client.getNickname()));
+    //     return ;
+    // }   
 
     
     ctx._client.setPassword(passwd);
-    
-    // garder en memoire le password supplied ?
 }

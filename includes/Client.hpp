@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:26 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/01 12:57:16 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/01 19:47:31 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,17 +19,16 @@ class Server;
 // values = powers of 2s to be able to perform & and | operations 
 typedef enum 
 {
-    None = 0, // It is a good practice to also include the enum constant None = 0 because enum fields are initialized to default(MyEnum) == 0, otherwise resulting in a value having no corresponding enum constant.
-    Unregistered = 1 << 0,
-    Registering = 1 << 1, // Nick, IncorrectNick, User
-    Registered = 1 << 2, // Nick && User ( | operator ?)
-    Disconnected = 1 << 3,
-    Connected = 1 << 4,
-    Nick = 1 << 5,
-    IncorrectNick = 1 << 6,
-    User = 1 << 7
+    // None = 0, // It is a good practice to also include the enum constant None = 0 because enum fields are initialized to default(MyEnum) == 0, otherwise resulting in a value having no corresponding enum constant.
+    Unregistered = 0,
+    Nick = 1 << 0,
+    User = 1 << 1,
+    Registering = Nick | User, 
+    Registered = 1 << 2,
+    Connected = 1 << 4, // ?
+    Disconnected = 1 << 3 // ?
+    // IncorrectNick = 1 << 1, // ?
     // IncorrectPass ?
-    // Connected & Unregistered (?)
     // ... 
 }       e_state; 
 
@@ -72,9 +71,10 @@ class Client
         int             getSockFd(void);
         Server&         getServer();
         
+        void            setPassword(std::string const& newPass);
+        std::string     getPassword(void);
         void            addModes(std::string const& modes);
         std::string     getModes(void); // ?
-        void            setPassword(std::string const& newPass);
         std::string     getNickname(void) const; // retourner une référence ?
         void            setNickname(std::string const& nick);
         std::string     getUsername(void) const; // retourner une référence ?

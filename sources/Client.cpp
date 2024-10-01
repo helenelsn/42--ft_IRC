@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:46 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/01 12:57:20 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/01 19:47:53 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,11 @@ bool Client::operator==(Client const& other)
 void    Client::setPassword(std::string const& newPass)
 {
     _password = newPass;
+}
+
+std::string Client::getPassword(void)
+{
+    return _password;
 }
 
 // ou juste int& getState(), renvoie une reference au state que peut direct modifier, et pas besoin de setState() ?
