@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pass.cpp                                           :+:      :+:    :+:   */
+/*   Pass.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 16:46:03 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/30 15:50:27 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/09/30 18:07:17 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,17 +44,17 @@ void    cmdPass(CommandContext &ctx) // what about when an empty string is suppl
     // tester si check d'abord si a assez de parametres, ou si est deja registered
     
 
-    if ((ctx._client.getState() & Unregistered) != Unregistered) // ie if is already registering or registered, cannot submit another passwd
+    if ((ctx._client.getState() & Unregistered) != Unregistered)
     {
         // ERR_ALREADYREGISTERED
-        ctx._client.addToWriteBuffer(ERR_ALREADYREGISTERED(ctx._client.getNick()));
+        ctx._client.addToWriteBuffer(ERR_ALREADYREGISTERED(ctx._client.getNickname()));
         return ;
     }
 
     if (ctx._parameters.empty())
     {
         // ERR_NEEDMOREPARAMS
-        ctx._client.addToWriteBuffer(ERR_NEEDMOREPARAMS(ctx._client.getNick(), ctx._command));
+        ctx._client.addToWriteBuffer(ERR_NEEDMOREPARAMS(ctx._client.getNickname(), ctx._command));
         return ;
     }
 
@@ -64,11 +64,12 @@ void    cmdPass(CommandContext &ctx) // what about when an empty string is suppl
     if (passwd != ctx._server.getPasswd())
     {
         // ERR_PASSWDMISMATCH
-        ctx._client.addToWriteBuffer(ERR_PASSWDMISMATCH(ctx._client.getNick()));
+        ctx._client.addToWriteBuffer(ERR_PASSWDMISMATCH(ctx._client.getNickname()));
         return ;
     }   
 
     
+    ctx._client.setPassword(passwd);
     
     // garder en memoire le password supplied ?
 }

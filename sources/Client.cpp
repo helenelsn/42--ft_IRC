@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:46 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/30 15:49:11 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/01 12:57:20 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ Client& Client::operator=(Client const& other)
     this->_sockFd = other._sockFd;
     this->_state = other._state;
     this->_modes = other._modes;
+    this->_password = other._password;
     
     this->_hostname = other._hostname;
     this->_nickname = other._nickname;
@@ -57,6 +58,11 @@ Client& Client::operator=(Client const& other)
 bool Client::operator==(Client const& other)
 {
     return (this->_nickname == other._nickname); // autre chose ?
+}
+
+void    Client::setPassword(std::string const& newPass)
+{
+    _password = newPass;
 }
 
 // ou juste int& getState(), renvoie une reference au state que peut direct modifier, et pas besoin de setState() ?
@@ -90,10 +96,53 @@ int Client::getSockFd(void)
     return this->_sockFd;
 }
 
-std::string Client::getNick(void) const
+void            Client::addModes(std::string const& modes)
+{
+    _modes += modes;
+}
+
+std::string     Client::getModes(void)
+{
+    return _modes;
+}
+
+std::string Client::getNickname(void) const
 {
     return this->_nickname;
 }
+
+void    Client::setNickname(std::string const& nick)
+{
+    _nickname = nick;
+}
+
+std::string     Client::getUsername(void) const
+{
+    return _username;
+}
+void            Client::setUsername(std::string const& user)
+{
+    _username = user;
+}
+
+std::string     Client::getHostname(void) const
+{
+    return _hostname;
+}
+void            Client::setHostname(std::string const& host)
+{
+    _hostname = host;
+}
+
+std::string     Client::getRealname(void) const
+{
+    return _realname;
+}
+void            Client::setRealname(std::string const& real)
+{
+    _realname = real;
+}
+
 
 std::string& Client::getReadBuffer(void)
 {

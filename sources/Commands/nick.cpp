@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   nick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 16:55:46 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/30 15:41:47 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/09/30 18:07:22 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,46 @@
 #include "../../includes/Client.hpp"
 #include "../../includes/Server.hpp"
 
-static bool    isValid(std::string const& s)
+static bool validChar(char c)
 {
-    std::string::const_iterator it;
+    return (c == '[' || c == ']' || c == '{' || c == '}' 
+        || c == '\\' || c == '|');
+}
 
-    for (it = s.begin(); it != s.end(); it++)
-    {
-        
-    }
+/*
+Is alphabetical
+Is not a digit
+Is a valid special char
+Is not any of the forbidden char
+*/
+static bool validFirstChar(char c)
+{
+    return (std::isalpha(c) || validChar(c));
+}
+
+/*
+Servers MUST allow at least all alphanumerical characters, square and curly brackets ([]{}), 
+backslashes (\), and pipe (|) characters in nicknames, and MAY disallow digits as the first character. 
+Servers MAY allow extra characters, as long as they do not introduce ambiguity in other commands, including:
+    no leading # character or other character advertized in CHANTYPES
+    no leading colon (:)
+    no ASCII space
+*/
+static bool    validNick(std::string const& s)
+{
+    std::string::const_iterator it = s.begin();
+
+    if (s.size() > 9)
+        return false;
     
+    if (!std::isalpha(*it) && !validChar(*it)) // !(std::isalpha(c) || validChar(c))
+        return false;
+    it++;
+    for (it; it != s.end(); it++)
+    {
+        if (! (std::isalnum(*it) || validChar(*it))) // suffit, ou rajouter des checks d'autres caractères ?
+            return false;
+    }
     return true;
 }
 
@@ -45,16 +76,49 @@ void    cmdNick(CommandContext &ctx)
 {
     ctx._client.setState(Registering); // quand set le state ? ie checker si nick dispo avant ? a tester avec irssi
 
-    if (ctx._server.NickAlreadyUsed(ctx._parameters[0]))
+    if (ctx._parameters.empty())
     {
-        ctx._client.addToWriteBuffer(ERR_NICKNAMEINUSE(ctx._client.getNick(), ctx._parameters[0])); // verifier les params a donner a la macro, pas sure que 'client' soit le nick
+        ctx._client.addToWriteBuffer(ERR_NONICKNAMEGIVEN(ctx._client.getNickname())); 
         return ;
     }
     
-    if (!isValid(ctx._parameters[0]))
+    std::string nickname = ctx._parameters[0];
+    if (!validNick(nickname))
     {
-        ctx._client.addToWriteBuffer(ERR_ERRONEUSNICKNAME(ctx._client.getNick(), ctx._parameters[0]));
+        ctx._client.addToWriteBuffer(ERR_ERRONEUSNICKNAME(ctx._client.getNickname(), nickname));
         return ;
     }
+    if (ctx._server.NickAlreadyUsed(nickname))
+    {
+        ctx._client.addToWriteBuffer(ERR_NICKNAMEINUSE(ctx._client.getNickname(), nickname)); // verifier les params a donner a la macro, pas sure que 'client' soit le nick
+        return ;
+    }
+    
+    // nick does not already exist on this server, and is valid
+    // conséquences :
+    // update les channels dans lesquelles est le client ? 
+    // envoyer un msg a tous les clients connectés au serveru pour les prévenir du chgt de nick
+    
+    std::string oldNick = ctx._client.getNickname();
+    
+    // if client not already registered (ie had not provided a nickname before)
+    if (ctx._client.getState() & Nick != Nick)
+    {
+        oldNick = nickname;
+        ctx._client.addState(Nick);
+    }
+    else
+    {
+        // unregister previous nickname -> Server Rpl 
+    }
+    ctx._client.setNickname(nickname);
         
+    
+    // RPL_NICK 
+    /* The NICK message may be sent from the server to clients to acknowledge their NICK command was successful,
+    and to inform other clients about the change of nickname. In these cases, the <source> of the message 
+    will be the old nickname [ [ "!" user ] "@" host ] of the user who is changing their nickname.
+    */
+    
+    // oldNickname changed his nickname to newNickname
 }

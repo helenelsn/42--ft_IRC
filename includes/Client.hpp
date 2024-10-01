@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:26 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/30 16:12:06 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/01 12:57:16 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,10 @@ typedef enum
     Registered = 1 << 2, // Nick && User ( | operator ?)
     Disconnected = 1 << 3,
     Connected = 1 << 4,
-    PassIncorrect = 1 << 5
+    Nick = 1 << 5,
+    IncorrectNick = 1 << 6,
+    User = 1 << 7
+    // IncorrectPass ?
     // Connected & Unregistered (?)
     // ... 
 }       e_state; 
@@ -37,6 +40,7 @@ class Client
 {
     private :
         int         _sockFd;
+        std::string _password;
         std::string _username;
         std::string _hostname;
         std::string _nickname;
@@ -59,17 +63,32 @@ class Client
         Client&         operator=(Client const& other);
         bool            operator==(Client const& other);
         bool            operator!=(Client const& other);
+        
         int             getState(void) const;
         void            setState(int newState);
         void            addState(int state);
         void            removeState(int state);
+        
         int             getSockFd(void);
         Server&         getServer();
-        std::string     getNick(void) const; // retourner une référence ?
+        
+        void            addModes(std::string const& modes);
+        std::string     getModes(void); // ?
+        void            setPassword(std::string const& newPass);
+        std::string     getNickname(void) const; // retourner une référence ?
+        void            setNickname(std::string const& nick);
+        std::string     getUsername(void) const; // retourner une référence ?
+        void            setUsername(std::string const& user);
+        std::string     getHostname(void) const; // retourner une référence ?
+        void            setHostname(std::string const& host);
+        std::string     getRealname(void) const; // retourner une référence ?
+        void            setRealname(std::string const& real);
+        
         std::string&    getReadBuffer(void);
         void            addToReadBuffer(std::string const& data);
         void            clearReadBuffer(void);
         void            resetReadBuffer(std::string const& newBuffer);
+        
         void            addToWriteBuffer(std::string const& data);
         std::string&    getWriteBuffer(void);
         void            clearWriteBuffer(void);

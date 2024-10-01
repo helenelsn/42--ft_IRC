@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:49 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/30 15:40:26 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/09/30 18:07:16 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -462,7 +462,7 @@ bool    Server::NickAlreadyUsed(std::string const& newNick)
 {
     for (clients_it it = this->_clients.begin(); it != this->_clients.end(); it++)
     {
-        if (it->second.getNick() == newNick) // check si it->seconf.getNick().empty() ?
+        if (it->second.getNickname() == newNick) // check si it->seconf.getNickname().empty() ?
             return true;
     }
     return false;

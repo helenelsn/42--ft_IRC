@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 15:10:41 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/26 21:52:04 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/01 12:57:16 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ class Channel
     private :
         std::string _name;
         std::string _topic;
-        std::string _currentlySetModes;
+        std::string _currentlyaddModes;
         std::vector<Client> _clients; // ou std::map<std::string, Client> pour <nick, client> (ou <client_fd, Client>)
         
         // creation time 
