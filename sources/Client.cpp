@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:46 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/01 19:47:53 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/02 15:03:25 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ void            Client::setState(int newState)
 
 void    Client::addState(int state)
 {
-    _state &= state; // a verif
+    _state |= state; // a verif
 }
 
 void    Client::removeState(int state)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:49 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/02 12:43:52 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/02 14:55:31 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -313,7 +313,7 @@ void    Server::ReadData(int fd)
         
         std::stringstream ss;
         ss << client->getSockFd();
-        _logger.log(DEBUG, "<Client " + ss.str() + "><RECV> " + client->getWriteBuffer());
+        _logger.log(DEBUG, "<Client " + ss.str() + "><RECV> " + client->getReadBuffer());
         //send(client->getSockFd(),client->getReadBuffer().c_str(), client->getReadBuffer().size(), 0);
 
         ProcessBuffer(client); // ProcessBuffer : Client or Server method ? Dans tous les cas, a besoin d'avoir acces au client         

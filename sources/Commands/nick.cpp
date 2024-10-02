@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   nick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 16:55:46 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/02 11:38:38 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/02 15:05:38 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ Nicknames are non-empty strings with the following restrictions:
 // si donne un nick invalide, ne pas addState(nick), peut encore rentrer PASS si n a pas encore rentre USER
 void    cmdNick(CommandContext &ctx)
 {
-    ctx._client.setState(Registering);
+    // ctx._client.setState(Registering);
 
     if (ctx._parameters.empty())
     {
@@ -125,9 +125,5 @@ void    cmdNick(CommandContext &ctx)
 
     ctx._client.addState(Nick);
     if ((ctx._client.getState() & Registering) == Registering) // a rentre NICK et USER
-    {
-        // check for passwd validity
-        // if invalid, send ERR_INVALIDPASSWD or sthg
-        // else, what ? -> send MOTD, etc
-    }
+        ctx._server.tryLogin(ctx._client);
 }

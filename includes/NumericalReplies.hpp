@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NumericalReplies.hpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 19:03:14 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/02 14:15:25 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/02 15:55:12 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 # define RPL_WELCOME(nick, user, host) (": 001 :Welcome to the Internet Relay Network " + userID(nick, user, host) + CRLF)
 # define RPL_YOURHOST(server) (": 002 :Your host is " + server + ", running on version 13.12" + CRLF)
 # define RPL_CREATED(date) (": 003 :This server was created " + date + CRLF)
-# define RPL_MYINFO(server, userModes, channelModes) (": 004 : " + server + ", v13.12. Available user modes : " + userModes + ". Available channel modes : " + channelModes + CRLF) // "<servername> <version> <available user modes> <available channel modes>"
+# define RPL_MYINFO(server, userModes, channelModes) (": 004 :" + server + ", v13.12. Available user modes : " + userModes + ". Available channel modes : " + channelModes + CRLF) // "<servername> <version> <available user modes> <available channel modes>"
 # define RPL_MOTDSTART(server) (": 375 :- " + server + " Message of the day -" + CRLF)
 # define RPL_MOTD(line) (": 372 :- " + line + CRLF)
 # define RPL_ENFODMOTD ": 376 :End of MOTD command\r\n"

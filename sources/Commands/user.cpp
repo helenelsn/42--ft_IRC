@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 16:54:21 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/01 19:59:24 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/02 15:05:51 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void    cmdUser(CommandContext &ctx)
     if ((ctx._client.getState() & User) == User)
     {
         // already registered
-        ctx._client.addToWriteBuffer(ERR_ALREADYREGISTERED(ctx._client.getNickname()));
+        ctx._client.addToWriteBuffer(ERR_ALREADYREGISTERED(ctx._client.getNickname())); // what if did not submit a nickname yet ? 
         return ;
     }
     
@@ -60,29 +60,5 @@ void    cmdUser(CommandContext &ctx)
     
     ctx._client.addState(User);
     if ((ctx._client.getState() & Registering) == Registering) // a rentre NICK et USER
-    {
-        // try to login 
-        // ctx._server.tryLogin(ctx._client)
-        
-        // check for passwd validity
-        if (ctx._server.getPasswd() != ctx._client.getPassword())
-        {
-            ctx._client.addToWriteBuffer(ERR_PASSWDMISMATCH(ctx._client.getNickname()));
-            // le client ne peut plus se connecter, et doit etre disconnected ?
-            return ;
-        }
-        // else : registering completed
-        /* 
-        RPL_WELCOME
-        RPL_YOURHOST
-        RPL_CREATED
-        RPL_MYINFO
-        RPL_MOTDSTART // first line of MOTD
-        RPL_MOTD // MOTD line by line
-        ...
-        RPL_MOTD // last line of MOTD
-        RPL_ENDOFMOTD
-        */
-        
-    }
+        ctx._server.tryLogin(ctx._client);
 }
