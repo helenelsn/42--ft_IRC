@@ -1,19 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pong.cpp                                           :+:      :+:    :+:   */
+/*   quit.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/01 20:00:52 by hlesny            #+#    #+#             */
-/*   Updated: 2024/10/01 20:01:11 by hlesny           ###   ########.fr       */
+/*   Created: 2024/10/02 12:36:02 by Helene            #+#    #+#             */
+/*   Updated: 2024/10/02 12:36:30 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
+#include "../../includes/irc.hpp"
+#include "../../includes/commands.hpp"
+#include "../../includes/Client.hpp"
+#include "../../includes/Server.hpp"
 
-/*
-RECV <127.0.0.1> 'PING localhost'
-SEND <127.0.0.1> 'PONG :localhost'
-
-*/
+void    cmdQuit(CommandContext &ctx)
+{
+    
+}

@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 19:03:14 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/30 00:03:18 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/02 14:15:25 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,22 @@
 
 // dynamic macros for server 'command responses' (RPL_...) and error replies (ERR_...)
 
+# define SERVER_NAME "LadyGaga"
+# define USER_MODES " a remplir "
+# define CHANNEL_MODES " a remplir "
+
+# define userID(nick, user, host) ("<" + nick + ">!<" + user + ">@<" + host + ">")
+
 # define ERR_UNKNOWNCOMMAND(command) (": 421 " + command + " :Unknown command" + CRLF)
+
+# define RPL_WELCOME(nick, user, host) (": 001 :Welcome to the Internet Relay Network " + userID(nick, user, host) + CRLF)
+# define RPL_YOURHOST(server) (": 002 :Your host is " + server + ", running on version 13.12" + CRLF)
+# define RPL_CREATED(date) (": 003 :This server was created " + date + CRLF)
+# define RPL_MYINFO(server, userModes, channelModes) (": 004 : " + server + ", v13.12. Available user modes : " + userModes + ". Available channel modes : " + channelModes + CRLF) // "<servername> <version> <available user modes> <available channel modes>"
+# define RPL_MOTDSTART(server) (": 375 :- " + server + " Message of the day -" + CRLF)
+# define RPL_MOTD(line) (": 372 :- " + line + CRLF)
+# define RPL_ENFODMOTD ": 376 :End of MOTD command\r\n"
+
 
 /* -------------------------- Command responses & Error replies ------------------------------- */
 
@@ -44,7 +59,6 @@
 # define RPL_NAMREPLY // ?
 # define RPL_ENDOFNAMES(client, channel) (": 366 " + client + " " + channel + " :End of /NAMES list" + CRLF)
 
-// PART : à gérer ?
 
 // TOPIC 
 /*  ERR_NEEDMOREPARAMS (461)
@@ -54,7 +68,6 @@
     RPL_NOTOPIC (331)
     RPL_TOPIC (332)
     RPL_TOPICWHOTIME (333) */
-# define ERR_NEEDMOREPARAMS(client, command) (": 461 " + client + " " + command + " :Not enough parameters" + CRLF)
 # define ERR_NOTONCHANNEL(client, channel) (": 442 " + client + " " + command + " :You're not on that channel" + CRLF)
 # define ERR_CHANOPRIVSNEEDED(client, channel) (": 482 " + client + " " + channel + " :You're not channel operator" + CRLF)
 # define RPL_NOTOPIC(client, channel) (":331 " + client + " " + channel + " :No topic is set" + CRLF)

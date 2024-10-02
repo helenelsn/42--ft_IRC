@@ -6,7 +6,7 @@
 #    By: Helene <Helene@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/21 14:23:25 by Helene            #+#    #+#              #
-#    Updated: 2024/09/29 15:46:02 by Helene           ###   ########.fr        #
+#    Updated: 2024/10/02 12:38:04 by Helene           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,9 +25,13 @@ SRCS = 	main.cpp \
 		Channel.cpp \
 		Logger.cpp \
 		CommandsHandler.cpp \
+		Commands/utils.cpp \
 		Commands/pass.cpp \
 		Commands/user.cpp \
 		Commands/nick.cpp \
+		Commands/motd.cpp \
+		Commands/ping.cpp \
+		Commands/quit.cpp \
 		Commands/join.cpp 
 		
 OBJS = $(addprefix $(OBJS_DIR), $(SRCS:.cpp=.o))

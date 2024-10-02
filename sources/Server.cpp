@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:49 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/30 18:07:16 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/02 12:43:52 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,16 @@
 
 /* -------------------------- CONSTRUCTORS, DESTRUCTOR ------------------------------- */
 
+void    Server::setCreationDate(void)
+{
+    
+}
+
 Server::Server(std::string const& port, std::string const& password)
 : _port(port), _password(password)
 {
+    this->setCreationDate();
+    
     this->_logger.log(INFO, "Server created");
     std::stringstream ss;
     ss << &(*this);
@@ -150,6 +157,11 @@ Client              *Server::getClient(int fd)
     if (cli == _clients.end())
         return NULL;
     return &(cli->second);
+}
+
+std::string     Server::getCreationDate(void)
+{
+    return _creationDate;
 }
 
 /* -------------------------- ADD, REMOVE CLIENT ------------------------------- */
@@ -481,6 +493,8 @@ void    Server::RestartServer()
 
 void    Server::ShutdownServer() 
 {
+    this->_logger.log(INFO, "Shutting down server");
+    
     for (poll_it it = _sockets.begin(); it != _sockets.end(); it++)
         close(it->fd);
 
@@ -488,5 +502,4 @@ void    Server::ShutdownServer()
 
     // delete channels -> is there anything to do about that here ?
     
-    this->_logger.log(INFO, "Shutting down server");
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:29 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/30 14:44:29 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/02 12:42:34 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,9 @@ class Server
         channels            _channels;
         Logger              _logger;
         CommandsHandler     _commandsHandler; 
+        std::string         _creationDate;
+        
+        void                setCreationDate(void);
         
     public :  
         Server(std::string const& port, std::string const& password);
@@ -52,6 +55,10 @@ class Server
         
         std::string         getPasswd(void) { return _password; }
         Client              *getClient(int fd);
+        
+        void                tryLogin(Client &client);
+        void                sendMotd(Client &client);
+        std::string         getCreationDate(void);
         
         // POLLIN        
         void                AcceptClientConnection();

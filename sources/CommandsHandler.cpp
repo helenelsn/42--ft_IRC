@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CommandsHandler.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:51:07 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/30 13:25:10 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/02 12:37:39 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,10 +47,13 @@ std::string     CommandContext::getCommand(void) const
 CommandsHandler::CommandsHandler()
 {
     _commands["CAP"] = NULL;
-    _commands["JOIN"] = &cmdJoin;
     _commands["PASS"] = &cmdPass;
     _commands["USER"] = &cmdUser;
     _commands["NICK"] = &cmdNick;
+    _commands["MOTD"] = &cmdMotd;
+    _commands["QUIT"] = &cmdQuit;
+    _commands["PING"] = &cmdPing;
+    _commands["JOIN"] = &cmdJoin;
 }
 
 void    CommandsHandler::execCommand(std::string const& name)

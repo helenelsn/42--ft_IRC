@@ -1,11 +1,24 @@
-The password supplied must match the one defined in the server configuration.
-It is possible to send multiple PASS commands before registering but only the last one sent
-is used for verification and it may not be changed once the client has been registered.
--> signifie que va reutiliser le password supplied par le client a un autre moment ? 
+Quels modes implémenter pour les channels, et pour les users ?
+
+The various modes available for channels are as follows:
+    o - give/take channel operator privileges;
+    p - private channel flag;
+    s - secret channel flag;
+    i - invite-only channel flag;
+    t - topic settable by channel operator only flag;
+    n - no messages to channel from clients on the outside;
+    m - moderated channel;
+    l - set the user limit to channel;
+    b - set a ban mask to keep users out;
+    v - give/take the ability to speak on a moderated channel;
+    k - set a channel key (password).
+
+The available (user) modes are as follows:
+    i - marks a users as invisible;
+    s - marks a user for receipt of server notices;
+    w - user receives wallops;
+    o - operator flag.
 
 
-Quand faut-il essayer de log in le client ?
--> attendre qu'il ait envoyé les commandes nick ET user, ou essaie dès qu'a une des deux qui est entrée et est valide ?
--> du coup, pendant la tentative de log in, va re check le dernier password supplied, qui a été enregistré dans Client 
-    -> si ne s'agit pas du bon password, ne met un msg d'erreur qu'à ce moment la, les msg d'erreur que
-        peut envoyer avant ne seront que ceux liés à un nombre d'arguments insuffisants ou autre 
+----------------------------------------------------------------------------------------------------------------------------
+

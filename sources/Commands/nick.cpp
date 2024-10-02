@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   nick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 16:55:46 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/01 19:39:11 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/02 11:38:38 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ void    cmdNick(CommandContext &ctx)
     std::string oldNick = ctx._client.getNickname();
     
     // if client not already registered (ie had not provided a nickname before)
-    if (ctx._client.getState() & Nick != Nick)
+    if ((ctx._client.getState() & Nick) != Nick)
     {
         oldNick = nickname;
         ctx._client.addState(Nick);

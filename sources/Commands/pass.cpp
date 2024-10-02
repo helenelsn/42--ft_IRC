@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pass.cpp                                           :+:      :+:    :+:   */
+/*   Pass.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 16:46:03 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/01 19:49:58 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/02 10:57:37 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,9 @@ Numeric replies:
 */
 void    cmdPass(CommandContext &ctx) // what about when an empty string is supplied as the server password ?
 {
-    printf("in cmdPass()\n");
+    printf("in cmdPass()\n");    
 
-    // tester si check d'abord si a assez de parametres, ou si est deja registered
-    
-
-    if ((ctx._client.getState() & Registering) == Registering)
+    if ((ctx._client.getState() & Registering) == Registering) // Registering = Nick | User
     {
         // ERR_ALREADYREGISTERED
         ctx._client.addToWriteBuffer(ERR_ALREADYREGISTERED(ctx._client.getNickname()));
@@ -59,15 +56,7 @@ void    cmdPass(CommandContext &ctx) // what about when an empty string is suppl
     }
 
     std::vector<std::string> params = ctx._parameters;
-    std::string passwd = params[params.size() - 1];
-    
-    // if (passwd != ctx._server.getPasswd())
-    // {
-    //     // ERR_PASSWDMISMATCH
-    //     ctx._client.addToWriteBuffer(ERR_PASSWDMISMATCH(ctx._client.getNickname()));
-    //     return ;
-    // }   
-
+    std::string passwd = params[params.size() - 1]; // ou passwd = params[0]; ? 
     
     ctx._client.setPassword(passwd);
 }
