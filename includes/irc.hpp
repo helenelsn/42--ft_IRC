@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 22:10:00 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/30 14:43:17 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/03 15:21:46 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,5 +37,6 @@
 
 #include <sstream> // std::stringstream
 #include <algorithm>
+#include <ctime>
 
 # define CRLF "\r\n"

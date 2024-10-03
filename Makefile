@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: Helene <Helene@student.42.fr>              +#+  +:+       +#+         #
+#    By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/21 14:23:25 by Helene            #+#    #+#              #
-#    Updated: 2024/10/02 12:38:04 by Helene           ###   ########.fr        #
+#    Updated: 2024/10/03 15:36:50 by hlesny           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,6 +21,8 @@ INCS_DIR = ./includes/
 
 SRCS = 	main.cpp \
 		Server.cpp \
+		Server_pollins.cpp \
+		Server_pollouts.cpp \
 		Client.cpp \
 		Channel.cpp \
 		Logger.cpp \

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quit.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 12:36:02 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/03 14:33:57 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/03 15:38:03 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,6 @@ void    cmdQuit(CommandContext &ctx)
     ctx._server.RemoveClient(&ctx._client);
 
     std::string reason = ctx._parameters.empty() ? "" : ctx._parameters[0];
-    ctx._client.addToWriteBuffer("QUIT :" + reason + CRLF)
+    ctx._client.addToWriteBuffer("QUIT :" + reason + CRLF);
     // sthg else ?
 }

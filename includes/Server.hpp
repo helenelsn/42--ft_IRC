@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:29 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/02 12:42:34 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/03 15:41:47 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ class Server
         CommandsHandler     _commandsHandler; 
         std::string         _creationDate;
         
+        Server(Server const& other);
+        Server& operator=(Server const& other);
         void                setCreationDate(void);
         
     public :  

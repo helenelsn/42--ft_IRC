@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Pass.cpp                                           :+:      :+:    :+:   */
+/*   pass.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 16:46:03 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/02 10:57:37 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/03 15:44:48 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,6 @@ Numeric replies:
 */
 void    cmdPass(CommandContext &ctx) // what about when an empty string is supplied as the server password ?
 {
-    printf("in cmdPass()\n");    
-
     if ((ctx._client.getState() & Registering) == Registering) // Registering = Nick | User
     {
         // ERR_ALREADYREGISTERED

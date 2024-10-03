@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 16:55:46 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/02 15:05:38 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/03 15:37:54 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,10 @@ Is not a digit
 Is a valid special char
 Is not any of the forbidden char
 */
-static bool validFirstChar(char c)
+/* static bool validFirstChar(char c)
 {
     return (std::isalpha(c) || validChar(c));
-}
+} */
 
 /*
 Servers MUST allow at least all alphanumerical characters, square and curly brackets ([]{}), 

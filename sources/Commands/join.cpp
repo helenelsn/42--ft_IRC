@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 18:05:03 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/30 18:07:16 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/03 15:16:30 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,10 @@
 #include "../../includes/Client.hpp"
 #include "../../includes/Server.hpp"
 
+/*
+Must implement invite-only channels, as well as channels requiring a password to join 
+Also need to check for user's limit (ie is there space left in that channel for the new user)
+*/
 void    cmdJoin(CommandContext &ctx)
 {
     printf("in cmdJoin()\n");
