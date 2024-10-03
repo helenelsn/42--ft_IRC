@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CommandsHandler.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:51:07 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/02 12:37:39 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/03 17:10:27 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,7 @@
 CommandContext::CommandContext(std::string const& prefix, std::string const& cmd, std::vector<std::string> const& parameters, Client &client)
 : _prefix(prefix), _command(cmd), _parameters(parameters), _client(client), _server(client.getServer())
 {
-    // add the server as class attribute as well, or will be another way to have access to it ? 
-    // can access it through the client, but easier if is a class attribute as well (or not ?)
+    
 }
 
 CommandContext::CommandContext(Client &client)

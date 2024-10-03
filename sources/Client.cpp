@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:46 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/02 15:03:25 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/03 17:10:42 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ Client::Client(Client const& other)
 
 Client& Client::operator=(Client const& other) 
 {
-    if (this == &other) // operator== a coder  
+    if (this == &other)
         return *this;
     
     this->_server = other._server;

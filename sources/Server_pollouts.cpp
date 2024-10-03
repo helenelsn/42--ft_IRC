@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 15:35:43 by hlesny            #+#    #+#             */
-/*   Updated: 2024/10/03 15:36:03 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/03 17:14:18 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void    Server::SendWriteBuffer(int fd)
     
     client = this->getClient(fd);
     if (client == NULL) // client does not exist 
-        ; // which exception
+        return;
 
     if (client->getWriteBuffer().empty())
         return ;
@@ -26,7 +26,10 @@ void    Server::SendWriteBuffer(int fd)
     int bytes_sent = send(fd, client->getWriteBuffer().c_str(), client->getWriteBuffer().size(), 0);
 
     if (bytes_sent == -1)
-        ;
+    {
+        std::perror("send() :");
+        return ;   
+    }
     else
     {
         std::stringstream ss;

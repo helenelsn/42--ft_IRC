@@ -1,3 +1,20 @@
+
+A faire :
+    - implementer retours d'erreurs 
+    - checker ReadData pour un msg plus long que BUFSIZ
+    - checker que les signaux sont bien geres 
+    - gestion POLL_ERR
+    - implementer classe Channel
+    - finir d'implementer NICK, QUIT (doit informer les autres membres des channels dans lesquels sont le client)
+    - Implementer commandes restantes 
+        -> basic commands : JOIN, PART, PRIVMSG (channel et user)
+        -> commands specific to channel ops : KICK, INVITE, TOPIC, MODE
+    - checker cas speciaux, et si ils sont geres correctement (password is an empty string, ...)
+
+
+---------------------------------------------------
+
+
 QUIT cmd :
     If a client connection is closed without the client issuing a QUIT command to the server, 
     the server MUST distribute a QUIT message to other clients informing them of this, 
@@ -8,26 +25,12 @@ QUIT cmd :
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 ---------------------------------------------------
 
 
 
 -   Signals must be handled (ctrl+C, ctrl+D, what else ?)
 -   Create a Channel class
--   'Regular user' : JOIN, 
 
 -   You must be able to authenticate, set a nickname, a username, join a channel,
     send and receive private messages using your reference client.
@@ -39,45 +42,8 @@ QUIT cmd :
     -> KICK, INVITE, TOPIC, MODE
 
 
----------------------------------------------------
-
-
-Côté serveur : 
-Crée la socket serveur, la rend non bloquante, la lie au port renseigné, et la rend passive avec listen().
-Boucle principale poll() : agit à chaque fois sur chaque fd étant "dispo" en conséquence
-S'il s'agit d'une demande de connection : vérifier les data (password, si le username est libre, etc), puis accept(), 
-créant une nouvelle eocket pour communiquer avec ce client
-S'il s'agit d'une requete d'un client déjà connecté : lire la commande avec recv(), puis la parser
-En profiter pour checker si un client s'est déconnecté : quel flag pour pollfd.revents ? 
-
-Côté client : 
-Crée une socket client, puis effectue une demande de connection au serveur, avec connect().
-
-Quand un client se déconnecte, le supprimer de la liste des clients du serveur, ou simplement l'ajouter à
-une liste contenant les clients déconnectés ? Dépend de ce que ca implique de recréer à chaque fois qu'un client se connecte 
-
 
 ---------------------------------------------------
-
-boucle principale : poll()
-    -> check le status de retour de poll(), envoie une exception en conséquence
-    -> si tvb, itère sur chaque pollfd, et effectue l'action appropriée en conséquence (accepter une nouvelle connection client,
-    broadcaster un message, ...). Checker si un client a shutdown() sa socket ?
-    -> pour chaque nouvelle connection, ajouter la socket au tableau de struct pollfd, renseigner les flags
-
-
-Client socket (active socket) :
-Handles user input, sends messages to the server, processes server responses
-
-Server socket (passive socket / server-side listening socket) :
-Manages multiple clients connections simultaneously : handles commands and messages from each connected client, 
-broadcasts messages to all clients as needed
--> server socket is made passive using listen()
-
-
----------------------------------------------------
-
-
 
 
 Checks a faire :

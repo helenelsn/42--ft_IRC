@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:49 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/03 15:44:04 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/03 17:18:36 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ Server::Server(Server const& other)
 Server& Server::operator=(Server const& other)
 {
     (void)other; // ou se fait chier a tt code ?
+    return *this;
 }
 
 
@@ -61,7 +62,7 @@ void    Server::InitServer(void)
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = AI_PASSIVE; // localhost by default
     if (getaddrinfo(NULL, (this->_port).c_str(), &hints, &res))
-        ;// throw exception
+        throw(std::runtime_error("getaddrinfo() call failed"));
     _server_socket = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
     
     this->_logger.log(INFO, "Connection socket created");
@@ -77,13 +78,17 @@ void    Server::InitServer(void)
     
     // The bind() API gets a unique name for the socket.
     if (bind(_server_socket, res->ai_addr, res->ai_addrlen))
-            close(_server_socket);
-            // throw an exception
+    {
+        close(_server_socket);
+        throw(std::runtime_error("failed to bind server socket"));
+    }
     
     // makes the socker passive
     if (listen(_server_socket, BACKLOG))
+    {
         close(_server_socket);
-        // throw an exception
+        throw(std::runtime_error("call to listen() on socket server failed"));
+    }
     
     pollfd newPoll;
 
@@ -126,11 +131,9 @@ void    Server::RunServer()
             int errNum = errno;
             if (errNum != EINTR) // EINTR : A signal occurred before any requested event
                 throw(std::runtime_error("poll() failed"));
-                // throw IOException(poll, errNum); ?
             break;
         }
                 
-        //for (poll_it it = _sockets.begin(); it != _sockets.end() && !serverShutdown; it++) // ca couille avec les iterateurs, regarder pourquoi 
         for (size_t i = 0; i < _sockets.size() && !serverShutdown; i++)
         {            
             if (_sockets[i].revents & POLLIN) // data is ready to recv() on this socket.
@@ -141,11 +144,13 @@ void    Server::RunServer()
                     ReadData(_sockets[i].fd);
             }
             else if (_sockets[i].revents & POLLOUT) // we can send() data to this socket without blocking.
-                SendWriteBuffer(_sockets[i].fd); // send() le writeBuffer du client associé à la socket 
+                SendWriteBuffer(_sockets[i].fd);
             else if (_sockets[i].revents & POLL_ERR)
-                ;
-            else if (_sockets[i].revents & POLLHUP) 
-                ;
+            {
+                ; // a coder
+            }
+            // else if (_sockets[i].revents & POLLHUP) 
+                // ;
         }
     }
     
@@ -169,8 +174,6 @@ std::string     Server::getCreationDate(void)
 {
     return _creationDate;
 }
-
-
 
 /* -------------------------- ADD, REMOVE CLIENT ------------------------------- */
 
@@ -196,7 +199,7 @@ void    Server::RemoveClient(Client *client)
     clients_it it = _clients.find(client_fd);
     
     if (it == _clients.end())
-        ;// error msg
+        return ; // client does not exist
     _clients.erase(it);
 
     for (poll_it it = _sockets.begin(); it != _sockets.end(); it++)
@@ -207,7 +210,8 @@ void    Server::RemoveClient(Client *client)
             break;
         }
     }
-    close(client_fd); // verifier retour de close
+    if (close(client_fd) == -1)
+        std::perror("close() :");
 }
 
 

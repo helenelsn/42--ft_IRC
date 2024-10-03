@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 16:55:46 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/03 15:37:54 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/03 17:20:08 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,9 @@ static bool    validNick(std::string const& s)
     if (!std::isalpha(*it) && !validChar(*it)) // !(std::isalpha(c) || validChar(c))
         return false;
     it++;
-    for (it; it != s.end(); it++)
+    for (std::string::const_iterator itt = it; itt != s.end(); itt++)
     {
-        if (! (std::isalnum(*it) || validChar(*it))) // suffit, ou rajouter des checks d'autres caractères ?
+        if (! (std::isalnum(*itt) || validChar(*itt))) // suffit, ou rajouter des checks d'autres caractères ?
             return false;
     }
     return true;

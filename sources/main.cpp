@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:24:09 by Helene            #+#    #+#             */
-/*   Updated: 2024/09/26 22:17:53 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/03 15:48:47 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void setSignalHandlers()
     bzero(&act, sizeof(act));
     act.sa_handler = handleSignal;
     
-    sigaction(SIGINT, &act, NULL); // Applique cette structure avec la fonction à invoquer au signal SIGINT 
+    sigaction(SIGINT, &act, NULL);
     sigaction(SIGQUIT, &act, NULL);
 }
 
@@ -43,7 +43,8 @@ int main(int argc, char **argv)
 {
     if (argc != 3)
     {
-        // print error msg
+        std::cerr << "Wrong number of arguments : 2 required, " << argc - 1 << "given." << std::endl;
+        std::cerr << "Input should look like this : ./ircserv <port> <password>" << std::endl;
         return (INVALID_ARGUMENTS); 
     }
 
@@ -60,9 +61,10 @@ int main(int argc, char **argv)
             IrcServer.RunServer();
         }
         catch (std::exception const& e) {
-            std::cout << "Error (main): " << e.what() << std::endl;
+            std::cout << "Error : " << e.what() << std::endl;
         }
     }
     
+    // ici ou avant ?
     IrcServer.ShutdownServer();
 }

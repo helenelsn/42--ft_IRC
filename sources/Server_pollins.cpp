@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 15:32:32 by hlesny            #+#    #+#             */
-/*   Updated: 2024/10/03 15:36:17 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/03 17:19:16 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ void    Server::AcceptClientConnection(void)
     {
         int errNum = errno;
         this->_logger.log(INFO, std::string("Could not accept connection : ") + strerror(errNum));
+        return ;
     }
     
     // la rend non bloquante, car accept() est une fonction bloquante 
@@ -29,6 +30,7 @@ void    Server::AcceptClientConnection(void)
     {
         perror("fcntl : ");
         close(newClient);
+        return ;
     }
     
     // AddToPoll(newClient, POLLIN | POLLOUT);
@@ -43,8 +45,8 @@ void    Server::AcceptClientConnection(void)
 void    Server::ReadData(int fd)
 {
     Client *client = getClient(fd); 
-    if (!client)
-        ; // fd pas dans la liste des server-clients sockets sur ecoute
+    if (!client) // fd pas dans la liste des server-clients sockets sur ecoute
+        return ;
 
     char        buffer[BUFSIZ];
     std::string msg;
@@ -55,9 +57,9 @@ void    Server::ReadData(int fd)
     {
         std::stringstream ss;
         ss << client->getSockFd();
-        this->_logger.log(INFO, "Client " + ss.str() + " : recv() failed");
+        this->_logger.log(INFO, "Client " + ss.str() + " : recv() failed"); // ou perror ?
         RemoveClient(client); // ?
-        ; // throw exception ?
+        // exception ?
     }
     else if (!bytes_read) // EOF, ie closed connection on the other side
     {
