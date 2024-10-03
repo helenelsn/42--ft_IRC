@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 10:58:41 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/03 14:13:12 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/03 14:23:27 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ Servers MUST send at least one of these two messages.
 */
 void    Server::tryLogin(Client &client)
 {
-    // check for passwd validity
     if (this->getPasswd() != client.getPassword())
     {
         client.addToWriteBuffer(ERR_PASSWDMISMATCH(client.getNickname()));
@@ -34,17 +33,7 @@ void    Server::tryLogin(Client &client)
     client.addToWriteBuffer(RPL_CREATED(client.getNickname(), this->getCreationDate()));
     client.addToWriteBuffer(RPL_MYINFO(client.getNickname(), std::string(SERVER_NAME), std::string(VERSION), std::string(USER_MODES), std::string(CHANNEL_MODES)));
     this->sendMotd(client);
+
+    // client.setState(Registered); // utile ?
     
-    // else : registering completed
-    /* 
-    RPL_WELCOME
-    RPL_YOURHOST
-    RPL_CREATED
-    RPL_MYINFO
-    RPL_MOTDSTART // first line of MOTD
-    RPL_MOTD // MOTD line by line
-    ...
-    RPL_MOTD // last line of MOTD
-    RPL_ENDOFMOTD
-    */
 }

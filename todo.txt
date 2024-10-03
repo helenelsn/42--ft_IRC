@@ -1,3 +1,29 @@
+QUIT cmd :
+    If a client connection is closed without the client issuing a QUIT command to the server, 
+    the server MUST distribute a QUIT message to other clients informing them of this, 
+    distributed in the same was an ordinary QUIT message. 
+    Servers MUST fill <reason> with a message reflecting the nature of the event which caused it to happen. 
+    For instance, "Ping timeout: 120 seconds", "Excess Flood", and "Too many connections from this IP" 
+    are examples of relevant reasons for closing or for a connection with a client to have been closed.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------------------------------------------------
+
+
 
 -   Signals must be handled (ctrl+C, ctrl+D, what else ?)
 -   Create a Channel class

@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 11:23:46 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/03 14:16:31 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/03 14:29:18 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ void    Server::sendMotd(Client &client)
 void    cmdMotd(CommandContext &ctx)
 {
     // arguments checks etc
+    // inutile car n'aura dans tous les cas qu'un seul serveur
     
     ctx._server.sendMotd(ctx._client);
 }
