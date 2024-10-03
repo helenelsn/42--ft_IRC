@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 16:55:46 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/03 17:20:08 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/03 18:11:54 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,12 +71,15 @@ Nicknames are non-empty strings with the following restrictions:
     They MUST NOT start with a character listed as a channel type (# OR &), channel membership prefix (@, % OR +), or prefix listed in the IRCv3 multi-prefix Extension.
     They SHOULD NOT contain any dot character ('.', 0x2E).
 
+This command can be used at two times – during initial connection registration to set the client’s 
+initial nickname, and after registration to change their nick. 
+When used during registration, the server will silently accept the user’s request 
+(or reply with an appropriate error numeric). 
+If used after registration, the server will return a NICK message or appropriate error numerics.
+
 */
-// si donne un nick invalide, ne pas addState(nick), peut encore rentrer PASS si n a pas encore rentre USER
 void    cmdNick(CommandContext &ctx)
 {
-    // ctx._client.setState(Registering);
-
     if (ctx._parameters.empty())
     {
         ctx._client.addToWriteBuffer(ERR_NONICKNAMEGIVEN(ctx._client.getNickname())); 
@@ -95,25 +98,20 @@ void    cmdNick(CommandContext &ctx)
         return ;
     }
     
-    // nick does not already exist on this server, and is valid
-    // conséquences :
-    // update les channels dans lesquelles est le client ? 
-    // envoyer un msg a tous les clients connectés au serveru pour les prévenir du chgt de nick
-    
     std::string oldNick = ctx._client.getNickname();
     
-    // if client not already registered (ie had not provided a nickname before)
-    if ((ctx._client.getState() & Nick) != Nick)
+    // if client had not provided a nickname before
+    if (ctx._client.checkState(Nick))
     {
         oldNick = nickname;
         ctx._client.addState(Nick);
     }
     else
     {
+        
         // unregister previous nickname -> Server Rpl 
     }
     ctx._client.setNickname(nickname);
-        
     
     // RPL_NICK 
     /* The NICK message may be sent from the server to clients to acknowledge their NICK command was successful,
@@ -122,8 +120,12 @@ void    cmdNick(CommandContext &ctx)
     */
     
     // oldNickname changed his nickname to newNickname
-
-    ctx._client.addState(Nick);
-    if ((ctx._client.getState() & Registering) == Registering) // a rentre NICK et USER
-        ctx._server.tryLogin(ctx._client);
+    
+    if (!ctx._client.checkState(Registered))
+    {
+        ctx._client.addState(Nick);
+        if (ctx._client.checkState(Registering)) // a rentre NICK et USER
+            ctx._server.tryLogin(ctx._client);
+    }
+    
 }

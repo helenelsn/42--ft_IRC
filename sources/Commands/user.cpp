@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 16:54:21 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/03 17:11:27 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/03 19:39:04 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,9 @@ The USER command is used at the beginning of a connection to specify the usernam
 */
 void    cmdUser(CommandContext &ctx)
 {
-    if ((ctx._client.getState() & User) == User)
+    if (ctx._client.checkState(User) || ctx._client.checkState(Registered))
     {
-        // already registered
-        ctx._client.addToWriteBuffer(ERR_ALREADYREGISTERED(ctx._client.getNickname())); // what if did not submit a nickname yet ? 
+        ctx._client.addToWriteBuffer(ERR_ALREADYREGISTERED(ctx._client.getNickname()));
         return ;
     }
     
@@ -43,6 +42,7 @@ void    cmdUser(CommandContext &ctx)
         set, the user mode 'i' will be set.  (See Section 3.1.5 "User
         Modes").
     */
+   //todo : juste appeler la commande MODE ?
     int mode = atoi(params[1].c_str());
     std::string modes;
     if (mode & (1 << 3)) // ie si if (mode == 8)
@@ -54,6 +54,6 @@ void    cmdUser(CommandContext &ctx)
     ctx._client.setRealname(params[3]);
     
     ctx._client.addState(User);
-    if ((ctx._client.getState() & Registering) == Registering)
+    if (ctx._client.checkState(Registering))
         ctx._server.tryLogin(ctx._client);
 }

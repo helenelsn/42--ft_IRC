@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 15:35:43 by hlesny            #+#    #+#             */
-/*   Updated: 2024/10/03 17:14:18 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/03 17:30:56 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,11 @@ void    Server::SendWriteBuffer(int fd)
     if (client == NULL) // client does not exist 
         return;
 
-    if (client->getWriteBuffer().empty())
+    std::string toSend = client->getWriteBuffer();
+    if (toSend.empty() || toSend.find(CRLF) == std::string::npos)
         return ;
     
-    int bytes_sent = send(fd, client->getWriteBuffer().c_str(), client->getWriteBuffer().size(), 0);
+    int bytes_sent = send(fd, toSend.c_str(), toSend.size(), 0);
 
     if (bytes_sent == -1)
     {
@@ -34,7 +35,7 @@ void    Server::SendWriteBuffer(int fd)
     {
         std::stringstream ss;
         ss << client->getSockFd();
-        _logger.log(DEBUG, "<Client " + ss.str() + "><SEND> " + client->getWriteBuffer());
+        _logger.log(DEBUG, "<Client " + ss.str() + "><SEND> " + toSend);
     }
     
     client->clearWriteBuffer(); 

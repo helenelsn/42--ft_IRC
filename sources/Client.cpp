@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:46 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/03 17:10:42 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/03 18:08:16 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,12 +83,19 @@ void            Client::setState(int newState)
 
 void    Client::addState(int state)
 {
-    _state |= state; // a verif
+    // if ((_state & state) != state)
+    _state |= state;
 }
 
 void    Client::removeState(int state)
 {
     _state &= (~state);
+}
+
+// returns true if the client is in this state, false otherwise
+bool    Client::checkState(int state)
+{
+    return ((_state & state) == state);   
 }
 
 Server& Client::getServer()

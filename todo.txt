@@ -1,7 +1,5 @@
 
 A faire :
-    - implementer retours d'erreurs 
-    - checker ReadData pour un msg plus long que BUFSIZ
     - checker que les signaux sont bien geres 
     - gestion POLL_ERR
     - implementer classe Channel
@@ -10,6 +8,8 @@ A faire :
         -> basic commands : JOIN, PART, PRIVMSG (channel et user)
         -> commands specific to channel ops : KICK, INVITE, TOPIC, MODE
     - checker cas speciaux, et si ils sont geres correctement (password is an empty string, ...)
+    - checker ReadData pour un msg plus long que BUFSIZ -> normalement ca tronc le msg mais y a bien un \r\n a la fin 
+
 
 
 ---------------------------------------------------

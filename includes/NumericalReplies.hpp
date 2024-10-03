@@ -3,14 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   NumericalReplies.hpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 19:03:14 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/03 14:16:17 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/03 18:55:43 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
+
+/*
+Most messages sent from a client to a server generate a reply of some sort. 
+The most common form of reply is the numeric reply, used for both errors and normal replies. 
+Distinct from a normal message, a numeric reply MUST contain a <source> and use a three-digit 
+numeric as the command. 
+A numeric reply SHOULD contain the target of the reply as the first parameter of the message. 
+A numeric reply is not allowed to originate from a client.
+*/
 
 // dynamic macros for server 'command responses' (RPL_...) and error replies (ERR_...)
 
@@ -26,10 +35,10 @@
 # define RPL_WELCOME(client, nick, user, host) (": 001 " + client + " :Welcome to the Internet Relay Network " + userID(nick, user, host) + CRLF)
 # define RPL_YOURHOST(client, server, version) (": 002 " + client + " :Your host is " + server + ", running on version " + version + CRLF)
 # define RPL_CREATED(client, date) (": 003 " + client + " :This server was created " + date + CRLF)
-# define RPL_MYINFO(client, server, version, userModes, channelModes) (": 004 " + client + ":" + server + ", version " + version + ". Available user modes : " + userModes + ". Available channel modes : " + channelModes + CRLF) // "<servername> <version> <available user modes> <available channel modes>"
-# define RPL_MOTDSTART(client, server) (": 375 " + client + ":- " + server + " Message of the day -" + CRLF)
-# define RPL_MOTD(client, line) (": 372 " + client + ":- " + line + CRLF)
-# define RPL_ENFODMOTD(client) (": 376 " + client + ":End of MOTD command" + CRLF)
+# define RPL_MYINFO(client, server, version, userModes, channelModes) (" : 004 " + client + ":" + server + ", version " + version + ". Available user modes : " + userModes + ". Available channel modes : " + channelModes + CRLF) // "<servername> <version> <available user modes> <available channel modes>"
+# define RPL_MOTDSTART(client, server) (": 375 " + client + " :- " + server + " Message of the day -" + CRLF)
+# define RPL_MOTD(client, line) (": 372 " + client + " :- " + line + CRLF)
+# define RPL_ENFODMOTD(client) (": 376 " + client + " :End of MOTD command" + CRLF)
 
 
 /* -------------------------- Command responses & Error replies ------------------------------- */

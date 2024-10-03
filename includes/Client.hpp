@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:26 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/01 19:47:31 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/03 18:07:12 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ class Client
         void            setState(int newState);
         void            addState(int state);
         void            removeState(int state);
+        bool            checkState(int state);
         
         int             getSockFd(void);
         Server&         getServer();

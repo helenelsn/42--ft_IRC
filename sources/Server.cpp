@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:49 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/03 17:18:36 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/03 19:37:41 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ Server::Server(Server const& other)
 
 Server& Server::operator=(Server const& other)
 {
-    (void)other; // ou se fait chier a tt code ?
+    (void)other; // ou se fait chier a tt coder ?
     return *this;
 }
 
@@ -62,7 +62,10 @@ void    Server::InitServer(void)
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = AI_PASSIVE; // localhost by default
     if (getaddrinfo(NULL, (this->_port).c_str(), &hints, &res))
+    {
         throw(std::runtime_error("getaddrinfo() call failed"));
+        serverShutdown = true; // ?
+    }
     _server_socket = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
     
     this->_logger.log(INFO, "Connection socket created");
@@ -70,17 +73,24 @@ void    Server::InitServer(void)
     int en = 1;
     // The setsockopt() API allows the application to reuse the local address when the server is restarted before the required wait time expires.
 	if(setsockopt(_server_socket, SOL_SOCKET, SO_REUSEADDR, &en, sizeof(en)) == -1)
+    {
 		throw(std::runtime_error("failed to set option (SO_REUSEADDR) on server socket"));
+        serverShutdown = true; // ?
+    }
 	
     // The fcntl() API sets the socket to be nonblocking
     if (fcntl(_server_socket, F_SETFL, O_NONBLOCK) == -1) //-> set the socket option (O_NONBLOCK) for non-blocking socket
+    {
 		throw(std::runtime_error("failed to set option (O_NONBLOCK) on server socket"));
+        serverShutdown = true; // ?
+    }
     
     // The bind() API gets a unique name for the socket.
     if (bind(_server_socket, res->ai_addr, res->ai_addrlen))
     {
         close(_server_socket);
-        throw(std::runtime_error("failed to bind server socket"));
+        throw(std::runtime_error("bind error : port already in use"));
+        serverShutdown = true; // ?
     }
     
     // makes the socker passive
@@ -88,6 +98,7 @@ void    Server::InitServer(void)
     {
         close(_server_socket);
         throw(std::runtime_error("call to listen() on socket server failed"));
+        serverShutdown = true; // ?
     }
     
     pollfd newPoll;

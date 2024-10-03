@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 15:32:32 by hlesny            #+#    #+#             */
-/*   Updated: 2024/10/03 17:19:16 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/03 19:18:31 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,13 +44,20 @@ void    Server::AcceptClientConnection(void)
 
 void    Server::ReadData(int fd)
 {
+    char        buffer[BUFSIZ];
+    std::string msg;
+    memset(&buffer, 0, BUFSIZ);
+    
     Client *client = getClient(fd); 
     if (!client) // fd pas dans la liste des server-clients sockets sur ecoute
         return ;
 
-    char        buffer[BUFSIZ];
-    std::string msg;
-    memset(&buffer, 0, BUFSIZ);
+    if (client->checkState(Disconnected))
+    {
+        this->RemoveClient(client);
+        return ;
+    }
+    
 
     int bytes_read = recv(client->getSockFd(), buffer, BUFSIZ, 0);
     if (bytes_read == -1)
@@ -89,10 +96,9 @@ void    Server::ReadData(int fd)
         
         std::stringstream ss;
         ss << client->getSockFd();
-        _logger.log(DEBUG, "<Client " + ss.str() + "><RECV> " + client->getReadBuffer());
-        //send(client->getSockFd(),client->getReadBuffer().c_str(), client->getReadBuffer().size(), 0);
+        // _logger.log(DEBUG, "<Client " + ss.str() + "><RECV> " + client->getReadBuffer());
 
-        ProcessBuffer(client); // ProcessBuffer : Client or Server method ? Dans tous les cas, a besoin d'avoir acces au client         
+        ProcessBuffer(client);
     }
 }
 
@@ -133,7 +139,7 @@ void    Server::ParseLine(std::string line, CommandContext &ctx)
         it = std::find(begin, line.end(), ' ');
         prefix = std::string(begin, it);
         begin = it;
-        if (it != line.end()) 
+        if (begin != line.end()) 
             begin++;
     }
 
@@ -143,39 +149,41 @@ void    Server::ParseLine(std::string line, CommandContext &ctx)
     it = std::find(begin, line.end(), ' ');
     command = std::string(begin, it);
     begin = it;
-    if (it != line.end())
+    if (begin != line.end())
         begin++;
-    
-    this->_logger.log(DEBUG, "prefix = " + prefix);
-    this->_logger.log(DEBUG, "command = " + command);
-    
 
     // put parameters in vector of strings
+    /* Software SHOULD AVOID sending more than 15 parameters, as older client protocol documents 
+    specified this was the maximum and some clients may have trouble reading more than this. 
+    However, clients MUST parse incoming messages with any number of them */
     while (it != line.end())
     {
         while (begin != line.end() && *begin == ' ')
             begin++;
-        if ((*begin) == ':')
+        if (begin != line.end() && (*begin) == ':')
         {
-            parameters.push_back(std::string(begin, line.end())); // tej le ':' du debut ?
+            begin++;
+            parameters.push_back(std::string(begin, line.end())); // tej le ':' du debut 
             break;
         }
         it = std::find(begin, line.end(), ' ');
         parameters.push_back(std::string(begin, it));
         begin = it;
-        if (it != line.end())
+        if (begin != line.end())
             begin++;
     }
 
     ctx.fillCommand(prefix, command, parameters);
     
     // logger
-    for (size_t i = 0; i < parameters.size(); i++)
-    {
-        std::stringstream ss;
-        ss << i;
-        this->_logger.log(DEBUG, "parameter " + ss.str() + " = " + parameters[i]);
-    }
+    // this->_logger.log(DEBUG, "prefix = " + prefix);
+    // this->_logger.log(DEBUG, "command = " + command);
+    // for (size_t i = 0; i < parameters.size(); i++)
+    // {
+    //     std::stringstream ss;
+    //     ss << i;
+    //     this->_logger.log(DEBUG, "parameter " + ss.str() + " = " + parameters[i]);
+    // }
 }
 
 // a faire dans CommandsHandler directement plutôt, non ?
@@ -232,7 +240,9 @@ void    Server::ProcessBuffer(Client* &client)
         it = client->getReadBuffer().begin();
         std::string test = std::string(it, it + pos);
 
-        this->_logger.log(DEBUG, "current parsed command : " + std::string(it, it + pos));
+        std::stringstream ss; ss << client->getSockFd();
+        this->_logger.log(DEBUG, "<Client " + ss.str() + "><RECV> " + std::string(it, it + pos));
+        // this->_logger.log(DEBUG, "current parsed command : " + std::string(it, it + pos));
         
         ProcessCommand(std::string(it, it + pos), client);
         // ParseLine(std::string(it, it + pos));
