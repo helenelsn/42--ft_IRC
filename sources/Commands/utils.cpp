@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 10:58:41 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/02 14:16:18 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/03 14:13:12 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,10 @@ void    Server::tryLogin(Client &client)
         // Peut décider de fermer la connection avec ERROR
         return ;
     }
-    client.addToWriteBuffer(RPL_WELCOME(client.getNickname(), client.getUsername(), client.getHostname()));
-    client.addToWriteBuffer(RPL_YOURHOST(std::string(SERVER_NAME)));
-    client.addToWriteBuffer(RPL_CREATED(this->getCreationDate()));
-    client.addToWriteBuffer(RPL_MYINFO(std::string(SERVER_NAME), std::string(USER_MODES), std::string(CHANNEL_MODES)));
+    client.addToWriteBuffer(RPL_WELCOME(client.getNickname(), client.getNickname(), client.getUsername(), client.getHostname()));
+    client.addToWriteBuffer(RPL_YOURHOST(client.getNickname(), std::string(SERVER_NAME), std::string(VERSION)));
+    client.addToWriteBuffer(RPL_CREATED(client.getNickname(), this->getCreationDate()));
+    client.addToWriteBuffer(RPL_MYINFO(client.getNickname(), std::string(SERVER_NAME), std::string(VERSION), std::string(USER_MODES), std::string(CHANNEL_MODES)));
     this->sendMotd(client);
     
     // else : registering completed

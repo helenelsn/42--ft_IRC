@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 11:23:46 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/02 12:36:56 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/03 14:16:31 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,14 @@ void    Server::sendMotd(Client &client)
     if (!motdFile.is_open())
     {
         // Error : could not open Motd file (missing or bad access rights)
+        client.addToWriteBuffer(ERR_NOMOTD(client.getNickname()));
         return ;
     }
 
-    client.addToWriteBuffer(RPL_MOTDSTART(std::string(SERVER_NAME)));
+    client.addToWriteBuffer(RPL_MOTDSTART(client.getNickname(), std::string(SERVER_NAME)));
     while (std::getline(motdFile, line)) // By default, the delimiter is \n (newline).
-        client.addToWriteBuffer(RPL_MOTD(line));
-    client.addToWriteBuffer(RPL_ENFODMOTD);
+        client.addToWriteBuffer(RPL_MOTD(client.getNickname(), line));
+    client.addToWriteBuffer(RPL_ENFODMOTD(client.getNickname()));
     
     motdFile.close();
 }
