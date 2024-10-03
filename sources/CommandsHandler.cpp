@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CommandsHandler.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hepompid <hepompid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:51:07 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/02 12:37:39 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/03 19:20:14 by hepompid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,12 @@ CommandsHandler::CommandsHandler()
     _commands["QUIT"] = &cmdQuit;
     _commands["PING"] = &cmdPing;
     _commands["JOIN"] = &cmdJoin;
+	_commands["PRIVMSG"] = &cmdPrivmsg;
+	// _commands["KICK"] = &cmdKick;
+	// _commands["INVITE"] = &cmdInvite;
+	// _commands["TOPIC"] = &cmdTopic;
+	// _commands["MODE"] = &cmdMode;
+	// _commands["PART"] = &cmdPart;
 }
 
 void    CommandsHandler::execCommand(std::string const& name)
