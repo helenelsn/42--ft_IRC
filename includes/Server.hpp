@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:29 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/04 15:32:42 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/04 17:50:28 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ class Server
         // void                InformOfDisconnect(Client &client, std::string const& departureReason = DEPARTURE_REASON);
         void                InformOthers(Client &client, std::string const& source,  std::string const& msg);
         void                RemoveClient(Client *client);
+        void                RemoveSocket(int client_fd);
         void                RestartServer();
         void                ShutdownServer();
 

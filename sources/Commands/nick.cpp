@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   nick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 16:55:46 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/04 15:39:37 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/04 17:28:51 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,38 +98,28 @@ void    cmdNick(CommandContext &ctx)
         return ;
     }
     
-    std::string oldNick = ctx._client.getNickname();
-    
-    // if client had not provided a nickname before
-    if (ctx._client.checkState(Nick))
-    {
-        oldNick = nickname;
-        ctx._client.addState(Nick);
-    }
-    else
-    {
-        oldNick = ctx._client.getNickname();
-
-        // s'assurer que doit envoyer cette réponse serveur meme quand est seulement en train de se register
-        ctx._client.addToWriteBuffer("You are now known as" + nickname + CRLF); // checker ce msg
-    }
+    // std::string oldNick = ctx._client.getNickname();
     ctx._client.setNickname(nickname);
     
-    // RPL_NICK 
-    /* The NICK message may be sent from the server to clients to acknowledge their NICK command was successful,
-    and to inform other clients about the change of nickname. In these cases, the <source> of the message 
-    will be the old nickname [ [ "!" user ] "@" host ] of the user who is changing their nickname.
-    */
-        
-    if (!ctx._client.checkState(Registered))
+    // if client had not provided a nickname before
+    if (!ctx._client.checkState(Nick) && !ctx._client.checkState(Registered))
     {
+        // oldNick = nickname;
         ctx._client.addState(Nick);
         if (ctx._client.checkState(Registering)) // a rentre NICK et USER
             ctx._server.tryLogin(ctx._client);
     }
     else
     {
+        std::string oldNick = ctx._client.getNickname();
+        ctx._client.addToWriteBuffer("You are now known as " + nickname + CRLF); // checker ce msg
         std::string oldUserID = oldNick + "!" + ctx._client.getUsername() + "@" + ctx._client.getHostname();
-        ctx._server.InformOthers(ctx._client, oldUserID, " NICK " + nickname);
+        ctx._server.InformOthers(ctx._client, oldUserID, "NICK " + nickname);
     }
+    
+    // RPL_NICK 
+    /* The NICK message may be sent from the server to clients to acknowledge their NICK command was successful,
+    and to inform other clients about the change of nickname. In these cases, the <source> of the message 
+    will be the old nickname [ [ "!" user ] "@" host ] of the user who is changing their nickname.
+    */
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server_pollouts.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 15:35:43 by hlesny            #+#    #+#             */
-/*   Updated: 2024/10/04 15:14:53 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/04 17:54:23 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,16 @@
 void    Server::SendWriteBuffer(int fd)
 {
     Client  *client;
-
-    // check if client disconnected (in case of not removed yet (is it possible ?))
-    
     
     client = this->getClient(fd);
     if (client == NULL) // client does not exist 
+    {
+        std::stringstream ss;
+        ss << "Could not locate client " << fd << " on the server.";
+        _log(ERROR, ss.str());
+        RemoveSocket(fd);
         return;
+    }
 
     std::string toSend = client->getWriteBuffer();
     if (toSend.empty() || toSend.find(CRLF) == std::string::npos)
@@ -42,7 +45,7 @@ void    Server::SendWriteBuffer(int fd)
     }
     client->clearWriteBuffer();
 
-    // check if client is disconnected ? or is there another place to do it ?
+    // check if client is disconnected. Or is there another place to do it ?
     if (client->checkState(Disconnected))
         RemoveClient(client);    
 }

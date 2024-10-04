@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quit.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 12:36:02 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/04 15:18:09 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/04 17:15:37 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,10 @@ void    cmdQuit(CommandContext &ctx)
     // The server acknowledges this by replying with an ERROR message and closing the connection to the client.
     ctx._client.addToWriteBuffer(ERROR_RPL(reason));
     
+    std::stringstream ss;
+    ss << ctx._client.getSockFd();
+    ctx._server._log(INFO, "Client " + ss.str() + " disconnected.");
     ctx._server.DisconnectClient(&ctx._client, reason);
-    // ctx._server.InformOfDisconnect(ctx._client, reason);
-    // car peut pas le supprimer tout de suite, doit pouvoir envoyer le rpl serveur au client (ou l envoie pas au clinet qui se casse ?)
-    // ctx._client.setState(Disconnected); 
 
     
     // envoie un QUIT msg aux autres clients mtn ou apres ?

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:49 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/04 15:34:15 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/04 17:52:34 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ Server::Server(std::string const& port, std::string const& password)
     this->_logger.log(INFO, "Server created");
     std::stringstream ss;
     ss << &(*this);
-    this->_logger.log(INFO, "Server address : " + ss.str());
+    // this->_logger.log(INFO, "Server address : " + ss.str());
 }
 
 Server::~Server()
@@ -81,24 +81,24 @@ void    Server::InitServer(void)
     // The fcntl() API sets the socket to be nonblocking
     if (fcntl(_server_socket, F_SETFL, O_NONBLOCK) == -1) //-> set the socket option (O_NONBLOCK) for non-blocking socket
     {
+        serverShutdown = true;
 		throw(std::runtime_error("failed to set option (O_NONBLOCK) on server socket"));
-        serverShutdown = true; // ?
     }
     
     // The bind() API gets a unique name for the socket.
     if (bind(_server_socket, res->ai_addr, res->ai_addrlen))
     {
         close(_server_socket);
+        serverShutdown = true;
         throw(std::runtime_error("bind error : port already in use"));
-        serverShutdown = true; // ?
     }
     
     // makes the socker passive
     if (listen(_server_socket, BACKLOG))
     {
         close(_server_socket);
+        serverShutdown = true;
         throw(std::runtime_error("call to listen() on socket server failed"));
-        serverShutdown = true; // ?
     }
     
     pollfd newPoll;
@@ -113,7 +113,7 @@ void    Server::InitServer(void)
     // debug
     std::stringstream ss;
     ss << _server_socket;
-    this->_logger.log(INFO, "Server listening on port " + this->_port + ", with socketFd " + ss.str());
+    this->_logger.log(INFO, "Server listening on port " + this->_port + ", with socket " + ss.str());
 }
 
 
@@ -147,7 +147,7 @@ void    Server::RunServer()
                 
         for (size_t i = 0; i < _sockets.size() && !serverShutdown; i++)
         {           
-            if (_sockets[i].revents & POLL_ERR)
+            if (_sockets[i].revents & POLLERR)
                 HandlePollErr(_sockets[i].fd);
             else if (_sockets[i].revents & POLLIN) // data is ready to recv() on this socket.
             {
@@ -160,8 +160,6 @@ void    Server::RunServer()
                 SendWriteBuffer(_sockets[i].fd);
             else 
                 continue ;
-            // else if (_sockets[i].revents & POLLHUP) 
-                // ;
         }
     }
     
@@ -233,15 +231,27 @@ void    Server::InformOthers(Client &client, std::string const& source,  std::st
     // parse Client's Channels and fill recipients vector
 
     for (std::vector<Client>::iterator it = recipients.begin(); it != recipients.end(); it++)
-        it->addToWriteBuffer(client.getUserID() + msg + CRLF);
+        it->addToWriteBuffer(source + " " + msg + CRLF);
 }
 
 // method to call in case of error return (poll(), recv() )
 void    Server::DisconnectClient(Client *client, std::string const& reason = DEPARTURE_REASON)
 {    
     // InformOfDisconnect(*client, reason);
-    InformOthers(*client, client->getUserID(), " QUIT :" + reason);
+    InformOthers(*client, client->getUserID(), "QUIT :" + reason);
     client->setState(Disconnected);
+}
+
+void    Server::RemoveSocket(int client_fd)
+{
+    for (poll_it it = _sockets.begin(); it != _sockets.end(); it++)
+    {        
+        if (it->fd == client_fd)
+        {
+            _sockets.erase(it);
+            break;
+        }
+    }
 }
 
 /*
@@ -259,20 +269,21 @@ void    Server::RemoveClient(Client *client)
     int client_fd = client->getSockFd();
     clients_it it = _clients.find(client_fd);
     
+    RemoveSocket(client_fd);
+    if (close(client_fd) == -1)
+        std::perror("close() :");
     if (it == _clients.end())
         return ; // client does not exist
     _clients.erase(it);
 
-    for (poll_it it = _sockets.begin(); it != _sockets.end(); it++)
+    /* for (poll_it it = _sockets.begin(); it != _sockets.end(); it++)
     {        
         if (it->fd == client_fd)
         {
             _sockets.erase(it);
             break;
         }
-    }
-    if (close(client_fd) == -1)
-        std::perror("close() :");
+    } */
     }
 
 

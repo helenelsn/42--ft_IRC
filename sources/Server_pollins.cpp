@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server_pollins.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 15:32:32 by hlesny            #+#    #+#             */
-/*   Updated: 2024/10/04 15:10:45 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/04 17:53:53 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void    Server::AcceptClientConnection(void)
     
     std::stringstream ss;
     ss << newClient;
-    this->_logger.log(INFO, "New connection! Client-server socket : " + ss.str());
+    this->_logger.log(INFO, "New connection! Client socket : " + ss.str());
 }
 
 
@@ -50,7 +50,13 @@ void    Server::ReadData(int fd)
     
     Client *client = getClient(fd); 
     if (!client) // fd pas dans la liste des server-clients sockets sur ecoute
+    {
+        std::stringstream ss;
+        ss << "Could not locate client " << fd << " on the server.";
+        _log(ERROR, ss.str());
+        RemoveSocket(fd);
         return ;
+    }
 
     if (client->checkState(Disconnected)) // add 'Removed' state ? 
     {
@@ -66,7 +72,7 @@ void    Server::ReadData(int fd)
         std::stringstream ss;
         ss << client->getSockFd();
         this->_logger.log(INFO, "Client " + ss.str() + " : recv() failed"); // ou perror ?
-        DisconnectClient(client, std::string(std::strerror(errNum))); 
+        DisconnectClient(client, std::string(strerror(errNum))); 
         RemoveClient(client);
         // exception ?
     }

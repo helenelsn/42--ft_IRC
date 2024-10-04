@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NumericalReplies.hpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 19:03:14 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/04 15:08:17 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/04 17:09:58 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ A numeric reply is not allowed to originate from a client.
 # define RPL_WELCOME(client, nick, user, host) (": 001 " + client + " :Welcome to the Internet Relay Network " + userID(nick, user, host) + CRLF)
 # define RPL_YOURHOST(client, server, version) (": 002 " + client + " :Your host is " + server + ", running on version " + version + CRLF)
 # define RPL_CREATED(client, date) (": 003 " + client + " :This server was created " + date + CRLF)
-# define RPL_MYINFO(client, server, version, userModes, channelModes) (" : 004 " + client + ":" + server + ", version " + version + ". Available user modes : " + userModes + ". Available channel modes : " + channelModes + CRLF) // "<servername> <version> <available user modes> <available channel modes>"
+# define RPL_MYINFO(client, server, version, userModes, channelModes) (": 004 " + client + " :" + server + ", version " + version + ". Available user modes : " + userModes + ". Available channel modes : " + channelModes + CRLF) // "<servername> <version> <available user modes> <available channel modes>"
 # define RPL_MOTDSTART(client, server) (": 375 " + client + " :- " + server + " Message of the day -" + CRLF)
 # define RPL_MOTD(client, line) (": 372 " + client + " :- " + line + CRLF)
 # define RPL_ENFODMOTD(client) (": 376 " + client + " :End of MOTD command" + CRLF)
