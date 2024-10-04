@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:29 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/03 15:41:47 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/04 15:32:42 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ class Server
         std::string         _password;
         int                 _server_socket;
         pollfds             _sockets; // server-clients sockets 
-        pollfds             _newSockets; // utile ? // sockets from new connections, to add tp _sockets at the end of the for() loop
+        pollfds             _disconnectedClients; 
         clients             _clients;
         channels            _channels;
         Logger              _logger;
@@ -74,6 +74,12 @@ class Server
         // POLLOUT
         void                SendWriteBuffer(int fd);
 
+        // POLLERR
+        void                HandlePollErr(int fd);
+
+        void                DisconnectClient(Client *client, std::string const& reason);
+        // void                InformOfDisconnect(Client &client, std::string const& departureReason = DEPARTURE_REASON);
+        void                InformOthers(Client &client, std::string const& source,  std::string const& msg);
         void                RemoveClient(Client *client);
         void                RestartServer();
         void                ShutdownServer();

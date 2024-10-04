@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   nick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 16:55:46 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/03 18:11:54 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/04 15:39:37 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,8 +108,10 @@ void    cmdNick(CommandContext &ctx)
     }
     else
     {
-        
-        // unregister previous nickname -> Server Rpl 
+        oldNick = ctx._client.getNickname();
+
+        // s'assurer que doit envoyer cette réponse serveur meme quand est seulement en train de se register
+        ctx._client.addToWriteBuffer("You are now known as" + nickname + CRLF); // checker ce msg
     }
     ctx._client.setNickname(nickname);
     
@@ -118,14 +120,16 @@ void    cmdNick(CommandContext &ctx)
     and to inform other clients about the change of nickname. In these cases, the <source> of the message 
     will be the old nickname [ [ "!" user ] "@" host ] of the user who is changing their nickname.
     */
-    
-    // oldNickname changed his nickname to newNickname
-    
+        
     if (!ctx._client.checkState(Registered))
     {
         ctx._client.addState(Nick);
         if (ctx._client.checkState(Registering)) // a rentre NICK et USER
             ctx._server.tryLogin(ctx._client);
     }
-    
+    else
+    {
+        std::string oldUserID = oldNick + "!" + ctx._client.getUsername() + "@" + ctx._client.getHostname();
+        ctx._server.InformOthers(ctx._client, oldUserID, " NICK " + nickname);
+    }
 }

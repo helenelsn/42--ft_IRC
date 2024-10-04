@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:46 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/03 18:08:16 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/04 15:42:49 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,12 @@ void    Client::setPassword(std::string const& newPass)
 std::string Client::getPassword(void)
 {
     return _password;
+}
+
+std::string Client::getUserID(void) const
+{
+    std::string userID = ":" + getNickname() + "!" + getUsername() + "@" + getHostname();
+    return userID;
 }
 
 // ou juste int& getState(), renvoie une reference au state que peut direct modifier, et pas besoin de setState() ?

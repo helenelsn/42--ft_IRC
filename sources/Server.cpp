@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:49 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/03 19:37:41 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/04 15:34:15 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,8 +146,10 @@ void    Server::RunServer()
         }
                 
         for (size_t i = 0; i < _sockets.size() && !serverShutdown; i++)
-        {            
-            if (_sockets[i].revents & POLLIN) // data is ready to recv() on this socket.
+        {           
+            if (_sockets[i].revents & POLL_ERR)
+                HandlePollErr(_sockets[i].fd);
+            else if (_sockets[i].revents & POLLIN) // data is ready to recv() on this socket.
             {
                 if (_sockets[i].fd == _server_socket)
                     AcceptClientConnection();
@@ -156,10 +158,8 @@ void    Server::RunServer()
             }
             else if (_sockets[i].revents & POLLOUT) // we can send() data to this socket without blocking.
                 SendWriteBuffer(_sockets[i].fd);
-            else if (_sockets[i].revents & POLL_ERR)
-            {
-                ; // a coder
-            }
+            else 
+                continue ;
             // else if (_sockets[i].revents & POLLHUP) 
                 // ;
         }
@@ -204,6 +204,56 @@ void    Server::AddClient(int fd)
 
 }
 
+// pointeur ou reference a un client ?
+/*
+    -> Dans la classe Channel :
+        -   créer une methode pour envoyer un msg a tous les clients de ce channel 
+            (sauf au client étant a l'origine de ce msg)
+    -> Dans la classe Serveur :
+        -   getChannel(std::string channelName) permettant de recup un channel a partir du nom
+        
+=>  pour envoyer un msg a tous les clients ayant des channels en commun avec le client déconnecté,
+    peut 1) parser la liste des channels dans lesquelles est ce client, appeler getChannel() pour 
+            chacun des channels, et pour chaque channel appeler la méthode Channel::distributeToAll(Client &client),
+            qui distribue un msg a tous les clients du channel sauf celui spécifié en paramètre (car est la source du msg)
+         2) parser la liste des channels existants dans le serveur, checker pour chaque channel si le client est dedans
+            (nécessite la méthode bool Channel::isIn(std::string const& client, ou Client const& client)),
+            puis distributeToAll() si ce client est dans le channel
+    
+    DANS TOUS LES CAS : ne peut pas direct envoyer le msg. ajouter chaque recipient a une liste,
+        puis envoyer un msg a tous les recipients de cette liste quand a fini de parser tous les channels
+        dans lesquels était le client disconnected. sinon risque d'envoyer des doublons (si le client
+        déconnecté a plus d'un channel en commun avec un autre client par ex)
+            
+*/
+
+void    Server::InformOthers(Client &client, std::string const& source,  std::string const& msg)
+{
+    std::vector<Client> recipients;
+    // parse Client's Channels and fill recipients vector
+
+    for (std::vector<Client>::iterator it = recipients.begin(); it != recipients.end(); it++)
+        it->addToWriteBuffer(client.getUserID() + msg + CRLF);
+}
+
+// method to call in case of error return (poll(), recv() )
+void    Server::DisconnectClient(Client *client, std::string const& reason = DEPARTURE_REASON)
+{    
+    // InformOfDisconnect(*client, reason);
+    InformOthers(*client, client->getUserID(), " QUIT :" + reason);
+    client->setState(Disconnected);
+}
+
+/*
+todo 
+If a client connection is closed without the client issuing a QUIT command to the server, the server MUST 
+distribute a QUIT message to other clients informing them of this, distributed in the same way as 
+an ordinary QUIT message.
+Servers MUST fill <reason> with a message reflecting the nature of the event which caused it to happen.
+
+This message may also be sent from the server to a client to show that a client has exited from the network. 
+This is typically only dispatched to clients that share a channel with the exiting user.
+*/
 void    Server::RemoveClient(Client *client)
 {
     int client_fd = client->getSockFd();
@@ -223,7 +273,7 @@ void    Server::RemoveClient(Client *client)
     }
     if (close(client_fd) == -1)
         std::perror("close() :");
-}
+    }
 
 
 
@@ -257,6 +307,8 @@ void    Server::ShutdownServer()
     
     for (poll_it it = _sockets.begin(); it != _sockets.end(); it++)
         close(it->fd);
+
+    // informer les clients de la fermeture du serveur 
 
     // delete clients (autre chose a faire que juste close les sockets ?)
 

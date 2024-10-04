@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server_pollins.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 15:32:32 by hlesny            #+#    #+#             */
-/*   Updated: 2024/10/03 19:18:31 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/04 15:10:45 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void    Server::ReadData(int fd)
     if (!client) // fd pas dans la liste des server-clients sockets sur ecoute
         return ;
 
-    if (client->checkState(Disconnected))
+    if (client->checkState(Disconnected)) // add 'Removed' state ? 
     {
         this->RemoveClient(client);
         return ;
@@ -62,17 +62,20 @@ void    Server::ReadData(int fd)
     int bytes_read = recv(client->getSockFd(), buffer, BUFSIZ, 0);
     if (bytes_read == -1)
     {
+        int errNum = errno;
         std::stringstream ss;
         ss << client->getSockFd();
         this->_logger.log(INFO, "Client " + ss.str() + " : recv() failed"); // ou perror ?
-        RemoveClient(client); // ?
+        DisconnectClient(client, std::string(std::strerror(errNum))); 
+        RemoveClient(client);
         // exception ?
     }
     else if (!bytes_read) // EOF, ie closed connection on the other side
     {
         std::stringstream ss;
         ss << client->getSockFd();
-        this->_logger.log(DEBUG, "Client " + ss.str() + " disconnected"); 
+        this->_logger.log(INFO, "Client " + ss.str() + " disconnected"); 
+        DisconnectClient(client, DEPARTURE_REASON);
         RemoveClient(client);
     }
     else

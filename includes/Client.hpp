@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:26 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/03 18:07:12 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/04 15:21:50 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ class Client
         bool            operator==(Client const& other);
         bool            operator!=(Client const& other);
         
+        std::string     getUserID(void) const;
         int             getState(void) const;
         void            setState(int newState);
         void            addState(int state);

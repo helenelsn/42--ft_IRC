@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   user.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 16:54:21 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/03 19:39:04 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/04 15:42:37 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void    cmdUser(CommandContext &ctx)
     
     ctx._client.setUsername(params[0]);
     ctx._client.addModes(modes);
-    // ctx._client.setHostname(params[2]) // ? -> ou met juste localhost ? 
+    ctx._client.setHostname(params[2]); // ? -> ou met juste localhost ? 
     ctx._client.setRealname(params[3]);
     
     ctx._client.addState(User);

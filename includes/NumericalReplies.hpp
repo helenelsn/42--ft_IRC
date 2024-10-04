@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NumericalReplies.hpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 19:03:14 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/03 18:55:43 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/04 15:08:17 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,13 @@ A numeric reply is not allowed to originate from a client.
 # define VERSION    "13.12"
 # define USER_MODES " a remplir "
 # define CHANNEL_MODES " a remplir "
+# define DEPARTURE_REASON "A bas l'etat"
 
-# define userID(nick, user, host) ("<" + nick + ">!<" + user + ">@<" + host + ">")
+# define userID(nick, user, host) (nick + "!" + user + "@" + host)
 
 # define ERR_UNKNOWNCOMMAND(command) (": 421 " + command + " :Unknown command" + CRLF)
+# define ERROR_RPL(reason) ("Error :" + reason + CRLF)
+# define QUIT_RPL(nick, user, host, reason) (":" + userID(nick, user, host) + " QUIT :" + reason + CRLF)
 
 # define RPL_WELCOME(client, nick, user, host) (": 001 " + client + " :Welcome to the Internet Relay Network " + userID(nick, user, host) + CRLF)
 # define RPL_YOURHOST(client, server, version) (": 002 " + client + " :Your host is " + server + ", running on version " + version + CRLF)

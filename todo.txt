@@ -1,7 +1,7 @@
 
 A faire :
     - checker que les signaux sont bien geres 
-    - gestion POLL_ERR
+    - remplacer macro dynamique userID par méthode de la classe client (modifier autres macros en conséquence)
     - implementer classe Channel
     - finir d'implementer NICK, QUIT (doit informer les autres membres des channels dans lesquels sont le client)
     - Implementer commandes restantes 
@@ -14,14 +14,21 @@ A faire :
 
 ---------------------------------------------------
 
+QUIT :
+    Quand on client envoie la commande QUIT, il faut attendre d'avoir send() a ce meme client le RPL du serveur
+        avant de remove ce client du serveur (ie attendre le prochain poll() : c'est dans la gestion
+        de POLLOUT que l'on remove le client du serveur).
+    Distribuer le msg QUIT a tous les clients ayant des channels en commun avec le client déconnecté
+    Si s'agit d'une déconnection non volontaire, ie résultant d'un retour d'erreur ou d'un signal, 
+        doit renseigner la raison dans le QUIT msg 
 
-QUIT cmd :
-    If a client connection is closed without the client issuing a QUIT command to the server, 
-    the server MUST distribute a QUIT message to other clients informing them of this, 
-    distributed in the same was an ordinary QUIT message. 
-    Servers MUST fill <reason> with a message reflecting the nature of the event which caused it to happen. 
-    For instance, "Ping timeout: 120 seconds", "Excess Flood", and "Too many connections from this IP" 
-    are examples of relevant reasons for closing or for a connection with a client to have been closed.
+NICK :
+    Informer tous les clients ayant des channels ne commun avec le client ayant changé son nick que 
+    ce dernier l'a changé, sauf si cette commande est tapée pendant la registration
+    Checker le comportement attendu si il n'y a pas de previous nickname 
+
+
+
 
 
 
