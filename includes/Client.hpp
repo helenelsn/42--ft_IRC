@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:26 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/04 15:21:50 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/05 13:42:48 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ class Client
         std::string _modes; // user's currently set modes
         int         _state;
         Server      *_server;
+
+        std::vector<std::string> _channelNames;
 
         // un client a la liste des channels dans lesquels il est
         

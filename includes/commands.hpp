@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 16:46:42 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/04 15:28:02 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/05 13:43:14 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,3 +23,4 @@ void    cmdJoin(CommandContext &ctx);
 void    cmdMotd(CommandContext &ctx);
 void    cmdPing(CommandContext &ctx);
 void    cmdQuit(CommandContext &ctx);
+void	cmdPrivmsg(CommandContext &ctx);

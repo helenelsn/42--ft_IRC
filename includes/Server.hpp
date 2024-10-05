@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:29 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/04 17:50:28 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/05 13:43:23 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 #include "irc.hpp"
 #include "Client.hpp"
-#include "Channel.hpp"
+#include "Channel_LN.hpp"
 #include "Logger.hpp"
 #include "CommandsHandler.hpp"
 

@@ -1,40 +1,72 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Channel.hpp                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/04 15:10:41 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/01 12:57:16 by Helene           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+// /* ************************************************************************** */
+// /*                                                                            */
+// /*                                                        :::      ::::::::   */
+// /*   Channel.hpp                                        :+:      :+:    :+:   */
+// /*                                                    +:+ +:+         +:+     */
+// /*   By: hepompid <hepompid@student.42.fr>          +#+  +:+       +#+        */
+// /*                                                +#+#+#+#+#+   +#+           */
+// /*   Created: 2024/10/03 17:22:29 by hepompid          #+#    #+#             */
+// /*   Updated: 2024/10/03 18:45:14 by hepompid         ###   ########.fr       */
+// /*                                                                            */
+// /* ************************************************************************** */
 
 #pragma once
 
-// Create a hash table to keep track of all irc channels -> could also just be a vector ? and would be in Server class
-
-#include "../includes/irc.hpp"
-#include "../includes/Client.hpp"
+#include "irc.hpp"
+#include "Client.hpp"
 
 class Channel
 {
-    public :
-        typedef std::vector<Client> clients;
-        typedef clients::iterator   clients_it;
-
-    private :
-        std::string _name;
-        std::string _topic;
-        std::string _currentlyaddModes;
-        std::vector<Client> _clients; // ou std::map<std::string, Client> pour <nick, client> (ou <client_fd, Client>)
+    private:
+        typedef std::map<std::string, Client> members;
+        typedef std::map<std::string, Client> operators;
+        typedef std::map<std::string, Client> invitedUsers;
         
-        // creation time 
-        // amount of users in the channel (if zero, channel is deleted)
-        // channel users, and their privileges
-        // channel modes
-
-    public :
-        // constructeurs etc 
+		members			_members;
+		operators		_operators;
+        std::string     _name;
+        std::string     _topic;
+        bool            _topicRestrictionMode;
+        bool            _inviteOnlyMode;
+		invitedUsers	_invitedUsers;
+        bool            _passwordMode;
+        std::string     _password;
+        bool            _userLimitMode;
+        unsigned int    _userLimit;
         
+    public:
+        Channel();
+		Channel(const std::string& name, Client& client);
+        Channel (const Channel& other);
+        ~Channel();
+
+        Channel& operator = (const Channel& other);
+
+		bool				isMember(const std::string& nick);
+        Client&				getMember(const std::string& nick);
+		unsigned int		getNumberOfMembers();
+		void				addMember(const Client& client);
+		void				removeMember(const Client& client);
+
+		bool				isOperator(const std::string& nick);
+		Client& 			getOperator(const std::string& nick);
+		unsigned int		getNumberOfOperators();
+		void				addOperator(const Client& client);
+		void				removeOperator(const Client& client);
+
+		bool				isInvited(const std::string& nick);
+		Client&				getInvitedUsers(const std::string& nick);
+		unsigned int		getNumberOfInvitedUsers();
+		void				addInvitedUser(const Client& client);
+		void				removeInvitedUser(const Client& client);
+
+		const std::string&	getName();
+		bool				hasTopic();
+		const std::string&	getTopic();
+		const bool&			getTopicRestrictionMode();
+		const bool&			getInviteOnlyMode();
+		const bool&			getPasswordMode();
+		const std::string&	getPassword();
+		const bool&			getUserLimitMode();
+		const unsigned int&	getUserLimit();
 };

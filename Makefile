@@ -6,7 +6,7 @@
 #    By: Helene <Helene@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/21 14:23:25 by Helene            #+#    #+#              #
-#    Updated: 2024/10/04 13:28:03 by Helene           ###   ########.fr        #
+#    Updated: 2024/10/05 13:42:39 by Helene           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,7 +35,8 @@ SRCS = 	main.cpp \
 		Commands/motd.cpp \
 		Commands/ping.cpp \
 		Commands/quit.cpp \
-		Commands/join.cpp 
+		Commands/join.cpp \
+		Commands/privmsg.cpp
 		
 OBJS = $(addprefix $(OBJS_DIR), $(SRCS:.cpp=.o))
 DEPS = $(addprefix $(OBJS_DIR), $(SRCS:.cpp=.d))
