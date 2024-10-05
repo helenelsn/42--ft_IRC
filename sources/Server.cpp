@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:49 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/04 17:52:34 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/05 15:18:03 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ Server::Server(Server const& other)
 
 Server& Server::operator=(Server const& other)
 {
-    (void)other; // ou se fait chier a tt coder ?
+    (void)other; // ou se fait chier a tt coder ? sachant qu'est en privé et que ne devrait jamais vouloir copier le serveur
     return *this;
 }
 
@@ -133,7 +133,7 @@ POLLERR : Error condition
 */
 void    Server::RunServer()
 { 
-    this->_logger.log(DEBUG, "In RunServer()");
+    // this->_logger.log(DEBUG, "In RunServer()");
     while (!serverShutdown)
     {
         // The poll() API allows the process to wait for an event to occur and to wake up the process when the event occurs.
@@ -184,6 +184,17 @@ std::string     Server::getCreationDate(void)
     return _creationDate;
 }
 
+Channel     &Server::getChannel(std::string const& name)
+{
+    channels_it it = this->_channels.find(name);
+    if (it == _channels.end())
+    {
+        // this->_log(ERROR, "Channel " + name + " does not appear in the Server's channels registry");
+        throw std::runtime_error("Error : Channel " + name + " does not appear in the Server's channels registry");
+    }
+    return it->second;     
+}
+
 /* -------------------------- ADD, REMOVE CLIENT ------------------------------- */
 
 void    Server::AddClient(int fd)
@@ -196,9 +207,9 @@ void    Server::AddClient(int fd)
     (this->_sockets).push_back(newClient);
     
     Client cli(fd, this);
-    // this->_clients[fd] = cli; // erreur de compilation liée aux constructeurs, pourquoi ?
+    this->_clients[fd] = cli; // erreur de compilation liée aux constructeurs, pourquoi ?
     
-    this->_clients.insert(std::pair<int, Client>(fd, cli));
+    // this->_clients.insert(std::pair<int, Client>(fd, cli));
 
 }
 
@@ -228,7 +239,16 @@ void    Server::AddClient(int fd)
 void    Server::InformOthers(Client &client, std::string const& source,  std::string const& msg)
 {
     std::vector<Client> recipients;
+    std::vector<std::string> channels = client.getChannels();
+    
     // parse Client's Channels and fill recipients vector
+    for (std::vector<std::string>::iterator it = channels.begin(); it != channels.end(); it++)
+    {
+        Channel currentChan = this->getChannel(*it);
+        
+        // for ()
+    }
+    
 
     for (std::vector<Client>::iterator it = recipients.begin(); it != recipients.end(); it++)
         it->addToWriteBuffer(source + " " + msg + CRLF);

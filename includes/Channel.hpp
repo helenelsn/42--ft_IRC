@@ -69,4 +69,8 @@ class Channel
 		const std::string&	getPassword();
 		const bool&			getUserLimitMode();
 		const unsigned int&	getUserLimit();
+
+		// send the given message to all clients of this channel, excluding the client given as parameter
+		
+		void				sendToAll(Client const& client, std::string const& msg);
 };

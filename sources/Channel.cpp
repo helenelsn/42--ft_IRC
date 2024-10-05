@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hepompid <hepompid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:52 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/05 09:25:47 by hepompid         ###   ########.fr       */
+/*   Updated: 2024/10/05 14:44:40 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ Channel::Channel(const std::string& name, Client& member) : _topic(""),
 	_userLimitMode(0)
 {
 	this->_name = name;
-	this->_members[member.getNickname()] = member;
+	this->_members[member.getNickname()] = member; 
 	this->_operators[member.getNickname()] = member;
 }
 
@@ -252,4 +252,19 @@ const bool& Channel::getUserLimitMode()
 const unsigned int& Channel::getUserLimit()
 {
 	return this->_userLimit;
+}
+
+
+
+// ###########  ###############
+
+
+void 	Channel::sendToAll(Client const& client, std::string const& msg)
+{
+	for (members::iterator it = this->_members.begin(); it != this->_members.end(); it++)
+	{
+		if (it->first == client.getNickname())
+			continue;
+		it->second.addToWriteBuffer(msg); // + CRLF ?
+	}
 }

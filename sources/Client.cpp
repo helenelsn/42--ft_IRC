@@ -6,11 +6,18 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:46 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/04 15:42:49 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/05 14:59:26 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Client.hpp"
+
+
+// ---------------- constructors, destructors, operators overloads ---------------------
+
+Client::Client()
+: _sockFd(-1), _state(Unregistered), _server(NULL)
+{ }
 
 Client::Client(int fd, Server *server)
 : _sockFd(fd), _state(Unregistered), _server(server)
@@ -60,6 +67,10 @@ bool Client::operator==(Client const& other)
     return (this->_nickname == other._nickname); // autre chose ?
 }
 
+
+
+// ----------------- Log in methods, additional getters -------------------
+
 void    Client::setPassword(std::string const& newPass)
 {
     _password = newPass;
@@ -67,7 +78,7 @@ void    Client::setPassword(std::string const& newPass)
 
 std::string Client::getPassword(void)
 {
-    return _password;
+    return this->_password;
 }
 
 std::string Client::getUserID(void) const
@@ -76,10 +87,27 @@ std::string Client::getUserID(void) const
     return userID;
 }
 
+Server& Client::getServer()
+{
+    return *(this->_server); // vérifier
+}
+
+int Client::getSockFd(void)
+{
+    return this->_sockFd;
+}
+
+std::vector<std::string> Client::getChannels(void)
+{
+    return this->_channelNames;
+}
+
+// ---------------- Client's state methods ----------------
+
 // ou juste int& getState(), renvoie une reference au state que peut direct modifier, et pas besoin de setState() ?
 int             Client::getState(void) const
 {
-    return _state;
+    return this->_state;
 }
 
 void            Client::setState(int newState)
@@ -104,15 +132,9 @@ bool    Client::checkState(int state)
     return ((_state & state) == state);   
 }
 
-Server& Client::getServer()
-{
-    return *(this->_server); // vérifier
-}
 
-int Client::getSockFd(void)
-{
-    return this->_sockFd;
-}
+
+// ------------ other getters && setters --------------
 
 void            Client::addModes(std::string const& modes)
 {
@@ -121,7 +143,7 @@ void            Client::addModes(std::string const& modes)
 
 std::string     Client::getModes(void)
 {
-    return _modes;
+    return this->_modes;
 }
 
 std::string Client::getNickname(void) const
@@ -136,7 +158,7 @@ void    Client::setNickname(std::string const& nick)
 
 std::string     Client::getUsername(void) const
 {
-    return _username;
+    return this->_username;
 }
 void            Client::setUsername(std::string const& user)
 {
@@ -145,7 +167,7 @@ void            Client::setUsername(std::string const& user)
 
 std::string     Client::getHostname(void) const
 {
-    return _hostname;
+    return this->_hostname;
 }
 void            Client::setHostname(std::string const& host)
 {
@@ -154,13 +176,16 @@ void            Client::setHostname(std::string const& host)
 
 std::string     Client::getRealname(void) const
 {
-    return _realname;
+    return this->_realname;
 }
 void            Client::setRealname(std::string const& real)
 {
     _realname = real;
 }
 
+
+
+// --------------- getters, setters on read and write buffers -------------------
 
 std::string& Client::getReadBuffer(void)
 {
@@ -189,7 +214,7 @@ void            Client::addToWriteBuffer(std::string const& data)
 
 std::string&    Client::getWriteBuffer(void)
 {
-    return _writeBuffer;
+    return this->_writeBuffer;
 }
 
 void            Client::clearWriteBuffer(void)

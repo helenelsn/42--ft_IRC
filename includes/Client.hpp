@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:26 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/05 13:42:48 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/05 14:55:37 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,17 +19,13 @@ class Server;
 // values = powers of 2s to be able to perform & and | operations 
 typedef enum 
 {
-    // None = 0, // It is a good practice to also include the enum constant None = 0 because enum fields are initialized to default(MyEnum) == 0, otherwise resulting in a value having no corresponding enum constant.
     Unregistered = 0,
     Nick = 1 << 0,
     User = 1 << 1,
     Registering = Nick | User, 
     Registered = 1 << 2,
-    Connected = 1 << 4, // ?
-    Disconnected = 1 << 3 // ?
-    // IncorrectNick = 1 << 1, // ?
-    // IncorrectPass ?
-    // ... 
+    Disconnected = 1 << 3
+    // Connected = 1 << 4,
 }       e_state; 
 
 /* Contains all informations about a client inside a server. 
@@ -52,12 +48,8 @@ class Client
 
         std::vector<std::string> _channelNames;
 
-        // un client a la liste des channels dans lesquels il est
-        
-        // int state; logged in, registered, disconnected, ?
-        
-
     public :
+        Client();
         Client(int fd, Server *server);
         ~Client();
         Client(Client const& other);
@@ -96,4 +88,6 @@ class Client
         void            addToWriteBuffer(std::string const& data);
         std::string&    getWriteBuffer(void);
         void            clearWriteBuffer(void);
+
+        std::vector<std::string> getChannels(void);
 };

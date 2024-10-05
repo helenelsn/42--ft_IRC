@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   nick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 16:55:46 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/04 17:28:51 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/05 14:15:27 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,4 +122,4 @@ void    cmdNick(CommandContext &ctx)
     and to inform other clients about the change of nickname. In these cases, the <source> of the message 
     will be the old nickname [ [ "!" user ] "@" host ] of the user who is changing their nickname.
     */
-}
+} 
