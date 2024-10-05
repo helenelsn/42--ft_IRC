@@ -6,11 +6,15 @@
 /*   By: hepompid <hepompid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:52 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/05 01:16:18 by hepompid         ###   ########.fr       */
+/*   Updated: 2024/10/05 09:25:47 by hepompid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Channel.hpp"
+
+
+// ######## CONSTRUCTORS & ASSIGNMENT ######
+
 
 Channel::Channel() : _topic(""), _topicRestrictionMode(0), _inviteOnlyMode(0),
 	_passwordMode(0), _userLimitMode(0) {}
@@ -57,6 +61,11 @@ Channel& Channel::operator = (const Channel& other)
 	return (*this);
 }
 
+
+
+// ######## MEMBER METHODS #################
+
+
 bool Channel::isMember(const std::string& nick)
 {
 	std::map<std::string, Client>::const_iterator it;
@@ -85,6 +94,24 @@ unsigned int Channel::getNumberOfMembers()
 		n++;
 	return n;
 }
+
+void Channel::addMember(const Client& client)
+{
+	this->_members[client.getNickname()] = client;
+}
+
+void Channel::removeMember(const Client& client)
+{
+	std::map<std::string, Client>::iterator	it;
+
+	it = this->_members.find(client.getNickname());
+	this->_members.erase(it);
+}
+
+
+
+// ######## OPERATOR METHODS ###############
+
 
 bool Channel::isOperator(const std::string& nick)
 {
@@ -115,6 +142,24 @@ unsigned int Channel::getNumberOfOperators()
 	return n;
 }
 
+void Channel::addOperator(const Client& client)
+{
+	this->_operators[client.getNickname()] = client;
+}
+
+void Channel::removeOperator(const Client& client)
+{
+	std::map<std::string, Client>::iterator	it;
+
+	it = this->_operators.find(client.getNickname());
+	this->_operators.erase(it);
+}
+
+
+
+// ######## INVITED USER METHODS ###########
+
+
 bool Channel::isInvited(const std::string& nick)
 {
 	std::map<std::string, Client>::const_iterator it;
@@ -144,9 +189,34 @@ unsigned int Channel::getNumberOfInvitedUsers()
 	return n;
 }
 
+void Channel::addInvitedUser(const Client& client)
+{
+	this->_invitedUsers[client.getNickname()] = client;
+}
+
+void Channel::removeInvitedUser(const Client& client)
+{
+	std::map<std::string, Client>::iterator	it;
+
+	it = this->_invitedUsers.find(client.getNickname());
+	this->_invitedUsers.erase(it);
+}
+
+
+
+// ########### OTHER METHODS ###############
+
+
 const std::string& Channel::getName()
 {
 	return this->_name;
+}
+
+bool Channel::hasTopic()
+{
+	if (this->_topic.empty())
+		return false;
+	return true;
 }
 
 const std::string& Channel::getTopic()

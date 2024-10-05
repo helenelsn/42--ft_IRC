@@ -45,13 +45,23 @@ class Channel
 		bool				isMember(const std::string& nick);
         Client&				getMember(const std::string& nick);
 		unsigned int		getNumberOfMembers();
+		void				addMember(const Client& client);
+		void				removeMember(const Client& client);
+
 		bool				isOperator(const std::string& nick);
 		Client& 			getOperator(const std::string& nick);
 		unsigned int		getNumberOfOperators();
+		void				addOperator(const Client& client);
+		void				removeOperator(const Client& client);
+
 		bool				isInvited(const std::string& nick);
 		Client&				getInvitedUsers(const std::string& nick);
 		unsigned int		getNumberOfInvitedUsers();
+		void				addInvitedUser(const Client& client);
+		void				removeInvitedUser(const Client& client);
+
 		const std::string&	getName();
+		bool				hasTopic();
 		const std::string&	getTopic();
 		const bool&			getTopicRestrictionMode();
 		const bool&			getInviteOnlyMode();
