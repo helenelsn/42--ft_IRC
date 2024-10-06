@@ -22,3 +22,4 @@ The available (user) modes are as follows:
 
 ----------------------------------------------------------------------------------------------------------------------------
 
+Doit on implementer les channels private et et secret, ou juste public ? 

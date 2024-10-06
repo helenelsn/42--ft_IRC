@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:52 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/05 14:44:40 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/06 18:09:45 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ Channel::Channel(const Channel& other)
 	this->_password = other._password;
 	this->_userLimitMode = other._userLimitMode;
 	this->_userLimit = other._userLimit;
+	this->_founder = other._founder;
 }
 
 Channel::Channel(const std::string& name, Client& member) : _topic(""),
@@ -41,6 +42,7 @@ Channel::Channel(const std::string& name, Client& member) : _topic(""),
 	this->_name = name;
 	this->_members[member.getNickname()] = member; 
 	this->_operators[member.getNickname()] = member;
+	this->_founder = name;
 }
 
 Channel::~Channel() {}
@@ -254,10 +256,29 @@ const unsigned int& Channel::getUserLimit()
 	return this->_userLimit;
 }
 
-
+bool 	Channel::isFull()
+{
+	if (_userLimitMode && _members.size() >= _userLimit)
+		return true;
+	return false;
+}
 
 // ###########  ###############
 
+std::string		Channel::getFounder()
+{
+	return this->_founder;
+}
+
+bool 			Channel::isFounder(std::string const& client)
+{
+	return (client == _founder);
+}
+
+Channel::members 	&Channel::getAllMembers(void)
+{
+	return this->_members;
+}
 
 void 	Channel::sendToAll(Client const& client, std::string const& msg)
 {

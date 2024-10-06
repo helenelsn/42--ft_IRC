@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:29 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/05 14:30:05 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/06 16:17:22 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ class Server
 
             // Useful for commands processing
         bool                NickAlreadyUsed(std::string const& newNick);
+        void                addChannel(Channel &newChannel, std::string const& name);
 };
 
 /*

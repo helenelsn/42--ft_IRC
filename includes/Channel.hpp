@@ -15,6 +15,13 @@
 #include "irc.hpp"
 #include "Client.hpp"
 
+typedef enum 
+{
+	Normal = 0,
+	Founder = 1 << 0,
+	Operator = 1 << 1
+}	e_memberState;
+
 class Channel
 {
     private:
@@ -33,6 +40,7 @@ class Channel
         std::string     _password;
         bool            _userLimitMode;
         unsigned int    _userLimit;
+		std::string 	_founder;
         
     public:
         Channel();
@@ -69,8 +77,11 @@ class Channel
 		const std::string&	getPassword();
 		const bool&			getUserLimitMode();
 		const unsigned int&	getUserLimit();
+		bool 				isFull();
 
 		// send the given message to all clients of this channel, excluding the client given as parameter
-		
 		void				sendToAll(Client const& client, std::string const& msg);
+		members&			getAllMembers(void);
+		std::string 		getFounder();
+		bool 				isFounder(std::string const& client);
 };

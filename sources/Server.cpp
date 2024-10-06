@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:49 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/05 15:18:03 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/06 16:18:11 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -238,20 +238,26 @@ void    Server::AddClient(int fd)
 
 void    Server::InformOthers(Client &client, std::string const& source,  std::string const& msg)
 {
-    std::vector<Client> recipients;
+    std::map<std::string, Client> recipients; // diff entre map et set ?
     std::vector<std::string> channels = client.getChannels();
     
     // parse Client's Channels and fill recipients vector
     for (std::vector<std::string>::iterator it = channels.begin(); it != channels.end(); it++)
     {
-        Channel currentChan = this->getChannel(*it);
+        Channel &currentChan = this->getChannel(*it);
         
-        // for ()
+        for (std::map<std::string, Client>::iterator itt = currentChan.getAllMembers().begin(); itt != currentChan.getAllMembers().end(); itt++)
+        {
+            if (recipients.empty() || recipients.find(itt->first) != recipients.end())
+            {
+                // add to list of recipients
+                recipients[itt->first] = itt->second;
+            }
+        }
     }
     
-
-    for (std::vector<Client>::iterator it = recipients.begin(); it != recipients.end(); it++)
-        it->addToWriteBuffer(source + " " + msg + CRLF);
+    for (std::map<std::string, Client>::iterator it = recipients.begin(); it != recipients.end(); it++)
+        it->second.addToWriteBuffer(source + " " + msg + CRLF);
 }
 
 // method to call in case of error return (poll(), recv() )
@@ -321,7 +327,11 @@ bool    Server::NickAlreadyUsed(std::string const& newNick)
     return false;
 }
 
-
+void    Server::addChannel(Channel &newChannel, std::string const& name)
+{
+    if (this->_channels.find(name) == this->_channels.end())
+        this->_channels[name] = newChannel;
+}
 
 /* -------------------------- Restart and Shutdown ------------------------------- */
 
