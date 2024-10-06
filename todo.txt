@@ -24,7 +24,7 @@ QUIT :
 
 NICK :
     Informer tous les clients ayant des channels ne commun avec le client ayant changé son nick que 
-    ce dernier l'a changé, sauf si cette commande est tapée pendant la registration
+        ce dernier l'a changé, sauf si cette commande est tapée pendant la registration
     Checker le comportement attendu si il n'y a pas de previous nickname 
 
 

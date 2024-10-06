@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:49 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/06 16:18:11 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/06 20:32:05 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -327,10 +327,24 @@ bool    Server::NickAlreadyUsed(std::string const& newNick)
     return false;
 }
 
+
+
+/* -------------------------- Channels methods ------------------------------- */
+
 void    Server::addChannel(Channel &newChannel, std::string const& name)
 {
     if (this->_channels.find(name) == this->_channels.end())
         this->_channels[name] = newChannel;
+}
+
+bool    Server::channelExists(std::string const& channel)
+{
+   for ( Server::channels_it it = this->_channels.begin(); it != this->_channels.end(); it++)
+   {
+        if (it->first == channel)
+            return true;
+   }
+   return false;
 }
 
 /* -------------------------- Restart and Shutdown ------------------------------- */

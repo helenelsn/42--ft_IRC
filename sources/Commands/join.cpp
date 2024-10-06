@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 18:05:03 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/06 19:17:23 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/06 21:10:54 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ static std::string  getPrefix(Client &client, Channel &channel)
         prefix = "@";
     else // halfops are not implemented here
         prefix = ""; 
+    return prefix;
 }
 
 static void    joinRpl(Client &client, Channel &channel)
@@ -42,7 +43,7 @@ static void    joinRpl(Client &client, Channel &channel)
     {
         prefix = getPrefix(client, channel);
         if (it != channel.getAllMembers().begin())
-            ss << " ";
+            ss << " "; // sépare chaque client par un espace
         ss << prefix << client.getNickname();
     }
     ss << CRLF;
@@ -89,13 +90,24 @@ void    joinChannel(CommandContext &ctx, std::string const& channelName, std::st
 void    parseParameters(std::vector<std::string> &params, std::vector<std::string> &channels,
         std::vector<std::string> &keys)
 {
-    for (size_t i = 0; i < params.size(); i++)
+    // les channels et keys sont séparées par un ','
+    // ex : JOIN #foo,&bar fubar 
+
+    std::stringstream ss(params[0]);
+    std::string buffer;
+
+    ss << ',';
+    while (getline(ss, buffer, ','))
+        channels.push_back(buffer);
+    
+    if (params.size() >= 2)
     {
-        if (params[i][0] == '#') // '&' as well ?
-            channels.push_back(params[i]);
-        else
-            keys.push_back(params[i]);
+        ss.str(params[1]);
+        ss << ',';
+        while (getline(ss, buffer, ','))
+            keys.push_back(buffer);
     }
+
 }
 
 void    cmdJoin(CommandContext &ctx)
