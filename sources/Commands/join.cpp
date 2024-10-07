@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 18:05:03 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/06 21:10:54 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/07 19:13:01 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,14 +39,15 @@ static void    joinRpl(Client &client, Channel &channel)
     std::stringstream ss;
     std::string prefix;
     ss << RPL_NAMREPLY(client.getNickname(), "=", channel.getName());
-    for (std::map<std::string, Client>::iterator it = channel.getAllMembers().begin(); it != channel.getAllMembers().end(); it++)
+    for (std::map<std::string, Client*>::iterator it = channel.getAllMembers().begin(); it != channel.getAllMembers().end(); it++)
     {
         prefix = getPrefix(client, channel);
-        if (it != channel.getAllMembers().begin())
+        if (it != channel.getAllMembers().begin() && *(it->second) != client)
             ss << " "; // sépare chaque client par un espace
-        ss << prefix << client.getNickname();
+        ss << prefix << it->first;
     }
     ss << CRLF;
+    client.addToWriteBuffer(ss.str());
     client.addToWriteBuffer(RPL_ENDOFNAMES(client.getNickname(), channel.getName()));
 }
 
@@ -60,30 +61,35 @@ Check : Does the channel exist
 */
 void    joinChannel(CommandContext &ctx, std::string const& channelName, std::string const& key)
 {
-    Channel channel; 
-    try {
-        channel = ctx._server.getChannel(channelName); // peut bien modifier le channel via cette variable?
-    }
-    catch (std::exception &e) { // channel does not exist -> create it
-        Channel newChannel(channelName, ctx._client);
+    Channel *channel = ctx._server.getChannel(channelName);
+    if (!channel)
+    {
+        Channel newChannel(channelName, &ctx._client);
         ctx._server.addChannel(newChannel, channelName);
         joinRpl(ctx._client, newChannel);
         return ;
     }
     
-    if (channel.isInvited(ctx._client.getNickname()))
-        channel.addInvitedUser(ctx._client);
-    else if (channel.isFull())
+    if (channel->isInvited(ctx._client.getNickname()))
+        channel->addInvitedUser(&ctx._client);
+    else if (channel->isFull())
         ctx._client.addToWriteBuffer(ERR_CHANNELISFULL(ctx._client.getNickname(), channelName));
-    else if (channel.getInviteOnlyMode() && channel.isInvited(ctx._client.getNickname()))
+    else if (channel->getInviteOnlyMode() && channel->isInvited(ctx._client.getNickname()))
         ctx._client.addToWriteBuffer(ERR_INVITEONLYCHAN(ctx._client.getNickname(), channelName));
-    else if (channel.getPasswordMode() && (key.empty() || key != channel.getPassword()))
+    else if (channel->getPasswordMode() && (key.empty() || key != channel->getPassword()))
         ctx._client.addToWriteBuffer(ERR_BADCHANNELKEY(ctx._client.getNickname(), channelName));
     else
     {
-        channel.addMember(ctx._client);
-        joinRpl(ctx._client, channel);
-        channel.sendToAll(ctx._client, ctx._client.getUserID() + " JOIN " + channel.getName());
+        joinRpl(ctx._client, *channel);
+
+        // std::string prefix = ctx._client.getUserID();
+        // std::stringstream ss;
+        // ss << prefix << " JOIN " << channelName ;
+        // for (std::map<std::string, Client>::iterator it = channel->getAllMembers().begin(); it != channel->getAllMembers().end(); it++)
+        //     it->second.addToWriteBuffer(ss.str());
+            
+        channel->addMember(&ctx._client);
+        channel->sendToAll(ctx._client, ctx._client.getUserID() + " JOIN " + channel->getName() + CRLF);
     }
 }
 
@@ -96,18 +102,23 @@ void    parseParameters(std::vector<std::string> &params, std::vector<std::strin
     std::stringstream ss(params[0]);
     std::string buffer;
 
-    ss << ',';
+    // ss << ',';
     while (getline(ss, buffer, ','))
         channels.push_back(buffer);
     
     if (params.size() >= 2)
     {
         ss.str(params[1]);
-        ss << ',';
+        // ss << ',';
         while (getline(ss, buffer, ','))
             keys.push_back(buffer);
     }
 
+}
+
+bool    checkChanMask(std::string const& chanName)
+{
+    return (chanName[0] == '#'); // need to implement &channelName as well as #channelName ?
 }
 
 void    cmdJoin(CommandContext &ctx)
@@ -125,6 +136,13 @@ void    cmdJoin(CommandContext &ctx)
     size_t j = 0;
     for (size_t i = 0; i < channels.size(); i++)
     {
+        if (!checkChanMask(channels[i]))
+        {
+            ctx._client.addToWriteBuffer(ERR_BADCHANMASK(channels[i]));
+            if (j < keys.size())
+                j++;
+            continue;
+        }
         if (j < keys.size())
         {
             joinChannel(ctx, channels[i], keys[j]); // checker si une erreur pour l'un des channels fait que l'on arrete de checker pour les suivants

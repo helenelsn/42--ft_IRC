@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:49 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/06 20:32:05 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/07 19:09:20 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,15 +184,16 @@ std::string     Server::getCreationDate(void)
     return _creationDate;
 }
 
-Channel     &Server::getChannel(std::string const& name)
+Channel     *Server::getChannel(std::string const& name)
 {
     channels_it it = this->_channels.find(name);
     if (it == _channels.end())
     {
-        // this->_log(ERROR, "Channel " + name + " does not appear in the Server's channels registry");
-        throw std::runtime_error("Error : Channel " + name + " does not appear in the Server's channels registry");
+        this->_log(ERROR, "Channel " + name + " does not appear in the Server's channels registry");
+        // throw std::runtime_error("Error : Channel " + name + " does not appear in the Server's channels registry");
+        return NULL;
     }
-    return it->second;     
+    return &(it->second);     
 }
 
 /* -------------------------- ADD, REMOVE CLIENT ------------------------------- */
@@ -238,15 +239,15 @@ void    Server::AddClient(int fd)
 
 void    Server::InformOthers(Client &client, std::string const& source,  std::string const& msg)
 {
-    std::map<std::string, Client> recipients; // diff entre map et set ?
+    std::map<std::string, Client*> recipients; // diff entre map et set ?
     std::vector<std::string> channels = client.getChannels();
     
     // parse Client's Channels and fill recipients vector
     for (std::vector<std::string>::iterator it = channels.begin(); it != channels.end(); it++)
     {
-        Channel &currentChan = this->getChannel(*it);
+        Channel *currentChan = this->getChannel(*it);
         
-        for (std::map<std::string, Client>::iterator itt = currentChan.getAllMembers().begin(); itt != currentChan.getAllMembers().end(); itt++)
+        for (std::map<std::string, Client*>::iterator itt = currentChan->getAllMembers().begin(); itt != currentChan->getAllMembers().end(); itt++)
         {
             if (recipients.empty() || recipients.find(itt->first) != recipients.end())
             {
@@ -256,8 +257,8 @@ void    Server::InformOthers(Client &client, std::string const& source,  std::st
         }
     }
     
-    for (std::map<std::string, Client>::iterator it = recipients.begin(); it != recipients.end(); it++)
-        it->second.addToWriteBuffer(source + " " + msg + CRLF);
+    for (std::map<std::string, Client*>::iterator it = recipients.begin(); it != recipients.end(); it++)
+        it->second->addToWriteBuffer(source + " " + msg + CRLF);
 }
 
 // method to call in case of error return (poll(), recv() )
@@ -335,6 +336,13 @@ void    Server::addChannel(Channel &newChannel, std::string const& name)
 {
     if (this->_channels.find(name) == this->_channels.end())
         this->_channels[name] = newChannel;
+}
+
+void    Server::removeChannel(std::string const& name)
+{
+    Server::channels_it it = this->_channels.find(name);
+    if (it != this->_channels.end())
+        this->_channels.erase(it);
 }
 
 bool    Server::channelExists(std::string const& channel)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NumericalReplies.hpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 19:03:14 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/06 18:42:30 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/07 18:06:58 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,7 @@ A numeric reply is not allowed to originate from a client.
     RPL_MOTDSTART (375)
     RPL_MOTD (372)
     RPL_ENDOFMOTD (376) */
-# define ERR_NOMOTD(client) (": 422 " + client + ":MOTD file is missing" + CRLF)
+# define ERR_NOMOTD(client) (": 422 " + client + " :MOTD file is missing" + CRLF)
 // # define ERR_NOSUCHSERVER(client, server_name) (": 402 " + client + " " + server_name + " :No such server" + CRLF)
 
 // VERSION ?

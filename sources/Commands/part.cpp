@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   part.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 15:26:00 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/06 21:13:17 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/07 18:16:17 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,25 +31,38 @@ void    cmdPart(CommandContext &ctx)
         return ;
     } 
     
-    Channel channel;
+    Channel *channel;
     std::string channelName;
     std::stringstream ss(ctx._parameters[0]);
+    std::stringstream ssMsg;
     std::string reason = (ctx._parameters.size() >= 2) ? ctx._parameters[1] : "";
+    bool delChannel;
     
-    ss << ','; // ca marche pour la suite ça ?
     getline(ss, channelName, ','); // car ss n'est d'office pas vide
     do
     {
-        channelName = channelName.substr(1); // removes the '#' or '&' caracter
+        //channelName = channelName.substr(1); // removes the '#' or '&' caracter ?
         if (!ctx._server.channelExists(channelName))
             ctx._client.addToWriteBuffer(ERR_NOSUCHCHANNEL(ctx._client.getNickname(), channelName)); // add the '#' before the channel's name ?
         else
         {
             channel = ctx._server.getChannel(channelName);
-            ss << ctx._client.getUserID() << " PART #" << channelName << " :" << reason << CRLF;
-            channel.sendToAll(ctx._client, ss.str());
+            delChannel = (channel->getNumberOfMembers() == 1);
+            ssMsg << ctx._client.getUserID() << " PART #" << channelName << " :" << reason << CRLF;
+            ctx._client.addToWriteBuffer(ssMsg.str());
+            if (delChannel)
+            {
+                ctx._server.removeChannel(channelName);
+                ctx._server._log(DEBUG, "Removing channel " + channelName);
+            }
+            else
+                channel->sendToAll(ctx._client, ssMsg.str());
         }
     }
     while (getline(ss, channelName, ',') && !ss.eof());
-    
 }
+
+/* PASS pass 
+USER ln 0 * lnreal 
+NICK lnick 
+JOIN #test  */

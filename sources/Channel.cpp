@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:52 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/06 18:09:45 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/07 19:11:52 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,13 @@ Channel::Channel(const Channel& other)
 	this->_founder = other._founder;
 }
 
-Channel::Channel(const std::string& name, Client& member) : _topic(""),
+Channel::Channel(const std::string& name, Client* member) : _topic(""),
 	_topicRestrictionMode(0), _inviteOnlyMode(0), _passwordMode(0),
 	_userLimitMode(0)
 {
 	this->_name = name;
-	this->_members[member.getNickname()] = member; 
-	this->_operators[member.getNickname()] = member;
+	this->_members[member->getNickname()] = member; 
+	this->_operators[member->getNickname()] = member;
 	this->_founder = name;
 }
 
@@ -70,7 +70,7 @@ Channel& Channel::operator = (const Channel& other)
 
 bool Channel::isMember(const std::string& nick)
 {
-	std::map<std::string, Client>::const_iterator it;
+	std::map<std::string, Client*>::const_iterator it;
 
 	it = this->_members.find(nick);
 	if (it != this->_members.end())
@@ -80,15 +80,15 @@ bool Channel::isMember(const std::string& nick)
 
 Client& Channel::getMember(const std::string& nick)
 {
-	std::map<std::string, Client>::iterator it;
+	std::map<std::string, Client*>::iterator it;
 
 	it = this->_members.find(nick);
-	return it->second;
+	return *(it->second);
 }
 
 unsigned int Channel::getNumberOfMembers()
 {
-	std::map<std::string, Client>::iterator	it;
+	std::map<std::string, Client*>::iterator	it;
 	int										n;
 
 	n = 0;
@@ -97,14 +97,14 @@ unsigned int Channel::getNumberOfMembers()
 	return n;
 }
 
-void Channel::addMember(const Client& client)
+void Channel::addMember(Client *client)
 {
-	this->_members[client.getNickname()] = client;
+	this->_members[client->getNickname()] = client;
 }
 
 void Channel::removeMember(const Client& client)
 {
-	std::map<std::string, Client>::iterator	it;
+	std::map<std::string, Client*>::iterator	it;
 
 	it = this->_members.find(client.getNickname());
 	this->_members.erase(it);
@@ -117,7 +117,7 @@ void Channel::removeMember(const Client& client)
 
 bool Channel::isOperator(const std::string& nick)
 {
-	std::map<std::string, Client>::const_iterator it;
+	std::map<std::string, Client*>::const_iterator it;
 
 	it = this->_operators.find(nick);
 	if (it != this->_operators.end())
@@ -127,15 +127,15 @@ bool Channel::isOperator(const std::string& nick)
 
 Client& Channel::getOperator(const std::string& nick)
 {
-	std::map<std::string, Client>::iterator it;
+	std::map<std::string, Client*>::iterator it;
 
 	it = this->_operators.find(nick);
-	return it->second;
+	return *(it->second);
 }
 
 unsigned int Channel::getNumberOfOperators()
 {
-	std::map<std::string, Client>::iterator	it;
+	std::map<std::string, Client*>::iterator	it;
 	int										n;
 
 	n = 0;
@@ -144,14 +144,14 @@ unsigned int Channel::getNumberOfOperators()
 	return n;
 }
 
-void Channel::addOperator(const Client& client)
+void Channel::addOperator(Client *client)
 {
-	this->_operators[client.getNickname()] = client;
+	this->_operators[client->getNickname()] = client;
 }
 
 void Channel::removeOperator(const Client& client)
 {
-	std::map<std::string, Client>::iterator	it;
+	std::map<std::string, Client*>::iterator	it;
 
 	it = this->_operators.find(client.getNickname());
 	this->_operators.erase(it);
@@ -164,7 +164,7 @@ void Channel::removeOperator(const Client& client)
 
 bool Channel::isInvited(const std::string& nick)
 {
-	std::map<std::string, Client>::const_iterator it;
+	std::map<std::string, Client*>::const_iterator it;
 
 	it = this->_invitedUsers.find(nick);
 	if (it != this->_invitedUsers.end())
@@ -174,15 +174,15 @@ bool Channel::isInvited(const std::string& nick)
 
 Client& Channel::getInvitedUsers(const std::string& nick)
 {
-	std::map<std::string, Client>::iterator it;
+	std::map<std::string, Client*>::iterator it;
 
 	it = this->_invitedUsers.find(nick);
-	return it->second;
+	return *(it->second);
 }
 
 unsigned int Channel::getNumberOfInvitedUsers()
 {
-	std::map<std::string, Client>::iterator	it;
+	std::map<std::string, Client*>::iterator	it;
 	int										n;
 
 	n = 0;
@@ -191,14 +191,14 @@ unsigned int Channel::getNumberOfInvitedUsers()
 	return n;
 }
 
-void Channel::addInvitedUser(const Client& client)
+void Channel::addInvitedUser(Client *client)
 {
-	this->_invitedUsers[client.getNickname()] = client;
+	this->_invitedUsers[client->getNickname()] = client;
 }
 
 void Channel::removeInvitedUser(const Client& client)
 {
-	std::map<std::string, Client>::iterator	it;
+	std::map<std::string, Client*>::iterator	it;
 
 	it = this->_invitedUsers.find(client.getNickname());
 	this->_invitedUsers.erase(it);
@@ -286,6 +286,6 @@ void 	Channel::sendToAll(Client const& client, std::string const& msg)
 	{
 		if (it->first == client.getNickname())
 			continue;
-		it->second.addToWriteBuffer(msg); // + CRLF ?
+		it->second->addToWriteBuffer(msg); // + CRLF ?
 	}
 }

@@ -25,9 +25,9 @@ typedef enum
 class Channel
 {
     private:
-        typedef std::map<std::string, Client> members;
-        typedef std::map<std::string, Client> operators;
-        typedef std::map<std::string, Client> invitedUsers;
+        typedef std::map<std::string, Client*> members;
+        typedef std::map<std::string, Client*> operators;
+        typedef std::map<std::string, Client*> invitedUsers;
         
 		members			_members;
 		operators		_operators;
@@ -44,7 +44,7 @@ class Channel
         
     public:
         Channel();
-		Channel(const std::string& name, Client& client);
+		Channel(const std::string& name, Client *client);
         Channel (const Channel& other);
         ~Channel();
 
@@ -53,19 +53,19 @@ class Channel
 		bool				isMember(const std::string& nick);
         Client&				getMember(const std::string& nick);
 		unsigned int		getNumberOfMembers();
-		void				addMember(const Client& client);
+		void				addMember(Client *client);
 		void				removeMember(const Client& client);
 
 		bool				isOperator(const std::string& nick);
 		Client& 			getOperator(const std::string& nick);
 		unsigned int		getNumberOfOperators();
-		void				addOperator(const Client& client);
+		void				addOperator(Client *client);
 		void				removeOperator(const Client& client);
 
 		bool				isInvited(const std::string& nick);
 		Client&				getInvitedUsers(const std::string& nick);
 		unsigned int		getNumberOfInvitedUsers();
-		void				addInvitedUser(const Client& client);
+		void				addInvitedUser(Client *client);
 		void				removeInvitedUser(const Client& client);
 
 		const std::string&	getName();

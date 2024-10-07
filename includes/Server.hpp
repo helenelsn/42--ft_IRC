@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:29 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/06 20:30:16 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/07 18:14:04 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ class Server
         void                RunServer(); // looping calls to poll()
          
         Client              *getClient(int fd); // checker si peut pas juste renvoyer une référence
-        Channel             &getChannel(std::string const& name); 
+        Channel             *getChannel(std::string const& name); 
         
             // Client registering/log in
         void                tryLogin(Client &client);
@@ -94,6 +94,7 @@ class Server
             // Useful for commands processing
         bool                NickAlreadyUsed(std::string const& newNick);
         void                addChannel(Channel &newChannel, std::string const& name);
+        void                removeChannel(std::string const& name);
         bool                channelExists(std::string const& channel);
 };
 

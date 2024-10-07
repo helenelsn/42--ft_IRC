@@ -23,3 +23,8 @@ The available (user) modes are as follows:
 ----------------------------------------------------------------------------------------------------------------------------
 
 Doit on implementer les channels private et et secret, ou juste public ? 
+
+
+
+
+Si un user se deconnecte, et qu il etait le seul operator d un channel, supprimer ce channel ? 
