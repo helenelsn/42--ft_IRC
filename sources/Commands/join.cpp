@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 18:05:03 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/07 19:13:01 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/07 23:16:44 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,9 +116,11 @@ void    parseParameters(std::vector<std::string> &params, std::vector<std::strin
 
 }
 
+
 bool    checkChanMask(std::string const& chanName)
 {
-    return (chanName[0] == '#'); // need to implement &channelName as well as #channelName ?
+    return (!chanName.empty() && chanName[0] == '#' && chanName.size() <= 50
+        && (chanName.find_first_of("\r\n\b:, ") == std::string::npos)); // need to implement &channelName as well as #channelName ?
 }
 
 void    cmdJoin(CommandContext &ctx)

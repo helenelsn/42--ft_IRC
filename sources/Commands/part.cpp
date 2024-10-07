@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   part.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 15:26:00 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/07 18:16:17 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/07 23:14:06 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void    cmdPart(CommandContext &ctx)
     Channel *channel;
     std::string channelName;
     std::stringstream ss(ctx._parameters[0]);
-    std::stringstream ssMsg;
+    std::stringstream msg;
     std::string reason = (ctx._parameters.size() >= 2) ? ctx._parameters[1] : "";
     bool delChannel;
     
@@ -48,15 +48,15 @@ void    cmdPart(CommandContext &ctx)
         {
             channel = ctx._server.getChannel(channelName);
             delChannel = (channel->getNumberOfMembers() == 1);
-            ssMsg << ctx._client.getUserID() << " PART #" << channelName << " :" << reason << CRLF;
-            ctx._client.addToWriteBuffer(ssMsg.str());
+            msg << ctx._client.getUserID() << " PART #" << channelName << " :" << reason << CRLF;
+            ctx._client.addToWriteBuffer(msg.str());
             if (delChannel)
             {
                 ctx._server.removeChannel(channelName);
                 ctx._server._log(DEBUG, "Removing channel " + channelName);
             }
             else
-                channel->sendToAll(ctx._client, ssMsg.str());
+                channel->sendToAll(ctx._client, msg.str());
         }
     }
     while (getline(ss, channelName, ',') && !ss.eof());
