@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 18:05:03 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/07 23:16:44 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/08 12:53:52 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,14 +102,12 @@ void    parseParameters(std::vector<std::string> &params, std::vector<std::strin
     std::stringstream ss(params[0]);
     std::string buffer;
 
-    // ss << ',';
     while (getline(ss, buffer, ','))
         channels.push_back(buffer);
     
     if (params.size() >= 2)
     {
         ss.str(params[1]);
-        // ss << ',';
         while (getline(ss, buffer, ','))
             keys.push_back(buffer);
     }

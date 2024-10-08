@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:49 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/07 19:09:20 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/08 12:56:12 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -250,10 +250,7 @@ void    Server::InformOthers(Client &client, std::string const& source,  std::st
         for (std::map<std::string, Client*>::iterator itt = currentChan->getAllMembers().begin(); itt != currentChan->getAllMembers().end(); itt++)
         {
             if (recipients.empty() || recipients.find(itt->first) != recipients.end())
-            {
-                // add to list of recipients
                 recipients[itt->first] = itt->second;
-            }
         }
     }
     
