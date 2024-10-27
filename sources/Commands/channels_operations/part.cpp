@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 15:26:00 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/27 15:05:25 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/27 18:43:13 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void    cmdPart(CommandContext &ctx)
                 ctx._server._log(DEBUG, "Removing channel " + channelName);
             }
             else
-                channel->sendToAll(ctx._client, msg.str());
+                channel->sendToAll(ctx._client.getNickname(), msg.str());
         }
     }
     while (getline(ss, channelName, ',') && !ss.eof());

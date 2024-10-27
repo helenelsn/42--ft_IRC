@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:49 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/27 13:09:32 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/27 17:51:19 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,12 +171,17 @@ void    Server::RunServer()
 /* -------------------------- GETTERS, SETTERS ------------------------------- */
 
 // quel type renvoyer ? pointeur, iterateur, ... ?
-Client              *Server::getClient(int fd)
+Client  *Server::getClient(int fd)
 {
     clients_it cli = this->_clients.find(fd);
     if (cli == _clients.end())
         return NULL;
     return &(cli->second);
+}
+
+Client  *Server::getClientByNick(std::string const& nick)
+{
+    
 }
 
 std::string     Server::getCreationDate(void)
@@ -315,7 +320,7 @@ void    Server::RemoveClient(Client *client)
 
 /* -------------------------- COMMANDS' ADDITIONAL METHODS ------------------------------- */
 
-bool    Server::NickAlreadyUsed(std::string const& newNick)
+bool    Server::nickInUse(std::string const& newNick)
 {
     for (clients_it it = this->_clients.begin(); it != this->_clients.end(); it++)
     {

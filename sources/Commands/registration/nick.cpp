@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 16:55:46 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/27 14:17:25 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/27 17:34:55 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ void    cmdNick(CommandContext &ctx)
         ctx._client.addToWriteBuffer(ERR_ERRONEUSNICKNAME(ctx._client.getNickname(), nickname));
         return ;
     }
-    if (ctx._server.NickAlreadyUsed(nickname))
+    if (ctx._server.nickInUse(nickname))
     {
         ctx._client.addToWriteBuffer(ERR_NICKNAMEINUSE(ctx._client.getNickname(), nickname)); // verifier les params a donner a la macro, pas sure que 'client' soit le nick
         return ;

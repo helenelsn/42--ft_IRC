@@ -27,7 +27,8 @@ class Channel
     private:
         typedef std::map<std::string, Client*> members;
         typedef std::map<std::string, Client*> operators;
-        typedef std::map<std::string, Client*> invitedUsers;
+        // typedef std::map<std::string, Client*> invitedUsers;
+		typedef std::vector<std::string> invitedUsers;
         
 		members			_members;
 		operators		_operators;
@@ -54,23 +55,26 @@ class Channel
         Client&				getMember(const std::string& nick);
 		unsigned int		getNumberOfMembers();
 		void				addMember(Client *client);
-		void				removeMember(const Client& client);
+		void				removeMember(std::string const& client);
 
 		bool				isOperator(const std::string& nick);
 		Client& 			getOperator(const std::string& nick);
 		unsigned int		getNumberOfOperators();
 		void				addOperator(Client *client);
-		void				removeOperator(const Client& client);
+		void				removeOperator(std::string const& client);
 
 		bool				isInvited(const std::string& nick);
-		Client&				getInvitedUsers(const std::string& nick);
+		// Client&				getInvitedUser(const std::string& nick);
 		unsigned int		getNumberOfInvitedUsers();
-		void				addInvitedUser(Client *client);
-		void				removeInvitedUser(const Client& client);
+		void				addInvitedUser(std::string const& client);
+		void				removeInvitedUser(std::string const& client);
+		// void				addInvitedUser(Client *client);
+		// void				removeInvitedUser(const Client& client);
 
 		const std::string&	getName();
 		bool				hasTopic();
 		const std::string&	getTopic();
+		void 				setTopic(std::string const& newTopic);
 		const bool&			getTopicRestrictionMode();
 		const bool&			getInviteOnlyMode();
 		const bool&			getPasswordMode();
@@ -78,9 +82,10 @@ class Channel
 		const bool&			getUserLimitMode();
 		const unsigned int&	getUserLimit();
 		bool 				isFull();
+		bool 				isEmpty();
 
 		// send the given message to all clients of this channel, excluding the client given as parameter
-		void				sendToAll(Client const& client, std::string const& msg);
+		void				sendToAll(std::string const& client, std::string const& msg);
 		members&			getAllMembers(void);
 		std::string 		getFounder();
 		bool 				isFounder(std::string const& client);

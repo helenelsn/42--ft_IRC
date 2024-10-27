@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NumericalReplies.hpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 19:03:14 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/07 18:06:58 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/27 17:42:09 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ A numeric reply is not allowed to originate from a client.
     RPL_NOTOPIC (331)
     RPL_TOPIC (332)
     RPL_TOPICWHOTIME (333) */
-# define ERR_NOTONCHANNEL(client, channel) (": 442 " + client + " " + command + " :You're not on that channel" + CRLF)
+# define ERR_NOTONCHANNEL(client, channel) (": 442 " + client + " " + channel + " :You're not on that channel" + CRLF)
 # define ERR_CHANOPRIVSNEEDED(client, channel) (": 482 " + client + " " + channel + " :You're not channel operator" + CRLF)
 # define RPL_NOTOPIC(client, channel) (":331 " + client + " " + channel + " :No topic is set" + CRLF)
 

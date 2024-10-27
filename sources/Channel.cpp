@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:52 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/07 19:11:52 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/27 22:03:47 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,11 +102,11 @@ void Channel::addMember(Client *client)
 	this->_members[client->getNickname()] = client;
 }
 
-void Channel::removeMember(const Client& client)
+void Channel::removeMember(std::string const& client)
 {
 	std::map<std::string, Client*>::iterator	it;
 
-	it = this->_members.find(client.getNickname());
+	it = this->_members.find(client);
 	this->_members.erase(it);
 }
 
@@ -149,60 +149,72 @@ void Channel::addOperator(Client *client)
 	this->_operators[client->getNickname()] = client;
 }
 
-void Channel::removeOperator(const Client& client)
+void 	Channel::removeOperator(std::string const& client)
 {
-	std::map<std::string, Client*>::iterator	it;
+	std::map<std::string, Client*>::iterator it;
 
-	it = this->_operators.find(client.getNickname());
+	it = this->_operators.find(client);
 	this->_operators.erase(it);
 }
 
 
-
 // ######## INVITED USER METHODS ###########
-
 
 bool Channel::isInvited(const std::string& nick)
 {
-	std::map<std::string, Client*>::const_iterator it;
-
-	it = this->_invitedUsers.find(nick);
+	// std::map<std::string, Client*>::const_iterator it;
+	// it = this->_invitedUsers.find(nick);
+	// if (it != this->_invitedUsers.end())
+		// return true;
+	// return false;
+	
+	std::vector<std::string>::const_iterator it;
+	it = std::find(this->_invitedUsers.begin(), this->_invitedUsers.end(), nick);
 	if (it != this->_invitedUsers.end())
 		return true;
 	return false;
 }
 
-Client& Channel::getInvitedUsers(const std::string& nick)
-{
-	std::map<std::string, Client*>::iterator it;
+// Client& Channel::getInvitedUser(const std::string& nick)
+// {
+// 	std::map<std::string, Client*>::iterator it;
 
-	it = this->_invitedUsers.find(nick);
-	return *(it->second);
-}
+// 	it = this->_invitedUsers.find(nick);
+// 	return *(it->second);
+// }
 
 unsigned int Channel::getNumberOfInvitedUsers()
 {
-	std::map<std::string, Client*>::iterator	it;
-	int										n;
-
-	n = 0;
-	for (it = this->_invitedUsers.begin(); it != this->_invitedUsers.end(); it++)
-		n++;
-	return n;
+	return	this->_invitedUsers.size();
 }
 
-void Channel::addInvitedUser(Client *client)
+void	Channel::addInvitedUser(std::string const& client)
 {
-	this->_invitedUsers[client->getNickname()] = client;
+	this->_invitedUsers.push_back(client);
 }
 
-void Channel::removeInvitedUser(const Client& client)
+void 	Channel::removeInvitedUser(std::string const& client)
 {
-	std::map<std::string, Client*>::iterator	it;
+	std::vector<std::string>::iterator it;
 
-	it = this->_invitedUsers.find(client.getNickname());
+	it = std::find(this->_invitedUsers.begin(), this->_invitedUsers.end(), client);
+	if (it == this->_invitedUsers.end())
+		return ;
 	this->_invitedUsers.erase(it);
 }
+
+// void Channel::addInvitedUser(Client *client)
+// {
+// 	this->_invitedUsers[client->getNickname()] = client;
+// }
+
+// void Channel::removeInvitedUser(const Client& client)
+// {
+// 	std::map<std::string, Client*>::iterator	it;
+
+// 	it = this->_invitedUsers.find(client.getNickname());
+// 	this->_invitedUsers.erase(it);
+// }
 
 
 
@@ -224,6 +236,11 @@ bool Channel::hasTopic()
 const std::string& Channel::getTopic()
 {
 	return this->_topic;
+}
+
+void 	Channel::setTopic(std::string const& newTopic)
+{
+	this->_topic = newTopic;
 }
 
 const bool& Channel::getTopicRestrictionMode()
@@ -263,6 +280,11 @@ bool 	Channel::isFull()
 	return false;
 }
 
+bool	Channel::isEmpty()
+{
+	return (!_members.size());
+}
+
 // ###########  ###############
 
 std::string		Channel::getFounder()
@@ -280,11 +302,11 @@ Channel::members 	&Channel::getAllMembers(void)
 	return this->_members;
 }
 
-void 	Channel::sendToAll(Client const& client, std::string const& msg)
+void 	Channel::sendToAll(std::string const& client, std::string const& msg)
 {
 	for (members::iterator it = this->_members.begin(); it != this->_members.end(); it++)
 	{
-		if (it->first == client.getNickname())
+		if (it->first == client)
 			continue;
 		it->second->addToWriteBuffer(msg); // + CRLF ?
 	}

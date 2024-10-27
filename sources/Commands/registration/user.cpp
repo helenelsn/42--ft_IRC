@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 16:54:21 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/27 14:18:29 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/27 16:54:27 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 
 /*
 The USER command is used at the beginning of a connection to specify the username and realname of a new user.
+Parameters: <username> <hostname> <servername> <realname>
 */
 void    cmdUser(CommandContext &ctx)
 {

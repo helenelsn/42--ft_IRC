@@ -14,6 +14,4 @@ sources/commands/registration/rfc_registration.txt
 # delete from the gitignore gradually when implementing them
 *help.cpp
 *mode.cpp
-*invite.cpp
-*kick.cpp
-*topic.cpp
+*names.cpp 

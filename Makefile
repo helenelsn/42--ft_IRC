@@ -6,7 +6,7 @@
 #    By: Helene <Helene@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/21 14:23:25 by Helene            #+#    #+#              #
-#    Updated: 2024/10/27 14:14:55 by Helene           ###   ########.fr        #
+#    Updated: 2024/10/27 17:26:03 by Helene           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,11 +32,12 @@ SRCS = 	main.cpp \
 		commands/registration/user.cpp \
 		commands/registration/nick.cpp \
 		commands/registration/registration.cpp \
+		commands/channels_operations/join.cpp \
+		commands/channels_operations/part.cpp \
+		commands/channels_operations/utils.cpp \
 		commands/motd.cpp \
 		commands/ping.cpp \
 		commands/quit.cpp \
-		commands/join.cpp \
-		commands/part.cpp \
 		commands/privmsg.cpp
 		
 OBJS = $(addprefix $(OBJS_DIR), $(SRCS:.cpp=.o))
@@ -51,6 +52,7 @@ $(OBJS_DIR)%.o : $(SRCS_DIR)%.cpp
 	mkdir -p $(OBJS_DIR)
 	mkdir -p $(OBJS_DIR)commands/
 	mkdir -p $(OBJS_DIR)commands/registration/
+	mkdir -p $(OBJS_DIR)commands/channels_operations/
 	$(CC) $(CFLAGS) -MMD -I $(INCS_DIR) -c $< -o $@ 
 
 -include $(DEPS)

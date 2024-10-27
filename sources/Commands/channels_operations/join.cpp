@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 18:05:03 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/27 15:05:35 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/27 18:42:55 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,18 +15,11 @@
 #include "../../../includes/Client.hpp"
 #include "../../../includes/Server.hpp"
 
-static std::string  getPrefix(Client &client, Channel &channel)
-{
-    std::string prefix;
-    if (channel.isFounder(client.getNickname()))
-        prefix = "~";
-    else if (channel.isOperator(client.getNickname()))
-        prefix = "@";
-    else // halfops are not implemented here
-        prefix = ""; 
-    return prefix;
-}
-
+/*
+If a JOIN is successful, the user is then sent the channel's topic
+   (using RPL_TOPIC) and the list of users who are on the channel (using
+   RPL_NAMREPLY), which must include the user joining.
+*/
 static void    joinRpl(Client &client, Channel &channel)
 {
     // A JOIN message with the client as the message <source> and the channel they have 
@@ -81,15 +74,8 @@ void    joinChannel(CommandContext &ctx, std::string const& channelName, std::st
     else
     {
         joinRpl(ctx._client, *channel);
-
-        // std::string prefix = ctx._client.getUserID();
-        // std::stringstream ss;
-        // ss << prefix << " JOIN " << channelName ;
-        // for (std::map<std::string, Client>::iterator it = channel->getAllMembers().begin(); it != channel->getAllMembers().end(); it++)
-        //     it->second.addToWriteBuffer(ss.str());
-            
         channel->addMember(&ctx._client);
-        channel->sendToAll(ctx._client, ctx._client.getUserID() + " JOIN " + channel->getName() + CRLF);
+        channel->sendToAll(ctx._client.getNickname(), ctx._client.getUserID() + " JOIN " + channel->getName() + CRLF);
     }
 }
 
@@ -112,13 +98,6 @@ void    parseParameters(std::vector<std::string> &params, std::vector<std::strin
             keys.push_back(buffer);
     }
 
-}
-
-
-bool    checkChanMask(std::string const& chanName)
-{
-    return (!chanName.empty() && chanName[0] == '#' && chanName.size() <= 50
-        && (chanName.find_first_of("\r\n\b:, ") == std::string::npos)); // need to implement &channelName as well as #channelName ?
 }
 
 void    cmdJoin(CommandContext &ctx)

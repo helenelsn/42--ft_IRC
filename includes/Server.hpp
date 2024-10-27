@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:29 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/27 13:11:34 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/27 17:50:45 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ class Server
         void                RunServer(); // looping calls to poll()
          
         Client              *getClient(int fd); // checker si peut pas juste renvoyer une référence
+        Client              *getClientByNick(std::string const& nick);
         Channel             *getChannel(std::string const& name); 
         
             // Client registering/log in
@@ -93,7 +94,7 @@ class Server
         void                _log(e_logLevel level, std::string const& msg) { _logger.log(level, msg); }
 
             // Useful for commands processing
-        bool                NickAlreadyUsed(std::string const& newNick);
+        bool                nickInUse(std::string const& newNick);
         void                addChannel(Channel &newChannel, std::string const& name);
         void                removeChannel(std::string const& name);
         bool                channelExists(std::string const& channel);
