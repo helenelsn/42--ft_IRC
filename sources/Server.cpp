@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:49 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/08 12:56:12 by Helene           ###   ########.fr       */
+/*   Updated: 2024/10/27 13:09:32 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,8 @@ void    Server::InitServer(void)
     hints.ai_flags = AI_PASSIVE; // localhost by default
     if (getaddrinfo(NULL, (this->_port).c_str(), &hints, &res))
     {
+        serverShutdown = true;
         throw(std::runtime_error("getaddrinfo() call failed"));
-        serverShutdown = true; // ?
     }
     _server_socket = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
     
@@ -74,8 +74,8 @@ void    Server::InitServer(void)
     // The setsockopt() API allows the application to reuse the local address when the server is restarted before the required wait time expires.
 	if(setsockopt(_server_socket, SOL_SOCKET, SO_REUSEADDR, &en, sizeof(en)) == -1)
     {
+        serverShutdown = true;
 		throw(std::runtime_error("failed to set option (SO_REUSEADDR) on server socket"));
-        serverShutdown = true; // ?
     }
 	
     // The fcntl() API sets the socket to be nonblocking
@@ -157,7 +157,7 @@ void    Server::RunServer()
                     ReadData(_sockets[i].fd);
             }
             else if (_sockets[i].revents & POLLOUT) // we can send() data to this socket without blocking.
-                SendWriteBuffer(_sockets[i].fd);
+                handlePollOut(_sockets[i].fd);
             else 
                 continue ;
         }

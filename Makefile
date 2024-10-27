@@ -6,7 +6,7 @@
 #    By: Helene <Helene@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/21 14:23:25 by Helene            #+#    #+#              #
-#    Updated: 2024/10/06 20:48:52 by Helene           ###   ########.fr        #
+#    Updated: 2024/10/27 14:14:55 by Helene           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,16 +28,16 @@ SRCS = 	main.cpp \
 		Channel.cpp \
 		Logger.cpp \
 		CommandsHandler.cpp \
-		Commands/utils.cpp \
-		Commands/pass.cpp \
-		Commands/user.cpp \
-		Commands/nick.cpp \
-		Commands/motd.cpp \
-		Commands/ping.cpp \
-		Commands/quit.cpp \
-		Commands/join.cpp \
-		Commands/part.cpp \
-		Commands/privmsg.cpp
+		commands/registration/pass.cpp \
+		commands/registration/user.cpp \
+		commands/registration/nick.cpp \
+		commands/registration/registration.cpp \
+		commands/motd.cpp \
+		commands/ping.cpp \
+		commands/quit.cpp \
+		commands/join.cpp \
+		commands/part.cpp \
+		commands/privmsg.cpp
 		
 OBJS = $(addprefix $(OBJS_DIR), $(SRCS:.cpp=.o))
 DEPS = $(addprefix $(OBJS_DIR), $(SRCS:.cpp=.d))
@@ -49,7 +49,8 @@ $(NAME) : $(OBJS)
 
 $(OBJS_DIR)%.o : $(SRCS_DIR)%.cpp
 	mkdir -p $(OBJS_DIR)
-	mkdir -p $(OBJS_DIR)Commands/
+	mkdir -p $(OBJS_DIR)commands/
+	mkdir -p $(OBJS_DIR)commands/registration/
 	$(CC) $(CFLAGS) -MMD -I $(INCS_DIR) -c $< -o $@ 
 
 -include $(DEPS)
@@ -59,6 +60,17 @@ clean :
 
 fclean : clean
 	$(RM) $(NAME)
+
+docker :
+	docker build -t debian .
+	docker run -it -v ./:$$HOME/irc debian
+
+dclean :
+	
+	docker rm $(docker ps -aq);
+	docker rmi $(docker image ls -q)
+	yes | docker container prune 
+	yes | docker image prune 
 
 re : fclean all
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:24:09 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/03 15:48:47 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/27 12:56:04 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,13 +49,12 @@ int main(int argc, char **argv)
     }
 
     setSignalHandlers();
-
     Server IrcServer(argv[1], argv[2]);
     
-    // boucle while utile que si peut restart le serveur. sinon, un seul appel a initServer et runServer suffit.
-    // dans le cas où peut restart, un booléen ne suffira plus (running, restarting, to be stopped)
-    while (!serverShutdown)
-    {
+    /*  boucle while utile que si peut restart le serveur. sinon, un seul appel a initServer et runServer suffit.
+        dans le cas où peut restart, un booléen ne suffira plus (running, restarting, to be stopped) */
+    // while (!serverShutdown)
+    // {
         try {
             IrcServer.InitServer();
             IrcServer.RunServer();
@@ -63,7 +62,7 @@ int main(int argc, char **argv)
         catch (std::exception const& e) {
             std::cout << "Error : " << e.what() << std::endl;
         }
-    }
+    // }
     
     // ici ou avant ?
     IrcServer.ShutdownServer();

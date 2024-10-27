@@ -24,7 +24,7 @@ The available (user) modes are as follows:
 
 Doit on implementer les channels private et et secret, ou juste public ? 
 
+Faut-il implémenter les server operators ? vu qu'a qu'un seul serveur et que doit pas
+gérer les échanges inter-serveurs
 
-
-
-Si un user se deconnecte, et qu il etait le seul operator d un channel, supprimer ce channel ? 
+Limite de 512 caractères par buffer envoyé (510 en enlevant le CRLF) : choix arbitraire de l'implémenter ou non ?

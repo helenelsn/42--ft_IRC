@@ -1,4 +1,0 @@
-Quand quitte netcat avec SIGQUIT, lance une exception (catch dans le main), avec e.what() = basic_string
-    (-> normalement c'est good mtn)
-
-+ Pourquoi, quand quitte netcat avec SIGQUIT, est-ce que recv() renvoie -1 dans ReadData() ?

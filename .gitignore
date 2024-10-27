@@ -3,9 +3,17 @@ todo.txt
 *.dSYM
 ircserv
 .vscode
-tests.txt
-server.todo.txt
 objects/
-regles.txt
+
 commands_parsing_exec_roadmap.txt
-sources/Commands/cmd.txt
+sources/commands/cmd.txt
+
+sources/commands/channels_operations/rfc_channels.txt
+sources/commands/registration/rfc_registration.txt
+
+# delete from the gitignore gradually when implementing them
+*help.cpp
+*mode.cpp
+*invite.cpp
+*kick.cpp
+*topic.cpp

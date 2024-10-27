@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:29 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/07 18:14:04 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/10/27 13:11:34 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,8 @@ class Server
         void                ParseLine(std::string line, CommandContext &ctx);
 
             // POLLOUT
-        void                SendWriteBuffer(int fd);
+        void                handlePollOut(int fd);
+        void                SendWriteBuffer(Client *client);
 
             // POLLERR
         void                HandlePollErr(int fd);
