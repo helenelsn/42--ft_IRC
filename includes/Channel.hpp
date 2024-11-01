@@ -76,11 +76,17 @@ class Channel
 		const std::string&	getTopic();
 		void 				setTopic(std::string const& newTopic);
 		const bool&			getTopicRestrictionMode();
+		void 				setTopicRestrictionMode(bool mode);
 		const bool&			getInviteOnlyMode();
+		void 				setInviteOnlyMode(bool mode);
 		const bool&			getPasswordMode();
+		void 				setPasswordMode(bool mode);
+		void 				setPassword(std::string const& passwd);
 		const std::string&	getPassword();
 		const bool&			getUserLimitMode();
+		void 				setUserLimitMode(bool mode);
 		const unsigned int&	getUserLimit();
+		void 				setUserLimit(int const& limit);
 		bool 				isFull();
 		bool 				isEmpty();
 

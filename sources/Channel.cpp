@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:52 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/27 22:03:47 by Helene           ###   ########.fr       */
+/*   Updated: 2024/11/01 16:17:27 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,9 +248,19 @@ const bool& Channel::getTopicRestrictionMode()
 	return this->_topicRestrictionMode;
 }
 
+void	Channel::setTopicRestrictionMode(bool mode)
+{
+	this->_topicRestrictionMode = mode;
+}
+
 const bool& Channel::getInviteOnlyMode()
 {
 	return this->_inviteOnlyMode;
+}
+
+void	Channel::setInviteOnlyMode(bool mode)
+{
+	this->_inviteOnlyMode = mode;
 }
 
 const bool& Channel::getPasswordMode()
@@ -258,9 +268,19 @@ const bool& Channel::getPasswordMode()
 	return this->_passwordMode;
 }
 
+void 	Channel::setPasswordMode(bool mode)
+{
+	this->_passwordMode = mode;
+}
+
 const std::string& Channel::getPassword()
 {
 	return this->_password;
+}
+
+void	Channel::setPassword(std::string const& passwd)
+{
+	this->_password = passwd;
 }
 
 const bool& Channel::getUserLimitMode()
@@ -268,9 +288,19 @@ const bool& Channel::getUserLimitMode()
 	return this->_userLimitMode;
 }
 
+void 	Channel::setUserLimitMode(bool mode)
+{
+	this-> _userLimitMode = mode;
+}
+
 const unsigned int& Channel::getUserLimit()
 {
 	return this->_userLimit;
+}
+
+void 	Channel::setUserLimit(int const& limit)
+{
+	this->_userLimit = limit;
 }
 
 bool 	Channel::isFull()
