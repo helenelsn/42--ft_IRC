@@ -6,7 +6,7 @@
 #    By: Helene <Helene@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/21 14:23:25 by Helene            #+#    #+#              #
-#    Updated: 2024/10/27 17:26:03 by Helene           ###   ########.fr        #
+#    Updated: 2024/11/01 13:00:04 by Helene           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -65,12 +65,11 @@ fclean : clean
 
 docker :
 	docker build -t debian .
-	docker run -it -v ./:$$HOME/irc debian
+	docker run -it -v /Users/Helene/Desktop/42/42-projets/42--IRC_and_doc:$$HOME/irc debian
 
 dclean :
-	
-	docker rm $(docker ps -aq);
-	docker rmi $(docker image ls -q)
+	docker rm $$(docker ps -aq);
+	docker rmi $$(docker image ls -q)
 	yes | docker container prune 
 	yes | docker image prune 
 

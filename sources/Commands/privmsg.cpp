@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   privmsg.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hepompid <hepompid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 19:17:33 by hepompid          #+#    #+#             */
-/*   Updated: 2024/10/03 19:19:43 by hepompid         ###   ########.fr       */
+/*   Updated: 2024/11/01 12:46:58 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,5 +17,5 @@
 
 void cmdPrivmsg(CommandContext& ctx)
 {
-	std::cout << "WAZAAAAA" << std::endl;
+	
 }

@@ -1,12 +1,15 @@
 
+
 A faire :
-    - checker que les signaux sont bien geres 
     - remplacer macro dynamique userID par méthode de la classe client (modifier autres macros en conséquence)
-    - implementer classe Channel
-    - finir d'implementer NICK, QUIT (doit informer les autres membres des channels dans lesquels sont le client)
-    - Implementer commandes restantes 
-        -> basic commands : JOIN, PART, PRIVMSG (channel et user)
-        -> commands specific to channel ops : KICK, INVITE, TOPIC, MODE
+    - s'assurer que les clients avec des channels en communs sont bien informés quand un user QUIT
+    - commandes :   - MODE 
+                    - PRIVMSG
+                    - OPER ?
+
+A checker :
+    - checker le format des RPL et ERR messages (ils ne sont tres surement pas exacts ici)
+    - checker que les signaux sont bien geres 
     - checker cas speciaux, et si ils sont geres correctement (password is an empty string, ...)
     - checker ReadData pour un msg plus long que BUFSIZ -> normalement ca tronc le msg mais y a bien un \r\n a la fin 
 
@@ -30,14 +33,11 @@ NICK :
 
 
 
-
-
 ---------------------------------------------------
 
 
 
 -   Signals must be handled (ctrl+C, ctrl+D, what else ?)
--   Create a Channel class
 
 -   You must be able to authenticate, set a nickname, a username, join a channel,
     send and receive private messages using your reference client.
@@ -47,7 +47,6 @@ NICK :
     -> both should inherit from a base class (or is 'regular user' the base class 'operator' would inherit from ?)
 -   You have to implement the commands that are specific to channel operators
     -> KICK, INVITE, TOPIC, MODE
-
 
 
 ---------------------------------------------------
