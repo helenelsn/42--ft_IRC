@@ -6,7 +6,7 @@
 /*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 18:05:03 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/27 18:42:55 by Helene           ###   ########.fr       */
+/*   Updated: 2024/11/02 15:03:54 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void    joinChannel(CommandContext &ctx, std::string const& channelName, std::st
     }
     
     if (channel->isInvited(ctx._client.getNickname()))
-        channel->addInvitedUser(&ctx._client);
+        channel->addInvitedUser(ctx._client.getNickname());
     else if (channel->isFull())
         ctx._client.addToWriteBuffer(ERR_CHANNELISFULL(ctx._client.getNickname(), channelName));
     else if (channel->getInviteOnlyMode() && channel->isInvited(ctx._client.getNickname()))

@@ -6,7 +6,7 @@
 #    By: Helene <Helene@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/21 14:23:25 by Helene            #+#    #+#              #
-#    Updated: 2024/11/01 13:00:04 by Helene           ###   ########.fr        #
+#    Updated: 2024/11/02 12:42:38 by Helene           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,10 +35,14 @@ SRCS = 	main.cpp \
 		commands/channels_operations/join.cpp \
 		commands/channels_operations/part.cpp \
 		commands/channels_operations/utils.cpp \
+		commands/channels_operations/topic.cpp \
+		commands/channels_operations/invite.cpp \
 		commands/motd.cpp \
 		commands/ping.cpp \
 		commands/quit.cpp \
-		commands/privmsg.cpp
+		commands/privmsg.cpp \
+		# commands/mode.cpp \
+		# commands/help.cpp 
 		
 OBJS = $(addprefix $(OBJS_DIR), $(SRCS:.cpp=.o))
 DEPS = $(addprefix $(OBJS_DIR), $(SRCS:.cpp=.d))

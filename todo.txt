@@ -1,5 +1,10 @@
 
 
+Nickmask = nick!user@host
+
+---------------------------------------------------
+
+
 A faire :
     - remplacer macro dynamique userID par méthode de la classe client (modifier autres macros en conséquence)
     - s'assurer que les clients avec des channels en communs sont bien informés quand un user QUIT

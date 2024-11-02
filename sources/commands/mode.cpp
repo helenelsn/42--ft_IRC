@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/27 16:59:01 by Helene            #+#    #+#             */
-/*   Updated: 2024/11/01 16:54:16 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/11/02 15:19:24 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,25 @@ typedef struct s_tuple
 }  t_tuple;
 
 
+void  passwordMode(bool setMode, Client &client, Channel *channel, std::string const& pass)
+{
+   // check if valid password (remove blank spaces ?)
+   std::cout << "in passwordMode(), " << setMode ? "adding" : "removing" << " mode" << std::endl;
+}
+
+void  operatorMode(bool setMode, Client &client, Channel *channel, std::string const& newOp)
+{
+   std::cout << "in operatorMode(), " << setMode ? "adding" : "removing" << " mode" << std::endl;
+}
+
+void  usersLimitMode(bool setMode, Client &client, Channel *channel, int const& limit)
+{
+   // check if valid limit, ie non negative
+   if (limit < 0)
+      ; // error msg
+   
+   std::cout << "in usersLimitMode(), " << setMode ? "adding" : "removing" << " mode" << std::endl;
+}
 
 /*
 The MODE command is a dual-purpose command in IRC. It allows both
@@ -39,7 +58,14 @@ static void    addChanModes(Channel *channel, std::vector<t_tuple> const& modes,
          channel->setInviteOnlyMode(true);
       else if (it->mode == 't')
          channel->setTopicRestrictionMode(true);
-      else if ()
+      else if (it->mode == 'k')
+         passwordMode(true, client, channel, it->modeArg);
+      else if (it->mode == 'o')
+         operatorMode(true, client, channel, it->modeArg);
+      else if (it->mode == 'l')
+         usersLimitMode(true, client, channel, std::atoi(it->modeArg.c_str()));
+      else // unknown command
+         ; // already printed an error msg in the calling function though
          
    }
 }
@@ -85,20 +111,8 @@ void  channelMode(CommandContext &ctx) // todo :
       */
       std::string mode = params[1];
       std::string validModes = "itkol";
-      std::string addedModes;
-      std::string removedModes;
       std::vector<t_tuple> removedParams;
       std::vector<t_tuple> addedParams;
-      /*
-      Parse le <mode_string> caractère par caractère. Si tombe sur un caractère invalide, l'ignore (?), et 
-         continue à parser la suite. 
-      Si un mode requiert un parametre et qu aucun n est passe, l'ignore et continue a parser
-         Ajouter un mode : peut ne pas avoir de '+' au debut.
-         Il y a cependant toujours un '-' au début pour retirer un mode.
-
-      ->
-         
-      */
       
       std::vector<std::string> modeParams(params.begin() + 3, params.end());
       std::vector<std::string>::iterator itParams = modeParams.begin(); // empty if modeParams.begin() == params.end()
@@ -111,11 +125,11 @@ void  channelMode(CommandContext &ctx) // todo :
             {
                if (validModes.find(*it) != std::string::npos)
                {
-                  if (!removedModes.empty() && removedModes.find(*it) == std::string::npos && addedModes.find(*it) == std::string::npos) // eviter les doublons + ne rien faire si a deja ete added plus tot dans la commande (a verif)
+                  if (!removedParams.empty() && std::find(removedParams.begin(), removedParams.end(), *it) == removedParams.end() && std::find(addedParams.begin(), addedParams.end(), *it) == addedParams.end()) // eviter les doublons + ne rien faire si a deja ete added plus tot dans la commande (a verif)
                   {
                      t_tuple mode;
                      mode.mode = *it;
-                     if (*it == 'k' || *it == 'o' || *it == 'l')
+                     if (*it == 'o') //  ( || *it == 'l' || *it == 'k') ?
                      {
                         if (itParams != modeParams.end())
                         {
@@ -126,6 +140,8 @@ void  channelMode(CommandContext &ctx) // todo :
                      removedParams.push_back(mode);
                   }
                }
+               else
+                  ctx._client.addToWriteBuffer(ERR_UMODEUNKNOWNFLAG(ctx._client.getNickname()));
                it++;
             }
          }
@@ -135,7 +151,7 @@ void  channelMode(CommandContext &ctx) // todo :
             {
                if (validModes.find(*it) != std::string::npos)
                {
-                  if (!addedModes.empty() && addedModes.find(*it) == std::string::npos && removedModes.find(*it) == std::string::npos)
+                  if (!addedParams.empty() && std::find(addedParams.begin(), addedParams.end(), *it) == addedParams.end() && std::find(removedParams.begin(), removedParams.end(), *it) == removedParams.end())
                   {
                      t_tuple mode;
                      mode.mode = *it;
@@ -150,6 +166,8 @@ void  channelMode(CommandContext &ctx) // todo :
                      addedParams.push_back(mode);
                   }
                }
+               else
+                  ctx._client.addToWriteBuffer(ERR_UMODEUNKNOWNFLAG(ctx._client.getNickname()));
                it++;
             }
          }
