@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 16:46:42 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/27 18:50:35 by Helene           ###   ########.fr       */
+/*   Updated: 2024/11/02 15:50:28 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,10 @@ void    cmdJoin(CommandContext &ctx);
 void    cmdPart(CommandContext &ctx);
 void	cmdPrivmsg(CommandContext &ctx);
 
+// void    cmdMode(CommandContext &ctx);
+void    cmdInvite(CommandContext &ctx);
+void    cmdKick(CommandContext &ctx);
+void    cmdTopic(CommandContext &ctx);
 
 /* ---------- Utils ---------- */
 

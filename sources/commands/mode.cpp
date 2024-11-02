@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/27 16:59:01 by Helene            #+#    #+#             */
-/*   Updated: 2024/11/02 15:19:24 by Helene           ###   ########.fr       */
+/*   Updated: 2024/11/02 15:49:13 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,12 @@ typedef struct s_tuple
 void  passwordMode(bool setMode, Client &client, Channel *channel, std::string const& pass)
 {
    // check if valid password (remove blank spaces ?)
-   std::cout << "in passwordMode(), " << setMode ? "adding" : "removing" << " mode" << std::endl;
+   std::cout << "in passwordMode(), " << (setMode ? "adding" : "removing") << " mode" << std::endl;
 }
 
 void  operatorMode(bool setMode, Client &client, Channel *channel, std::string const& newOp)
 {
-   std::cout << "in operatorMode(), " << setMode ? "adding" : "removing" << " mode" << std::endl;
+   std::cout << "in operatorMode(), " << (setMode ? "adding" : "removing") << " mode" << std::endl;
 }
 
 void  usersLimitMode(bool setMode, Client &client, Channel *channel, int const& limit)
@@ -40,7 +40,7 @@ void  usersLimitMode(bool setMode, Client &client, Channel *channel, int const& 
    if (limit < 0)
       ; // error msg
    
-   std::cout << "in usersLimitMode(), " << setMode ? "adding" : "removing" << " mode" << std::endl;
+   std::cout << "in usersLimitMode(), " << (setMode ? "adding" : "removing") << " mode" << std::endl;
 }
 
 /*

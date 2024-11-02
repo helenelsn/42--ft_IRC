@@ -38,6 +38,11 @@ NICK :
 
 
 
+INVITE : invited user must receive : :lnnn!hlesny@127.0.0.1 INVITE lnick #test42 (ie :<userID> INVITE <userNick> <channelName)
+
+Make sure a Quit msg is sent (ie :lnnn!hlesny@127.0.0.1 QUIT :Quit: leaving, ie :<userID> QUIT : <quit msg>)
+    to other users on same channel as user who just quit (quit, exit on irssi, Ctrl+c)
+
 ---------------------------------------------------
 
 

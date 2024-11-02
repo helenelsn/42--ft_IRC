@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:49 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/27 17:51:19 by Helene           ###   ########.fr       */
+/*   Updated: 2024/11/02 16:28:52 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,7 +181,12 @@ Client  *Server::getClient(int fd)
 
 Client  *Server::getClientByNick(std::string const& nick)
 {
-    
+    for (clients_it it = _clients.begin(), end = _clients.end(); it != end; it++)
+    {
+        if (it->second.getNickname() == nick)
+            return &(it->second);    
+    }
+    return NULL;
 }
 
 std::string     Server::getCreationDate(void)

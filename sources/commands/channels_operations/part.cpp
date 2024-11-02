@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   part.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 15:26:00 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/27 18:43:13 by Helene           ###   ########.fr       */
+/*   Updated: 2024/11/02 16:16:56 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void    cmdPart(CommandContext &ctx)
         {
             channel = ctx._server.getChannel(channelName);
             delChannel = (channel->getNumberOfMembers() == 1);
-            msg << ctx._client.getUserID() << " PART #" << channelName << " :" << reason << CRLF;
+            msg << ctx._client.getUserID() << " PART " << channelName << " :" << reason << CRLF;
             ctx._client.addToWriteBuffer(msg.str());
             if (delChannel)
             {

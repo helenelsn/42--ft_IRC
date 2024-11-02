@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   invite.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/27 17:09:33 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/27 18:11:28 by Helene           ###   ########.fr       */
+/*   Updated: 2024/11/02 16:43:03 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void    cmdInvite(CommandContext &ctx)
     if (!channel)
         ctx._client.addToWriteBuffer(ERR_NOSUCHCHANNEL(ctx._client.getNickname(), channelName));
     else if (!ctx._server.nickInUse(nickToInvite))
-        ctx._client.addToWriteBuffer(ERR_NOSUCHNICK(ctx._client.getNickname(), ctx._client.getNickname())); // vérifier a quoi correspond client (le 1er param du error rpl)
+        ctx._client.addToWriteBuffer(ERR_NOSUCHNICK(ctx._client.getNickname(), nickToInvite)); // vérifier a quoi correspond client (le 1er param du error rpl)
     else if (!channel->isMember(ctx._client.getNickname()))
         ctx._client.addToWriteBuffer(ERR_NOTONCHANNEL(ctx._client.getNickname(), channelName));
     else if (channel->isMember(nickToInvite))
@@ -61,13 +61,19 @@ void    cmdInvite(CommandContext &ctx)
         ctx._client.addToWriteBuffer(ERR_CHANOPRIVSNEEDED(ctx._client.getNickname(), channelName));
     else 
     {
-        if (channel->isInvited(nickToInvite)) // meaning the user is already on the invitedUsers list
-        {
-            // error message ?
+        Client *invitedUser = ctx._server.getClientByNick(nickToInvite);
+        if (!invitedUser)
             return ;
-        }
+        if (channel->isInvited(nickToInvite)) // meaning the user is already on the invitedUsers list -> error/warning/info msg ?
+            return ;
         channel->addInvitedUser(nickToInvite);
-        ctx._client.addToWriteBuffer(RPL_INVITING(nickToInvite, nickToInvite, channelName)); // vérifier les arguments, parait chelou
+       
+        ctx._client.addToWriteBuffer(RPL_INVITING(ctx._client.getNickname(), nickToInvite, channelName)); // vérifier les arguments, parait chelou
+        
+        // invited user must receive : :lnnn!hlesny@127.0.0.1 INVITE lnick #test42 (ie :<userID> INVITE <userNick> <channelName)
+        std::stringstream ss;
+        ss << ctx._client.getUserID() << " INVITE " << nickToInvite << " " << channelName << CRLF; 
+        invitedUser->addToWriteBuffer(ss.str());
     }
 
     // check if channel exists : if not, ERR_NOSUCHCHANNEL
