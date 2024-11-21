@@ -1,4 +1,15 @@
 
+Checker cmportement si arguments du programme sont vides (ou juste un des deux)  
+
+
+
+
+
+
+
+
+
+---------------------------------------------------
 
 Nickmask = nick!user@host
 
@@ -23,7 +34,7 @@ A checker :
 ---------------------------------------------------
 
 QUIT :
-    Quand on client envoie la commande QUIT, il faut attendre d'avoir send() a ce meme client le RPL du serveur
+    Quand un client envoie la commande QUIT, il faut attendre d'avoir send() a ce meme client le RPL du serveur
         avant de remove ce client du serveur (ie attendre le prochain poll() : c'est dans la gestion
         de POLLOUT que l'on remove le client du serveur).
     Distribuer le msg QUIT a tous les clients ayant des channels en commun avec le client déconnecté
