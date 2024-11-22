@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 16:55:46 by Helene            #+#    #+#             */
-/*   Updated: 2024/11/22 17:17:22 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/11/22 19:37:36 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ void    cmdNick(CommandContext &ctx)
         return ;
     }
     
-    // std::string oldNick = ctx._client.getNickname();
+    std::string oldNick = ctx._client.getNickname();
     ctx._client.setNickname(nickname);
     
     // if client had not provided a nickname before
@@ -111,10 +111,15 @@ void    cmdNick(CommandContext &ctx)
     }
     else
     {
-        std::string oldNick = ctx._client.getNickname();
-        ctx._client.addToWriteBuffer("You are now known as " + nickname + CRLF); // checker ce msg
-        std::string oldUserID = oldNick + "!" + ctx._client.getUsername() + "@" + ctx._client.getHostname();
+        // std::string oldNick = ctx._client.getNickname();
+        std::stringstream ss;
+        std::string oldUserID = userID(oldNick, ctx._client.getUsername(), ctx._client.getHostname());
+        ss << ":" << oldUserID << " NICK " << nickname + CRLF;
+        ctx._client.addToWriteBuffer(ss.str());
+        // ctx._client.addToWriteBuffer("You are now known as " + nickname + CRLF);
+        // std::string oldUserID = oldNick + "!" + ctx._client.getUsername() + "@" + ctx._client.getHostname();
         ctx._server.InformOthers(ctx._client, oldUserID, "NICK " + nickname);
+        ctx._server.updateNick(ctx._client, oldNick, nickname);
         // met a jour le nick dans tous les channels dans lesquels est le client (maniere plus simple de faire ?)
         
     }

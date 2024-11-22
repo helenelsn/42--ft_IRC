@@ -51,7 +51,7 @@ class Channel
         Channel& operator = (const Channel& other);
 
 		bool				isMember(const std::string& nick);
-        Client&				getMember(const std::string& nick);
+        Client*				getMember(const std::string& nick);
 		unsigned int		getNumberOfMembers();
 		void				addMember(Client *client);
 		void				removeMember(std::string const& client);
@@ -95,4 +95,5 @@ class Channel
 		members&			getAllMembers(void);
 		std::string 		getFounder();
 		bool 				isFounder(std::string const& client);
+		void 				updateNickOnChannel(std::string const& oldNick, std::string const& newNick);
 };

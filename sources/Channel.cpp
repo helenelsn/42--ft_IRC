@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:52 by Helene            #+#    #+#             */
-/*   Updated: 2024/11/22 14:44:42 by Helene           ###   ########.fr       */
+/*   Updated: 2024/11/22 19:11:41 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,12 +78,13 @@ bool Channel::isMember(const std::string& nick)
 	return false;
 }
 
-Client& Channel::getMember(const std::string& nick)
+//Client &
+Client* Channel::getMember(const std::string& nick)
 {
 	std::map<std::string, Client*>::iterator it;
 
 	it = this->_members.find(nick);
-	return *(it->second);
+	return (it->second);
 }
 
 unsigned int Channel::getNumberOfMembers()
@@ -349,5 +350,25 @@ void	Channel::sendToOperators(std::string const& client, std::string const& msg,
 		if (it->first == client && excludeSource)
 			continue;
 		it->second->addToWriteBuffer(msg); // + CRLF ?
+	}
+}
+
+void 	Channel::updateNickOnChannel(std::string const& oldNick, std::string const& newNick)
+{
+	Client *client = this->getMember(oldNick);
+	
+	this->_members.erase(oldNick);
+	this->_members[newNick] = client;
+	
+	if (this->isOperator(oldNick))
+	{
+		this->_operators.erase(oldNick);
+		this->_operators[newNick] = client;
+	}
+
+	if (this->isInvited(oldNick))
+	{
+		this->removeInvitedUser(oldNick);
+		this->addInvitedUser(newNick);
 	}
 }

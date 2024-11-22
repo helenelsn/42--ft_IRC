@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 19:17:33 by hepompid          #+#    #+#             */
-/*   Updated: 2024/11/22 17:11:15 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/11/22 18:47:10 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,10 @@
 static std::string getFinalText(CommandContext &ctx, std::string const& text, std::string target, bool toChannel = true)
 {
     std::stringstream ss;
-    if (toChannel)
+    // if (toChannel)
         ss << ctx._client.getUserID();
-    else 
-        ss << ctx._client.getNickname();
+    // else 
+        // ss << ctx._client.getNickname();
     ss << " PRIVMSG " << target << " :" << text << CRLF;
     
     return ss.str();   
@@ -60,7 +60,7 @@ void    msgToChannel(CommandContext& ctx)
             operators = true;
     }
     
-    std::string channelName = std::string(target.begin() + target.find('#') - 1, target.end());
+    std::string channelName = std::string(target.begin() + target.find('#'), target.end());
     Channel *channel = ctx._server.getChannel(channelName);
     if (!channel)
     {
