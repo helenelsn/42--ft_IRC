@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:52 by Helene            #+#    #+#             */
-/*   Updated: 2024/11/01 16:17:27 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/11/22 14:44:42 by Helene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -332,11 +332,21 @@ Channel::members 	&Channel::getAllMembers(void)
 	return this->_members;
 }
 
-void 	Channel::sendToAll(std::string const& client, std::string const& msg)
+void 	Channel::sendToAll(std::string const& client, std::string const& msg, bool excludeSource)
 {
 	for (members::iterator it = this->_members.begin(); it != this->_members.end(); it++)
 	{
-		if (it->first == client)
+		if (it->first == client && excludeSource)
+			continue;
+		it->second->addToWriteBuffer(msg); // + CRLF ?
+	}
+}
+
+void	Channel::sendToOperators(std::string const& client, std::string const& msg, bool excludeSource)
+{
+	for (members::iterator it = this->_operators.begin(); it != this->_operators.end(); it++)
+	{
+		if (it->first == client && excludeSource)
 			continue;
 		it->second->addToWriteBuffer(msg); // + CRLF ?
 	}

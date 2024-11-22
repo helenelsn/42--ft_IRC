@@ -91,7 +91,8 @@ class Channel
 		bool 				isEmpty();
 
 		// send the given message to all clients of this channel, excluding the client given as parameter
-		void				sendToAll(std::string const& client, std::string const& msg);
+		void				sendToAll(std::string const& client, std::string const& msg, bool excludeSource = true);
+		void 				sendToOperators(std::string const& client, std::string const& msg, bool excludeSource = true);
 		members&			getAllMembers(void);
 		std::string 		getFounder();
 		bool 				isFounder(std::string const& client);
