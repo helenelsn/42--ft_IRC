@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   part.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 15:26:00 by Helene            #+#    #+#             */
-/*   Updated: 2024/11/21 22:51:33 by Helene           ###   ########.fr       */
+/*   Updated: 2024/11/22 17:00:27 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void    cmdPart(CommandContext &ctx)
     std::string channelName;
     std::stringstream ss(ctx._parameters[0]);
     std::stringstream msg;
-    std::string reason = (ctx._parameters.size() >= 2) ? ctx._parameters[1] : "";
+    std::string reason = (ctx._parameters.size() >= 2) ? ctx._parameters[1] : ctx._client.getNickname(); //: "";
     bool delChannel;
     
     getline(ss, channelName, ','); // car ss n'est d'office pas vide

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 18:05:03 by Helene            #+#    #+#             */
-/*   Updated: 2024/11/22 15:09:43 by Helene           ###   ########.fr       */
+/*   Updated: 2024/11/22 17:07:04 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,13 +44,6 @@ static void    joinRpl(Client &client, Channel &channel)
     client.addToWriteBuffer(RPL_ENDOFNAMES(client.getNickname(), channel.getName()));
 }
 
-bool    validChannelName(std::string const& name)
-{
-    if (name.empty() || name.size() > 50 || name[0] != '#')
-		return false;
-	return (name.find_first_of("\b\r\n ,:") == std::string::npos);
-}
-
 /*
 Check : Does the channel exist 
         -> If not, creates it. the client is now the channel operator
@@ -64,16 +57,15 @@ void    joinChannel(CommandContext &ctx, std::string const& channelName, std::st
     Channel *channel = ctx._server.getChannel(channelName);
     if (!channel)
     {
-        //todo :  check if channel name is valid 
         Channel newChannel(channelName, &ctx._client);
         ctx._server.addChannel(newChannel, channelName);
         joinRpl(ctx._client, newChannel);
         return ;
     }
     
-    if (channel->isInvited(ctx._client.getNickname()))
-        channel->addInvitedUser(ctx._client.getNickname()); // ???
-    else if (channel->isFull())
+    // if (channel->isInvited(ctx._client.getNickname()))
+        // channel->addInvitedUser(ctx._client.getNickname()); // commente, verifier que change r
+    if (channel->isFull())
         ctx._client.addToWriteBuffer(ERR_CHANNELISFULL(ctx._client.getNickname(), channelName));
     else if (channel->getInviteOnlyMode() && !channel->isInvited(ctx._client.getNickname()))
         ctx._client.addToWriteBuffer(ERR_INVITEONLYCHAN(ctx._client.getNickname(), channelName));
@@ -81,8 +73,8 @@ void    joinChannel(CommandContext &ctx, std::string const& channelName, std::st
         ctx._client.addToWriteBuffer(ERR_BADCHANNELKEY(ctx._client.getNickname(), channelName));
     else
     {
-        joinRpl(ctx._client, *channel);
         channel->addMember(&ctx._client);
+        joinRpl(ctx._client, *channel);
         channel->sendToAll(ctx._client.getNickname(), ctx._client.getUserID() + " JOIN " + channel->getName() + CRLF);
         if (channel->isInvited(ctx._client.getNickname()))
             channel->removeInvitedUser(ctx._client.getNickname());

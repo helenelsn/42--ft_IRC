@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   privmsg.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 19:17:33 by hepompid          #+#    #+#             */
-/*   Updated: 2024/11/22 15:14:02 by Helene           ###   ########.fr       */
+/*   Updated: 2024/11/22 17:11:15 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,11 +51,11 @@ void    msgToChannel(CommandContext& ctx)
     std::string text = params[1];
     
     bool operators = false;
-    bool founder = false;
+    // bool founder = false;
     for (std::string::iterator it = target.begin(); it != target.end() && *it != '#'; it++)
     {
-        if (*it == '~')
-            founder = true;
+        // if (*it == '~')
+            // founder = true;
         if (*it == '@')
             operators = true;
     }
@@ -104,7 +104,8 @@ void    cmdPrivmsg(CommandContext& ctx)
         ctx._client.addToWriteBuffer(ERR_NOTEXTTOSEND(ctx._client.getNickname()));
     else 
     {
-        if (ctx._parameters[0].find('#' != std::string::npos)) //  est un caractere interdit pr les nicks et noms de channels donc aura pas de doublons
+        
+        if (ctx._parameters[0].find('#') != std::string::npos) //  est un caractere interdit pr les nicks et noms de channels donc aura pas de doublons
             msgToChannel(ctx);
         else
             msgToClient(ctx);

@@ -26,8 +26,7 @@ class Channel
 {
     private:
         typedef std::map<std::string, Client*> members;
-        typedef std::map<std::string, Client*> operators;
-        // typedef std::map<std::string, Client*> invitedUsers;
+        typedef std::map<std::string, Client*> operators; // autre maniere de garder en memoire quels users sont operators, qui ne necessite pas une copie de leur nick ? car fait un truc de plus a changer qd user modifie son nick
 		typedef std::vector<std::string> invitedUsers;
         
 		members			_members;
