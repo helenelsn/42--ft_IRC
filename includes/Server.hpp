@@ -105,3 +105,7 @@ class Server
 Functionalities that might have to be implemented :
 The server pings its clients periodically in order to identify timed out clients. 
 */
+
+/*
+-   cant copy or assign server class, can only be created with port and password
+*/
