@@ -66,6 +66,8 @@ void    Server::ReadData(int fd)
     
 
     int bytes_read = recv(client->getSockFd(), buffer, BUFSIZ, 0);
+    std::cout << "buffer printed from ReadData()\n" << buffer << std::endl; //DEBUGmg
+    // std::cout << "founder is " << client->getServer().getChannel()->getName() //debugmg
     if (bytes_read == -1)
     {
         int errNum = errno;
@@ -96,6 +98,8 @@ void    Server::ReadData(int fd)
         //     ; // throw exception
         
         // check limite des 512 caractères ou balec ?
+
+
         client->addToReadBuffer(std::string(&buffer[0], &buffer[bytes_read]));
         
         // Gestion Ctrl+D

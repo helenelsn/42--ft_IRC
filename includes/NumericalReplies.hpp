@@ -52,11 +52,11 @@ A numeric reply is not allowed to originate from a client.
 # define RPL_NAMREPLY(client, symbol, channel) (": 353 " + client + " " + symbol + " " + channel + " :") // [prefix]<nick>{ [prefix]<nick>}, <prefix> is the highest channel membership prefix that client has in the channel, if they have one
 # define RPL_ENDOFNAMES(client, channel) (": 366 " + client + " " + channel + " :End of /NAMES list" + CRLF)
 // OPER
-    # define RPL_YOUREOPER(client) (": 381 " + client + " :You are now an IRC operator" + CRLF)
+# define RPL_YOUREOPER(client) (": 381 " + client + " :You are now an IRC operator" + CRLF)
 # define RPL_TIME(client, server, time) (": 391 " + client + " " + server + " :" + time + CRLF) // vérifier le format du message
 
 //todo
-# define RPL_CHANNELMODEIS(client, channel, channel_string, mode_arguments) // pas compris si mode_string etait celui de la commande MODE, ou les current channel modes du channel en question ? 
+# define RPL_CHANNELMODEIS(client, channel, activeMode, kParams, lParams) (": 324 " + client + " " + channel + " " + activeMode + kParams + lParams + CRLF ) // pas compris si mode_string etait celui de la commande MODE, ou les current channel modes du channel en question ? 
 
 
 /* -------------------------- Numerics : Errors ------------------------------- */
@@ -82,6 +82,7 @@ A numeric reply is not allowed to originate from a client.
 # define ERR_BANNEDFROMCHAN(client, channel) (": 474 " + client + " " + channel + " :Cannot join channel (+b)" + CRLF)  // doit pas gérer MODE +b, si ?
 # define ERR_BADCHANNELKEY(client, channel) (": 475 " + client + " " + channel + " :Cannot join channel (+k)" + CRLF)
 # define ERR_BADCHANMASK(channel) (": 476 " + channel + " :Bad Channel Mask" + CRLF)
+# define ERR_NOPRIVILEGES(client, channel) (": 481 " + client + " " + channel + " :Permision denied not an IRC operator" + CRLF)
 # define ERR_CHANOPRIVSNEEDED(client, channel) (": 482 " + client + " " + channel + " :You're not channel operator" + CRLF)
 # define ERR_UMODEUNKNOWNFLAG(client) (": 501 " + client + " :Unknown MODE flag" + CRLF) // préciser le flag ?
 # define ERR_USERSDONTMATCH(client) (": 502 " + client + " :Can't change mode for other users" + CRLF)

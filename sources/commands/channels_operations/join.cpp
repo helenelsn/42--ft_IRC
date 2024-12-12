@@ -24,6 +24,7 @@ static void    joinRpl(Client &client, Channel &channel)
 {
     // A JOIN message with the client as the message <source> and the channel they have 
     //  joined as the first parameter of the message.
+    // std:: cout << channel.getFounder() << " is the founder of the channel\n"; //debugmg
     client.addToWriteBuffer(client.getUserID() + " JOIN " + channel.getName() + CRLF);
     
     if (!channel.getTopic().empty())
@@ -117,6 +118,7 @@ void    cmdJoin(CommandContext &ctx)
     size_t j = 0;
     for (size_t i = 0; i < channels.size(); i++)
     {
+        // std::cout << channels[i]. //debug
         if (!checkChanMask(channels[i]))
         {
             ctx._client.addToWriteBuffer(ERR_BADCHANMASK(channels[i]));
