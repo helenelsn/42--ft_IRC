@@ -58,6 +58,68 @@ void	channelModeIs(CommandContext &ctx)
 	return;
 }
 
+void	addModeWithoutParam(char mode, Channel *chan)
+{
+	if (mode == 'i')
+		chan->setInviteOnlyMode(true);
+	else
+		chan->setTopicRestrictionMode(true);
+	return;
+}
+
+bool	isStrAllDigit(std::string str)
+{
+	for (unsigned long int i = 0; str[i]; i++)
+		if (!std::isdigit(str[i]))
+			return false;
+	return true;
+}
+
+bool	parseModeWithParams(char mode, std::string param, Channel *chan)
+{
+	std::cout << param << " is param\n"; //debugmg
+	if (param.empty())
+		return false;
+	else if (mode == 'o' && chan->isMember(param) && !chan->isOperator(param))
+	{
+		std::cout << "o check works\n"; //debugmg
+		return true;
+	}
+	else if (mode == 'l' && isStrAllDigit(param))
+	{
+		unsigned long int	i = std::atol(param.c_str());
+		if (i > 4294967295)
+			return false;
+		else
+			return true;
+	}
+	else if (mode == 'k'/* check if password max lenght exist, asked question to group */)
+		return true;
+	else
+		return false;
+}
+
+void	addModeWithParam(char mode, std::string param, Channel *chan, Client *client)
+{
+	if (mode == 'o')
+	{
+		std::cout << client->getNickname() << " is client nickname\n"; //debugmg
+		std::cout << client->getUsername() << " is client username\n"; //debugmg
+		std::cout << client->getRealname() << " is client realname\n"; //debugmg
+		chan->addOperator(client);
+	}
+	else if (mode == 'l')
+	{
+		chan->setUserLimitMode(true);
+		chan->setUserLimit(std::atol(param.c_str()));
+	}
+	else
+	{
+		chan->setPasswordMode(true);
+		chan->setPassword(param);
+	}
+}
+
 void	channelMode(CommandContext &ctx)
 {
 	std::string	channelName = ctx._parameters[0];
@@ -74,60 +136,69 @@ void	channelMode(CommandContext &ctx)
 	{
 		std::cout << "ctx has this inside :\nprefix :\t" << ctx._prefix << "\ncommand :\t";//debugmg
 		std::cout << ctx._command << "\nparameters :\n";//debugmg
-		for (std::vector<std::string>:: iterator it = ctx._parameters.begin(), end = ctx._parameters.end();//debugmg
+		for (std::vector<std::string>::iterator it = ctx._parameters.begin(), end = ctx._parameters.end();//debugmg
 				it != end; it++)//DEBUGmg
 			std::cout << "\t\t" << *it << std::endl; //DEBUGmg
-		std::cout << "Mode to code\n"; //debugmg
 		
 		std::string	mode = ctx._parameters[1];
 		std::string	validMode = "itkol";
 		std::string	addedParams;
 		std::string	removedParams;
+		Channel		*chan = ctx._server.getChannel(channelName);
 
 		addedParams.clear();
 		removedParams.clear();
 
-		if (ctx._parameters.size() > 2)
-		{
-			std::vector<std::string>	modeParams(ctx._parameters.begin() + 2/* ou 3 a checker */, ctx._parameters.end());
-			unsigned int				sizeModeParams = modeParams.size();
-			std::string::const_iterator	it = mode.begin();
-			std::string::const_iterator	end = mode.end();
-			unsigned int				sizeMode = mode.size();
+		std::vector<std::string>	modeParams(ctx._parameters.begin() + 2, ctx._parameters.end());
+		unsigned int				sizeModeParams = modeParams.size();
+		std::string::const_iterator	it = mode.begin();
+		std::string::const_iterator	end = mode.end();
+		unsigned int				sizeMode = mode.size();
 			
-			std::cout << "segfault 1	"; //debugmg
-			// for (it; it != end; it++)
-			for (unsigned int i = 0; i < sizeMode; i++)
+		for (unsigned int i = 0; i < sizeMode; i++)
+		{
+			if (*it == '+')
 			{
-			std::cout << "sizeMode = " << sizeMode << "\nint i = " << i << std::endl; //debugmg
-			std::cout << "segfault 2	"; //debugmg
-				if (*it == '+')
+				while (it != end && *it != '-')
 				{
-			std::cout << "segfault 3	"; //debugmg
-					while (it != end && *it != '-')
+					if (validMode.find(*it) != std::string::npos)
 					{
-			std::cout << "segfault 4	"; //debugmg
-						if (validMode.find(*it) != std::string::npos)
+						if (addedParams.find(*it) == std::string::npos)
 						{
-			std::cout << "segfault 5	"; //debugmg
-							if (addedParams.find(*it) == std::string::npos)
+							if (*it == 'i' || *it == 't')
 							{
-			std::cout << "segfault 6	"; //debugmg
-								/* ################ reprendre ici avec parsing des params0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000 */
+								addModeWithoutParam(*it, chan);
 								addedParams += *it;
-			std::cout << "list of added params : " << addedParams << std::endl; //debugmg
+							}
+							else
+							{
+								if (!modeParams.empty() && parseModeWithParams(*it, modeParams[0], chan))
+								{
+									std::cout << modeParams[0] << " is modeParams[0]\n"; //debugmg
+									addModeWithParam(*it, modeParams[0], chan, ctx._server.getChannel(channelName)->getMember(modeParams[0]));
+									modeParams.erase(modeParams.begin());
+									if (*it != 'o')
+										addedParams += *it;
+								}
+								else
+									std::cout << "*it = " << *it << "\nerror message to code, 461 ERR_NEEDMOREPARAMS \n";//debugmg
 							}
 						}
 						else
-							ctx._client.addToWriteBuffer(ERR_UNKNOWNCOMMAND(ctx._client.getNickname()));
-						it++;
-						i++;
+							std::cout << "error message for mode already added ?\n"; //debugmg
 					}
+					else
+						ctx._client.addToWriteBuffer(ERR_UNKNOWNCOMMAND(ctx._client.getNickname()));
+					it++;
+					i++;
 				}
 			}
-
-			std::cout << "list of added params : " << addedParams << std::endl; //debugmg
+			else
+			{
+				std::cout << "still need to code the removed params\n";//debugmg
+			}
 		}
+		std::cout << "list of added params : " << addedParams << std::endl; //debugmg
 	}
 
 /*	
