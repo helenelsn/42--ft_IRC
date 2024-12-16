@@ -15,7 +15,8 @@
 #include "../../includes/Client.hpp"
 #include "../../includes/Server.hpp"
 
-static std::string getFinalText(CommandContext &ctx, std::string const& text, std::string target, bool toChannel = true)
+// static std::string getFinalText(CommandContext &ctx, std::string const& text, std::string target, bool toChannel = true)
+static std::string getFinalText(CommandContext &ctx, std::string const& text, std::string target)
 {
     std::stringstream ss;
     // if (toChannel)
@@ -67,12 +68,16 @@ void    msgToChannel(CommandContext& ctx)
         ctx._client.addToWriteBuffer(ERR_NOSUCHCHANNEL(ctx._client.getNickname(), channelName));
         return ;
     }
+    else if (!channel->isMember(ctx._client.getNickname()))
+    {
+        ctx._client.addToWriteBuffer(ERR_NOTONCHANNEL(ctx._client.getNickname(), channelName));
+        return;
+    }
 
-    
     if (operators)
         channel->sendToOperators(ctx._client.getNickname(), getFinalText(ctx, text, channelName));
     else
-        channel->sendToAll(ctx._client.getNickname(), getFinalText(ctx, text, channelName));    
+        channel->sendToAll(ctx._client.getNickname(), getFinalText(ctx, text, channelName));
 }
 
 void    msgToClient(CommandContext& ctx)
@@ -87,7 +92,8 @@ void    msgToClient(CommandContext& ctx)
         ctx._client.addToWriteBuffer(ERR_NOSUCHNICK(ctx._client.getNickname(), target));
         return ;
     }
-    recipient->addToWriteBuffer(getFinalText(ctx, text, target, false));
+    recipient->addToWriteBuffer(getFinalText(ctx, text, target));
+    // recipient->addToWriteBuffer(getFinalText(ctx, text, target, false));
 }
 
 void    cmdPrivmsg(CommandContext& ctx)
