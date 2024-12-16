@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: itahani <itahani@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:52 by Helene            #+#    #+#             */
-/*   Updated: 2024/11/22 19:11:41 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/12/16 17:49:41 by itahani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,8 +95,10 @@ unsigned int Channel::getNumberOfMembers()
 	int										n;
 
 	n = 0;
+	std::cout << "appel a getNumberOfMembers -1" << std::endl; //debugms
 	for (it = this->_members.begin(); it != this->_members.end(); it++)
 		n++;
+	std::cout << "appel a getNumberOfMembers -2" << std::endl; //debugms
 	return n;
 }
 

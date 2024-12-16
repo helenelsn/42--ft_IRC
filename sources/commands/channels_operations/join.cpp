@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: itahani <itahani@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 18:05:03 by Helene            #+#    #+#             */
-/*   Updated: 2024/11/22 17:07:04 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/12/16 19:04:15 by itahani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,8 @@ void    joinChannel(CommandContext &ctx, std::string const& channelName, std::st
     else
     {
         channel->addMember(&ctx._client);
+        //check
+        ctx._client.addChannel(channelName); // add new channel to clientś list of channels they are currently in
         joinRpl(ctx._client, *channel);
         channel->sendToAll(ctx._client.getNickname(), ctx._client.getUserID() + " JOIN " + channel->getName() + CRLF);
         if (channel->isInvited(ctx._client.getNickname()))

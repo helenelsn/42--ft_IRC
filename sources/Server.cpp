@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: itahani <itahani@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:49 by Helene            #+#    #+#             */
-/*   Updated: 2024/11/22 19:11:55 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/12/16 19:51:00 by itahani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -291,6 +291,7 @@ void    Server::DisconnectClient(Client *client, std::string const& reason = DEP
     /* #############################
     faire command part de tout les channel du clien */
     client->setState(Disconnected);
+    
 }
 
 void    Server::RemoveSocket(int client_fd)

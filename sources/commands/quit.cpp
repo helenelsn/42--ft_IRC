@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quit.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: itahani <itahani@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 12:36:02 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/04 17:15:37 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/12/16 19:52:18 by itahani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,14 @@ void    cmdQuit(CommandContext &ctx)
     // ctx._client.addToWriteBuffer("QUIT :" + reason + CRLF);
     
     // The server acknowledges this by replying with an ERROR message and closing the connection to the client.
-    ctx._client.addToWriteBuffer(ERROR_RPL(reason));
+    // ctx._client.addToWriteBuffer(ERROR_RPL(reason));
     
     std::stringstream ss;
     ss << ctx._client.getSockFd();
     ctx._server._log(INFO, "Client " + ss.str() + " disconnected.");
     ctx._server.DisconnectClient(&ctx._client, reason);
+    
+    ctx._client.addToWriteBuffer(QUIT_RPL(ctx._client.getUserID(), reason));
 
     
     // envoie un QUIT msg aux autres clients mtn ou apres ?

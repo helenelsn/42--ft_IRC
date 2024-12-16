@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NumericalReplies.hpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
+/*   By: itahani <itahani@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 19:03:14 by Helene            #+#    #+#             */
-/*   Updated: 2024/11/22 18:27:25 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/12/16 19:31:00 by itahani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ A numeric reply is not allowed to originate from a client.
 /* -------------------------- Numerics : Replies ------------------------------- */
 
 # define ERROR_RPL(reason) ("Error :" + reason + CRLF)
-# define QUIT_RPL(nick, user, host, reason) (":" + userID(nick, user, host) + " QUIT :" + reason + CRLF)
+# define QUIT_RPL(source, reason) (source + " QUIT :" + reason + CRLF)
 
 # define RPL_WELCOME(client, nick, user, host) (": 001 " + client + " :Welcome to the Internet Relay Network " + userID(nick, user, host) + CRLF)
 # define RPL_YOURHOST(client, server, version) (": 002 " + client + " :Your host is " + server + ", running on version " + version + CRLF)
