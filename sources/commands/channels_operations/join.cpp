@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 18:05:03 by Helene            #+#    #+#             */
-/*   Updated: 2024/12/17 13:59:15 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/12/17 14:03:04 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void    joinChannel(CommandContext &ctx, std::string const& channelName, std::st
     Channel *channel = ctx._server.getChannel(channelName);
     if (!channel)
     {
-        Channel newChannel(channelName, ctx._client);        
+        Channel newChannel(channelName, &ctx._client);        
         
         ctx._server.addChannel(newChannel, channelName);
         ctx._client.addChannel(channelName);

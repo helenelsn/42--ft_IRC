@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 15:26:00 by Helene            #+#    #+#             */
-/*   Updated: 2024/12/17 13:37:16 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/12/17 14:04:50 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,6 @@ void    cmdPart(CommandContext &ctx)
     // std::stringstream ss(ctx._parameters[0]);
     std::stringstream msg;
     std::string reason = (ctx._parameters.size() >= 2) ? ctx._parameters[1] : ctx._client.getNickname(); //: "";
-    bool delChannel;
     
     
     for (size_t i = 0; i < channels.size(); i++)
@@ -79,30 +78,32 @@ void    cmdPart(CommandContext &ctx)
                 ctx._client.addToWriteBuffer(ERR_NOTONCHANNEL(ctx._client.getNickname(), channel->getName()));
                 return ;
             }
-            delChannel = (channel->getNumberOfMembers() == 1);
             if (keys.empty())
                 msg << ctx._client.getUserID() << " PART " << channels[i] << CRLF;
             else
                 msg << ctx._client.getUserID() << " PART " << channels[i] << " :" << keys[i] << CRLF;
             ctx._client.addToWriteBuffer(msg.str());
-            if (delChannel)
+            
+
+            ctx._client.removeChannel(channels[i]); // remove channel's name from client's registry
+            
+            channel->removeMember(ctx._client.getNickname()); // remove user from channel's registry 
+            
+            channel->sendToAll(ctx._client.getNickname(), msg.str());
+            if (channel->isEmpty())
             {
                 ctx._server.removeChannel(channels[i]);
                 ctx._server._log(DEBUG, "Removing channel " + channels[i]);
             }
-            else
-                channel->sendToAll(ctx._client.getNickname(), msg.str());
             
-            ctx._client.removeChannel(channels[i]); // remove channel's name from client's registry
+                
             
-            channel->removeMember(ctx._client.getNickname()); // remove user from channel's registry 
+            
             // if (channel->isOperator(ctx._client.getNickname()))
                 // channel->removeOperator(ctx._client.getNickname());
             // else
                 // channel->removeMember(ctx._client.getNickname());
                 
-            if (channel->isEmpty())
-                ctx._server.removeChannel(channels[i]); // remove channel from server's registry
         }
     }
 }

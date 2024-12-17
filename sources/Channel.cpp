@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:52 by Helene            #+#    #+#             */
-/*   Updated: 2024/12/17 13:58:34 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/12/17 14:02:53 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ Channel::Channel(const Channel& other)
 	// this->_founder = other._founder;
 }
 
-Channel::Channel(const std::string& name, Client& member) : _topic(""),
+Channel::Channel(const std::string& name, Client* member) : _topic(""),
 	_topicRestrictionMode(0), _inviteOnlyMode(0), _passwordMode(0),
 	_userLimitMode(0)
 {
