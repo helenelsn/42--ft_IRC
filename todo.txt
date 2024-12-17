@@ -1,4 +1,6 @@
-
+Todo :
+Changer le motd file
+Virer les acab du code + les msg de debug 
 
 A checker :
 
@@ -8,9 +10,6 @@ A checker :
 -> Rpl_created ?
 
 - checker le format des RPL et ERR messages (ils ne sont tres surement pas exacts ici)
-
-- checker que les signaux sont bien geres 
-
 
 - checker cas speciaux, et si ils sont geres correctement (password is an empty string, ...)
 - checker comportement si arguments du programme existent et sont vides (ou juste un des deux)  
