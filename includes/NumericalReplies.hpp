@@ -60,6 +60,16 @@ A numeric reply is not allowed to originate from a client.
 
 # define RPL_MODEMSG(source, channelName, modeParams) (source + " MODE " + channelName + " " + modeParams + CRLF)
 
+// 381    RPL_YOUREOPER
+//               ":You are now an IRC operator"
+
+//          - RPL_YOUREOPER is sent back to a client which has
+//            just successfully issued an OPER message and gained
+//            operator status.
+
+// 472    ERR_UNKNOWNMODE
+            //   "<char> :is unknown mode char to me for <channel>"
+
 /* -------------------------- Numerics : Errors ------------------------------- */
 
 # define ERR_NOSUCHNICK(client, nickname) (": 401 " + client + " " + nickname + " :No such nick/channel" + CRLF)
@@ -87,7 +97,7 @@ A numeric reply is not allowed to originate from a client.
 # define ERR_CHANOPRIVSNEEDED(client, channel) (": 482 " + client + " " + channel + " :You're not channel operator" + CRLF)
 # define ERR_UMODEUNKNOWNFLAG(client) (": 501 " + client + " :Unknown MODE flag" + CRLF) // préciser le flag ?
 # define ERR_USERSDONTMATCH(client) (": 502 " + client + " :Can't change mode for other users" + CRLF)
-
+# define ERR_UNKNOWNMODE(mode, channel) (": 472 " + mode + " :is unknown mode char to me for " + channel + CRLF)
 # define ERR_ALREADYJOINED(client, channel) (client + " : cannot join " + channel + " : already on channel" + CRLF)
 
 

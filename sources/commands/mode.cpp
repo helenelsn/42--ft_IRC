@@ -39,15 +39,20 @@ void	channelModeIs(CommandContext &ctx)
 	
 	ctx._client.addToWriteBuffer(RPL_CHANNELMODEIS(clientName, channelName, activeMode, kParams, lParams));
 
-	std::stringstream ss;
+	std::stringstream	ss;
+	std::string			prefix;
 	ss << RPL_NAMREPLY(clientName, "=", channelName);
 
 	// std::string	founder = chan->getFounder();
 	// if (chan->isMember(founder))
 	// 	ss << " ~" << founder;
 	for (std::map<std::string, Client*>::iterator it = chan->getAllOperators().begin(), end = chan->getAllOperators().end(); it != end; it++)
-		// if (it->first != founder)
-		ss << " @" << it->first;
+	{
+		prefix = getPrefix(*it->second, *chan);
+		if (it != chan->getAllOperators().begin())
+			ss << " ";
+		ss << prefix << it->first;
+	}	
 	ss << CRLF;
 	ctx._client.addToWriteBuffer(ss.str());
     // ctx._client.addToWriteBuffer(RPL_ENDOFNAMES(clientName, channelName));
@@ -208,7 +213,12 @@ void	channelMode(CommandContext &ctx)
 					else
 					{
 						if (*it != '+')
-							ctx._client.addToWriteBuffer(ERR_UNKNOWNCOMMAND(ctx._client.getNickname()));
+						{
+							std::string	umode;
+							umode += *it;
+							ctx._client.addToWriteBuffer(ERR_UNKNOWNMODE(umode, channelName));
+						}
+							// ctx._client.addToWriteBuffer(ERR_UNKNOWNMODE(*it, channelName));
 						std::cout << "From cmdMode\n"; //debug
 					}
 					it++;
@@ -247,7 +257,11 @@ void	channelMode(CommandContext &ctx)
 					else
 					{
 						if (*it != '-')
-							ctx._client.addToWriteBuffer(ERR_UNKNOWNCOMMAND(ctx._client.getNickname()));
+						{
+							std::string	umode;
+							umode += *it;
+							ctx._client.addToWriteBuffer(ERR_UNKNOWNMODE(umode, channelName));
+						}
 					}
 					it++;
 					i++;
