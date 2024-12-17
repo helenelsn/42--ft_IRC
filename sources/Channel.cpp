@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:52 by Helene            #+#    #+#             */
-/*   Updated: 2024/12/17 13:30:52 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/12/17 13:58:34 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ Channel::Channel(const Channel& other)
 	this->_password = other._password;
 	this->_userLimitMode = other._userLimitMode;
 	this->_userLimit = other._userLimit;
-	this->_founder = other._founder;
+	// this->_founder = other._founder;
 }
 
 Channel::Channel(const std::string& name, Client& member) : _topic(""),
@@ -40,28 +40,40 @@ Channel::Channel(const std::string& name, Client& member) : _topic(""),
 	_userLimitMode(0)
 {
 	this->_name = name;
-	this->_members[member.getNickname()] = &member; 
-	this->_operators[member.getNickname()] = &member;
-	this->_founder = member.getNickname();
+	this->_members[member->getNickname()] = member; 
+	this->_operators[member->getNickname()] = member;
+	// this->_founder = member->getNickname();
 	// std::cout << "at channel creation founder is : " << this->_founder << "\n"; //debugmg
 }
 
 Channel::~Channel() {}
 
-Channel& Channel::operator = (const Channel& other)
+// Channel& Channel::operator = (const Channel& other)
+Channel& Channel::operator = (Channel& other) //debugmg
 {
-	this->_members = other._members;
-	this->_operators = other._operators;
-	this->_name = other._name;
-	this->_topic = other._topic;
-	this->_topicRestrictionMode = other._topicRestrictionMode;
-	this->_inviteOnlyMode = other._inviteOnlyMode;
-	this->_invitedUsers = other._invitedUsers;
-	this->_passwordMode = other._passwordMode;
-	this->_password = other._password;
-	this->_userLimitMode = other._userLimitMode;
-	this->_userLimit = other._userLimit;
-	this->_founder = other._founder;
+	// this->_members = other._members;
+	this->_members = other.getAllMembers();
+	// this->_operators = other._operators;
+	this->_operators = other.getAllOperators();
+	// this->_name = other._name;
+	this->_name = other.getName();
+	// this->_topic = other._topic;
+	this->_topic = other.getTopic();
+	// this->_topicRestrictionMode = other._topicRestrictionMode;
+	this->_topicRestrictionMode = other.getTopicRestrictionMode();
+	// this->_inviteOnlyMode = other._inviteOnlyMode;
+	this->_inviteOnlyMode = other.getInviteOnlyMode();
+	// this->_invitedUsers = other._invitedUsers;
+	this->_invitedUsers = other.getInvitedUsers();
+	// this->_passwordMode = other._passwordMode;
+	this->_passwordMode = other.getPasswordMode();
+	// this->_password = other._password;
+	this->_password = other.getPassword();
+	// this->_userLimitMode = other._userLimitMode;
+	this->_userLimitMode = other.getUserLimitMode();
+	// this->_userLimit = other._userLimit;
+	this->_userLimit = other.getUserLimit();
+	// this->_founder = other._founder;
 	return (*this);
 }
 
@@ -346,15 +358,15 @@ bool	Channel::isEmpty()
 
 // ###########  ###############
 
-std::string		Channel::getFounder()
-{
-	return this->_founder;
-}
+// std::string		Channel::getFounder()
+// {
+// 	return this->_founder;
+// }
 
-bool 			Channel::isFounder(std::string const& client)
-{
-	return (client == _founder);
-}
+// bool 			Channel::isFounder(std::string const& client)
+// {
+// 	return (client == _founder);
+// }
 
 Channel::members 	&Channel::getAllMembers(void)
 {
@@ -364,6 +376,11 @@ Channel::members 	&Channel::getAllMembers(void)
 Channel::operators	&Channel::getAllOperators(void)
 {
 	return this->_operators;
+}
+
+Channel::invitedUsers	&Channel::getInvitedUsers(void)
+{
+	return this->_invitedUsers;
 }
 
 void 	Channel::sendToAll(std::string const& client, std::string const& msg, bool excludeSource)

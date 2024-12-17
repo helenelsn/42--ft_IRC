@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 18:05:03 by Helene            #+#    #+#             */
-/*   Updated: 2024/12/17 13:21:08 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/12/17 13:59:15 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ static void    joinRpl(Client &client, Channel &channel)
         ss << prefix << it->first;
     }
     ss << CRLF;
+    std::cout << ss.str() << " is ss in joinRpl()\n"; //debugmg
     client.addToWriteBuffer(ss.str());
     client.addToWriteBuffer(RPL_ENDOFNAMES(client.getNickname(), channel.getName()));
 }
@@ -66,6 +67,12 @@ void    joinChannel(CommandContext &ctx, std::string const& channelName, std::st
     }
     std::cout << "in command join after entering joinChannel\n"; //debugmg
     
+        std::map<std::string, Client*>   members = ctx._server.getChannel(channelName)->getAllMembers(); //debumg
+        std::cout << "list of members\n"; //debumg
+        for (std::map<std::string, Client*>::iterator it = members.begin(); it != members.end(); it++) //debugmg
+            std::cout << it->first << std::endl; //debugmg
+
+    
     // if (channel->isInvited(ctx._client.getNickname()))
         // channel->addInvitedUser(ctx._client.getNickname()); // commente, verifier que change r
     if (channel->isFull())
@@ -77,6 +84,10 @@ void    joinChannel(CommandContext &ctx, std::string const& channelName, std::st
     else
     {
         channel->addMember(&ctx._client);
+        std::map<std::string, Client*>   members = ctx._server.getChannel(channelName)->getAllMembers(); //debumg
+        std::cout << "list of members\n"; //debumg
+        for (std::map<std::string, Client*>::iterator it = members.begin(); it != members.end(); it++) //debugmg
+            std::cout << it->first << std::endl; //debugmg
         //check
         ctx._client.addChannel(channelName); // add new channel to clientś list of channels they are currently in
         joinRpl(ctx._client, *channel);
@@ -122,7 +133,7 @@ void    cmdJoin(CommandContext &ctx)
     std::cout << "in command join after parseParam\n"; //debugmg
     size_t j = 0;
     for (size_t i = 0; i < channels.size(); i++)
-    {
+    {        
         if (!checkChanMask(channels[i]))
         {
             ctx._client.addToWriteBuffer(ERR_BADCHANMASK(channels[i]));
