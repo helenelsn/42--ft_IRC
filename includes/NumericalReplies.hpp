@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NumericalReplies.hpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: itahani <itahani@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 19:03:14 by Helene            #+#    #+#             */
-/*   Updated: 2024/12/16 19:31:00 by itahani          ###   ########.fr       */
+/*   Updated: 2024/12/17 09:46:18 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ A numeric reply is not allowed to originate from a client.
 # define VERSION    "13.12"
 # define USER_MODES " a remplir "
 # define CHANNEL_MODES " itkol "
-# define DEPARTURE_REASON "A bas l'etat"
+# define DEPARTURE_REASON "Leaving, bye bye"
 
 # define userID(nick, user, host) (nick + "!" + user + "@localhost") //  + host
 

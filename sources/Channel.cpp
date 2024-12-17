@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: itahani <itahani@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:52 by Helene            #+#    #+#             */
-/*   Updated: 2024/12/16 17:49:41 by itahani          ###   ########.fr       */
+/*   Updated: 2024/12/17 12:22:31 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,13 +107,30 @@ void Channel::addMember(Client *client)
 	this->_members[client->getNickname()] = client;
 }
 
+// void Channel::removeMember(std::string const& client)
+// {
+// 	std::map<std::string, Client*>::iterator	it;
+
+// 	it = this->_members.find(client);
+// 	std::cout << client << " was removed from channel " << this->getName() << '\n'; //debugmg
+// 	this->_members.erase(it);
+// }
+
 void Channel::removeMember(std::string const& client)
 {
 	std::map<std::string, Client*>::iterator	it;
 
 	it = this->_members.find(client);
-	std::cout << client << " was removed from channel " << this->getName() << '\n'; //debugmg
+	if (it == this->_members.end())
+		return ;
+	this->_members[client] = NULL; // tocheck
 	this->_members.erase(it);
+	std::cout << client << " was removed from channel " << this->getName() << '\n'; //debugmg
+
+	it = this->_operators.find(client);
+	if (it == this->_operators.end())
+		return ;
+	this->_operators.erase(it);
 }
 
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   part.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: itahani <itahani@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 15:26:00 by Helene            #+#    #+#             */
-/*   Updated: 2024/12/16 19:26:11 by itahani          ###   ########.fr       */
+/*   Updated: 2024/12/17 11:19:03 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,11 +93,16 @@ void    cmdPart(CommandContext &ctx)
             else
                 channel->sendToAll(ctx._client.getNickname(), msg.str());
             
-            // ctx._client.removeChannel(channels[i]);
+            ctx._client.removeChannel(channels[i]); // remove channel's name from client's registry
+            
+            channel->removeMember(ctx._client.getNickname()); // remove user from channel's registry 
             // if (channel->isOperator(ctx._client.getNickname()))
-            //     channel->removeOperator(ctx._client.getNickname());
+                // channel->removeOperator(ctx._client.getNickname());
             // else
-            //     channel->removeMember(ctx._client.getNickname());
+                // channel->removeMember(ctx._client.getNickname());
+                
+            if (channel->isEmpty())
+                ctx._server.removeChannel(channels[i]); // remove channel from server's registry
         }
     }
 }

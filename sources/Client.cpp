@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: itahani <itahani@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:46 by Helene            #+#    #+#             */
-/*   Updated: 2024/12/16 19:54:39 by itahani          ###   ########.fr       */
+/*   Updated: 2024/12/17 11:06:32 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,8 @@ int Client::getSockFd(void)
     return this->_sockFd;
 }
 
-std::vector<std::string> Client::getChannels(void)
+// added reference to vector as return value
+std::vector<std::string> &Client::getChannels(void)
 {
     return this->_channelNames;
 }

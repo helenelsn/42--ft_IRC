@@ -1,51 +1,41 @@
 
-Checker cmportement si arguments du programme sont vides (ou juste un des deux)  
 
-
-
-
-
-
-
-
-
----------------------------------------------------
-
-Nickmask = nick!user@host
-
----------------------------------------------------
-
-
-A faire :
-    - remplacer macro dynamique userID par méthode de la classe client (modifier autres macros en conséquence)
-    - s'assurer que les clients avec des channels en communs sont bien informés quand un user QUIT
-    - commandes :   - MODE 
-                    - PRIVMSG
-                    - OPER ?
 
 A checker :
-    - checker le format des RPL et ERR messages (ils ne sont tres surement pas exacts ici)
-    - checker que les signaux sont bien geres 
-    - checker cas speciaux, et si ils sont geres correctement (password is an empty string, ...)
-    - checker ReadData pour un msg plus long que BUFSIZ -> normalement ca tronc le msg mais y a bien un \r\n a la fin 
+
+- Quand cree un channel puis le quitte (sans aucun autre users dedans), segfault (double free)
+- Quand cree un channel (premier a joi ce channel), envoyer un server rpl pour dire quand a ete cree le channel, etc
+
+- Doublon d'users (avec et sans le symbole founder ~) : probleme avec cmd mode qui doit renvoyer /names mais sans specifier les channel privileges du user 
+    (aurait donc un doublon : ~user via le names_rpl de Join, et user via le names_rpl de Mode)
 
 
+- Erase la liste des invited users quand le mode invitation est desactive 
 
----------------------------------------------------
+- checker le format des RPL et ERR messages (ils ne sont tres surement pas exacts ici)
+- checker que les signaux sont bien geres 
+- checker cas speciaux, et si ils sont geres correctement (password is an empty string, ...)
+- checker ReadData pour un msg plus long que BUFSIZ -> normalement ca tronc le msg mais y a bien un \r\n a la fin 
+- vérifier ce qu'est le 'client' dans les server rpl et error responses (user_id ? et pas juste nickname)
+- vérifier les caractères autorisés pour le nickname (commence par un caractère alphabétique, 
+    puis des caractères alphabétiques ou numériques, pour un total de 9 caractères max ?)
+- vérifier si prend en compte les potentiels espaces supplémentaires autour de la commande et des parametres 
+    (ie si " JOIN" equivaut a "JOIN", et que doit skip les ' ' nous meme), ou si c'est une commande inconnue
+- checker comportement si arguments du programme existent et sont vides (ou juste un des deux)  
 
-QUIT :
-    Quand un client envoie la commande QUIT, il faut attendre d'avoir send() a ce meme client le RPL du serveur
-        avant de remove ce client du serveur (ie attendre le prochain poll() : c'est dans la gestion
-        de POLLOUT que l'on remove le client du serveur).
-    Distribuer le msg QUIT a tous les clients ayant des channels en commun avec le client déconnecté
-    Si s'agit d'une déconnection non volontaire, ie résultant d'un retour d'erreur ou d'un signal, 
-        doit renseigner la raison dans le QUIT msg 
 
-NICK :
-    Informer tous les clients ayant des channels ne commun avec le client ayant changé son nick que 
-        ce dernier l'a changé, sauf si cette commande est tapée pendant la registration
-    Checker le comportement attendu si il n'y a pas de previous nickname 
+- QUIT :
+        Quand un client envoie la commande QUIT, il faut attendre d'avoir send() a ce meme client le RPL du serveur
+            avant de remove ce client du serveur (ie attendre le prochain poll() : c'est dans la gestion
+            de POLLOUT que l'on remove le client du serveur).
+        Distribuer le msg QUIT a tous les clients ayant des channels en commun avec le client déconnecté
+        Si s'agit d'une déconnection non volontaire, ie résultant d'un retour d'erreur ou d'un signal, 
+            doit renseigner la raison dans le QUIT msg 
 
+- NICK :
+        Informer tous les clients ayant des channels ne commun avec le client ayant changé son nick que 
+            ce dernier l'a changé, sauf si cette commande est tapée pendant la registration
+        Checker le comportement attendu si il n'y a pas de previous nickname 
 
 
 
@@ -54,28 +44,11 @@ INVITE : invited user must receive : :lnnn!hlesny@127.0.0.1 INVITE lnick #test42
 Make sure a Quit msg is sent (ie :lnnn!hlesny@127.0.0.1 QUIT :Quit: leaving, ie :<userID> QUIT : <quit msg>)
     to other users on same channel as user who just quit (quit, exit on irssi, Ctrl+c)
 
----------------------------------------------------
 
 
+----------------------------
 
--   Signals must be handled (ctrl+C, ctrl+D, what else ?)
+Peut etre implemente en plus :
 
--   You must be able to authenticate, set a nickname, a username, join a channel,
-    send and receive private messages using your reference client.
--   All the messages sent from one client to a channel have to be forwarded to
-    every other client that joined the channel.
--   You must have operators and regular users : 
-    -> both should inherit from a base class (or is 'regular user' the base class 'operator' would inherit from ?)
--   You have to implement the commands that are specific to channel operators
-    -> KICK, INVITE, TOPIC, MODE
-
-
----------------------------------------------------
-
-
-Checks a faire :
-    - vérifier ce qu'est le 'client' dans les server rpl et error responses (user_id ? et pas juste nickname)
-    - vérifier les caractères autorisés pour le nickname (commence par un caractère alphabétique, 
-        puis des caractères alphabétiques ou numériques, pour un total de 9 caractères max ?)
-    - vérifier si prend en compte les potentiels espaces supplémentaires autour de la commande et des parametres 
-        (ie si " JOIN" equivaut a "JOIN", et que doit skip les ' ' nous meme), ou si c'est une commande inconnue
+- Commandes Names et Help 
+- Transfert fichiers (surtout si pas bcp de code a rajouter)

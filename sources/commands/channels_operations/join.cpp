@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: itahani <itahani@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 18:05:03 by Helene            #+#    #+#             */
-/*   Updated: 2024/12/16 19:04:15 by itahani          ###   ########.fr       */
+/*   Updated: 2024/12/17 13:14:18 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static void    joinRpl(Client &client, Channel &channel)
     for (std::map<std::string, Client*>::iterator it = channel.getAllMembers().begin(); it != channel.getAllMembers().end(); it++)
     {
         prefix = getPrefix(client, channel);
-        if (it != channel.getAllMembers().begin() && *(it->second) != client)
+        if (it != channel.getAllMembers().begin()) // && *(it->second) != client)
             ss << " "; // sépare chaque client par un espace
         ss << prefix << it->first;
     }
@@ -57,8 +57,10 @@ void    joinChannel(CommandContext &ctx, std::string const& channelName, std::st
     Channel *channel = ctx._server.getChannel(channelName);
     if (!channel)
     {
-        Channel newChannel(channelName, &ctx._client);
+        Channel newChannel(channelName, &ctx._client);        
+        
         ctx._server.addChannel(newChannel, channelName);
+        ctx._client.addChannel(channelName);
         joinRpl(ctx._client, newChannel);
         return ;
     }
