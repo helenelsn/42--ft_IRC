@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/27 18:13:19 by Helene            #+#    #+#             */
-/*   Updated: 2024/12/17 20:05:17 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/12/17 21:37:34 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void    cmdKick(CommandContext &ctx)
     else if (!channel->isOperator(ctx._client.getNickname()))
         ctx._client.addToWriteBuffer(ERR_CHANOPRIVSNEEDED(ctx._client.getNickname(), channelName));
     else if (!channel->isMember(user))
-        ctx._client.addToWriteBuffer(ERR_NOTONCHANNEL(user, channelName));
+        ctx._client.addToWriteBuffer(ERR_USERNOTINCHANNEL(ctx._client.getNickname(), user, channelName));
     else
     {
         std::stringstream ss;
