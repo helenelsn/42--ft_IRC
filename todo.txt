@@ -2,6 +2,108 @@
 
 A checker :
 
+
+    
+- kick : met pas bien a jour. segfault quand est kick, puis que tu quit (est encore dans le channel au moment la dans les donnes serveur d'ailleurs)
+
+- kick, part et quit n'enlevent pas bien le user de/des channels 
+
+- Quelles regles pour la validite de syntaxe des noms de channels et des nicknames ?
+
+- Cmd User : checker si realname peut etre empty, ou s'il y a une taille minimale par ex.
+
+- err_notregistered (451) : envoyer qd envoie une cmd alors aue pas encore registered (checker le comportement actuel) 
+
+- mettre a jour unknowncommand : doit prendre le nick du client qui a emit la cmd, et la mauvaise cmd en question
+
+- Quand cree un channel (premier a join ce channel), envoyer un server rpl pour dire quand a ete cree le channel, etc
+-> Rpl_created ?
+
+- checker le format des RPL et ERR messages (ils ne sont tres surement pas exacts ici)
+- checker que les signaux sont bien geres 
+- checker cas speciaux, et si ils sont geres correctement (password is an empty string, ...)
+- vérifier ce qu'est le 'client' dans les server rpl et error responses (user_id ? et pas juste nickname)
+- vérifier les caractères autorisés pour le nickname (commence par un caractère alphabétique, 
+    puis des caractères alphabétiques ou numériques, pour un total de 9 caractères max ?)
+- vérifier si prend en compte les potentiels espaces supplémentaires autour de la commande et des parametres 
+    (ie si " JOIN" equivaut a "JOIN", et que doit skip les ' ' nous meme), ou si c'est une commande inconnue
+- checker comportement si arguments du programme existent et sont vides (ou juste un des deux)  
+
+
+- QUIT :
+        Quand un client envoie la commande QUIT, il faut attendre d'avoir send() a ce meme client le RPL du serveur
+            avant de remove ce client du serveur (ie attendre le prochain poll() : c'est dans la gestion
+            de POLLOUT que l'on remove le client du serveur).
+        Distribuer le msg QUIT a tous les clients ayant des channels en commun avec le client déconnecté
+        Si s'agit d'une déconnection non volontaire, ie résultant d'un retour d'erreur ou d'un signal, 
+            doit renseigner la raison dans le QUIT msg 
+
+- NICK :
+        Informer tous les clients ayant des channels ne commun avec le client ayant changé son nick que 
+            ce dernier l'a changé, sauf si cette commande est tapée pendant la registration
+        Checker le comportement attendu si il n'y a pas de previous nickname 
+
+
+
+INVITE : invited user must receive : :lnnn!hlesny@127.0.0.1 INVITE lnick #test42 (ie :<userID> INVITE <userNick> <channelName)
+
+Make sure a Quit msg is sent (ie :lnnn!hlesny@127.0.0.1 QUIT :Quit: leaving, ie :<userID> QUIT : <quit msg>)
+    to other users on same channel as user who just quit (quit, exit on irssi, Ctrl+c)
+
+
+
+------------------------------------------------------
+
+Peut etre implemente en plus :
+
+- Commandes Names et Help 
+- Transfert fichiers (surtout si pas bcp de code a rajouter)
+
+
+
+
+
+
+    For all 5 mode commands : sent to all users on channel, even the one that sent the command
+
+   - Invite only
+        Added :
+            MODE #ChanName +i 
+            (UserID MODE #ChanName +i) 
+        Removed :
+            MODE #ChanName -i 
+            (UserID MODE #ChanName -i) 
+
+    - User limit
+        Added :
+            MODE #ChanName +l <limit>
+            (UserID MODE #ChanName +l)
+        Removed : 
+            MODE #ChanName -l
+            (UserID MODE #ChanName -l)
+        
+    - Operator
+        Added user : 
+            MODE #ChanName +o <nick of user that became operator>
+            (UserID MODE #ChanName +o)
+        Removed user :  
+            MODE #ChanName -o <nick of user that was removed from operators>
+            (UserID MODE #ChanName -o)
+
+    - Topic restrictions
+        Added : 
+            MODE #ChanName +t
+        Removed : 
+            MODE #ChanName -t
+
+    - Channel password
+        Added :
+            MODE #ChanName +k ChanKey
+            (UserID MODE #ChanName +k (without the <channel key>))
+        Removed :
+            MODE #ChanName -k (<Channel key> mais pas oblige)
+            (UserID MODE #ChanName -k)
+
 Mode : Expected server rpl 
 
     Cmd : MODE #a 
@@ -73,104 +175,3 @@ Mode : Expected server rpl
                     =================
                     :localhost MODE #a -k lol (sent to all users on channel, even the one that sent the command)
             -> MODE #ChanName -k (Chankey mais pas oblige)
-    
-
-
-- Quelles regles pour la validite de syntaxe des noms de channels et des nicknames ?
-
-- Cmd User : checker si realname peut etre empty, ou s'il y a une taille minimale par ex.
-
-- err_notregistered (451) : envoyer qd envoie une cmd alors aue pas encore registered (checker le comportement actuel) 
-
-- peut creer un channel avec un nom vide (check la validite de noms de channels)
-
-- mettre a jour unknowncommand : doit prendre le nick du client qui a emit la cmd, et la mauvaise cmd en question
-
-- Quand cree un channel (premier a join ce channel), envoyer un server rpl pour dire quand a ete cree le channel, etc
--> Rpl_created ?
-
-- checker le format des RPL et ERR messages (ils ne sont tres surement pas exacts ici)
-- checker que les signaux sont bien geres 
-- checker cas speciaux, et si ils sont geres correctement (password is an empty string, ...)
-- checker ReadData pour un msg plus long que BUFSIZ -> normalement ca tronc le msg mais y a bien un \r\n a la fin 
-- vérifier ce qu'est le 'client' dans les server rpl et error responses (user_id ? et pas juste nickname)
-- vérifier les caractères autorisés pour le nickname (commence par un caractère alphabétique, 
-    puis des caractères alphabétiques ou numériques, pour un total de 9 caractères max ?)
-- vérifier si prend en compte les potentiels espaces supplémentaires autour de la commande et des parametres 
-    (ie si " JOIN" equivaut a "JOIN", et que doit skip les ' ' nous meme), ou si c'est une commande inconnue
-- checker comportement si arguments du programme existent et sont vides (ou juste un des deux)  
-
-
-- QUIT :
-        Quand un client envoie la commande QUIT, il faut attendre d'avoir send() a ce meme client le RPL du serveur
-            avant de remove ce client du serveur (ie attendre le prochain poll() : c'est dans la gestion
-            de POLLOUT que l'on remove le client du serveur).
-        Distribuer le msg QUIT a tous les clients ayant des channels en commun avec le client déconnecté
-        Si s'agit d'une déconnection non volontaire, ie résultant d'un retour d'erreur ou d'un signal, 
-            doit renseigner la raison dans le QUIT msg 
-
-- NICK :
-        Informer tous les clients ayant des channels ne commun avec le client ayant changé son nick que 
-            ce dernier l'a changé, sauf si cette commande est tapée pendant la registration
-        Checker le comportement attendu si il n'y a pas de previous nickname 
-
-
-
-INVITE : invited user must receive : :lnnn!hlesny@127.0.0.1 INVITE lnick #test42 (ie :<userID> INVITE <userNick> <channelName)
-
-Make sure a Quit msg is sent (ie :lnnn!hlesny@127.0.0.1 QUIT :Quit: leaving, ie :<userID> QUIT : <quit msg>)
-    to other users on same channel as user who just quit (quit, exit on irssi, Ctrl+c)
-
-
-
-----------------------------
-
-Peut etre implemente en plus :
-
-- Commandes Names et Help 
-- Transfert fichiers (surtout si pas bcp de code a rajouter)
-
-
-
-
-
-
-    For all 5 mode commands : sent to all users on channel, even the one that sent the command
-
-   - Invite only
-        Added :
-            MODE #ChanName +i 
-            (UserID MODE #ChanName +i) 
-        Removed :
-            MODE #ChanName -i 
-            (UserID MODE #ChanName -i) 
-
-    - User limit
-        Added :
-            MODE #ChanName +l <limit>
-            (UserID MODE #ChanName +l)
-        Removed : 
-            MODE #ChanName -l
-            (UserID MODE #ChanName -l)
-        
-    - Operator
-        Added user : 
-            MODE #ChanName +o <nick of user that became operator>
-            (UserID MODE #ChanName +o)
-        Removed user :  
-            MODE #ChanName -o <nick of user that was removed from operators>
-            (UserID MODE #ChanName -o)
-
-    - Topic restrictions
-        Added : 
-            MODE #ChanName +t
-        Removed : 
-            MODE #ChanName -t
-
-    - Channel password
-        Added :
-            MODE #ChanName +k ChanKey
-            (UserID MODE #ChanName +k (without the <channel key>))
-        Removed :
-            MODE #ChanName -k (<Channel key> mais pas oblige)
-            (UserID MODE #ChanName -k)
