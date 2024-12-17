@@ -9,7 +9,7 @@ void	channelModeIs(CommandContext &ctx)
 	std::string						channelName = ctx._parameters[0];
 	Channel							*chan = ctx._server.getChannel(channelName);
 	std::map<std::string, Client*>	operatorsList = chan->getAllOperators();
-	std::string						activeMode = "+o";
+	std::string						activeMode = "+";
 	std::string						kParams;
 	std::string						lParams;
 	std::string						clientName = ctx._client.getNickname();
@@ -34,6 +34,8 @@ void	channelModeIs(CommandContext &ctx)
 		ss << chan->getUserLimit();
 		lParams.append(ss.str());
 	}
+	if (!operatorsList.empty())
+		activeMode.append("o");
 	
 	if (ctx._server.getChannel(channelName)->isOperator(clientName))
 		ctx._client.addToWriteBuffer(RPL_CHANNELMODEIS(clientName, channelName, activeMode, kParams, lParams));
@@ -46,15 +48,14 @@ void	channelModeIs(CommandContext &ctx)
 	std::stringstream ss;
 	ss << RPL_NAMREPLY(clientName, "=", channelName);
 
-	std::string	founder = chan->getFounder();
-	if (chan->isMember(founder))
-		ss << " ~" << founder;
+	// std::string	founder = chan->getFounder();
+	// if (chan->isMember(founder))
+	// 	ss << " ~" << founder;
 	for (std::map<std::string, Client*>::iterator it = chan->getAllOperators().begin(), end = chan->getAllOperators().end(); it != end; it++)
-		if (it->first != founder)
-			ss << " @" << it->first;
+		// if (it->first != founder)
+		ss << " @" << it->first;
 	ss << CRLF;
 	ctx._client.addToWriteBuffer(ss.str());
-
 	return;
 }
 
