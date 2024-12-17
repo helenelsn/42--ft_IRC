@@ -44,7 +44,7 @@ class Channel
         
     public:
         Channel();
-		Channel(const std::string& name, Client *client);
+		Channel(const std::string& name, Client &client);
         Channel (const Channel& other);
         ~Channel();
 

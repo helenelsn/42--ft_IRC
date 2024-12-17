@@ -1,14 +1,8 @@
 
 
-
 A checker :
 
-- Quand cree un channel puis le quitte (sans aucun autre users dedans), segfault (double free)
 - Quand cree un channel (premier a joi ce channel), envoyer un server rpl pour dire quand a ete cree le channel, etc
-
-- Doublon d'users (avec et sans le symbole founder ~) : probleme avec cmd mode qui doit renvoyer /names mais sans specifier les channel privileges du user 
-    (aurait donc un doublon : ~user via le names_rpl de Join, et user via le names_rpl de Mode)
-
 
 - Erase la liste des invited users quand le mode invitation est desactive 
 
