@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 18:05:03 by Helene            #+#    #+#             */
-/*   Updated: 2024/12/17 14:03:04 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/12/17 14:16:05 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static void    joinRpl(Client &client, Channel &channel)
     ss << RPL_NAMREPLY(client.getNickname(), "=", channel.getName());
     for (std::map<std::string, Client*>::iterator it = channel.getAllMembers().begin(); it != channel.getAllMembers().end(); it++)
     {
-        prefix = getPrefix(client, channel);
+        prefix = getPrefix(*it->second, channel);
         if (it != channel.getAllMembers().begin()) // && *(it->second) != client)
             ss << " "; // sépare chaque client par un espace
         ss << prefix << it->first;

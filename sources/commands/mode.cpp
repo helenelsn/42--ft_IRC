@@ -206,7 +206,10 @@ void	channelMode(CommandContext &ctx)
 						}
 					}
 					else
+					{
 						ctx._client.addToWriteBuffer(ERR_UNKNOWNCOMMAND(ctx._client.getNickname()));
+						std::cout << "From cmdMode\n"; //debug
+					}
 					it++;
 					i++;
 				}
