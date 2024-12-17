@@ -2,17 +2,15 @@
 
 A checker :
 
+- Inform others : exclure le client qui appelle la methode de la liste des recipients. faire le follow up en 
+    consequence dans les autres methodes qui appellent InformOthers.
 
-    
-- kick : met pas bien a jour. segfault quand est kick, puis que tu quit (est encore dans le channel au moment la dans les donnes serveur d'ailleurs)
+
+- kick msg not sent to users on that channel 
 
 - kick, part et quit n'enlevent pas bien le user de/des channels 
 
-- Quelles regles pour la validite de syntaxe des noms de channels et des nicknames ?
-
 - Cmd User : checker si realname peut etre empty, ou s'il y a une taille minimale par ex.
-
-- err_notregistered (451) : envoyer qd envoie une cmd alors aue pas encore registered (checker le comportement actuel) 
 
 - mettre a jour unknowncommand : doit prendre le nick du client qui a emit la cmd, et la mauvaise cmd en question
 

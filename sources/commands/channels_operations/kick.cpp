@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/27 18:13:19 by Helene            #+#    #+#             */
-/*   Updated: 2024/12/17 12:28:15 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/12/17 20:05:17 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,20 +58,26 @@ void    cmdKick(CommandContext &ctx)
         // ss << ctx._client.getUserID() << " KICK " << channelName << " " << ctx._client.getNickname() << " : " << comment << CRLF;
         ss << ctx._client.getUserID() << " KICK " << channelName << " " << user << " : " << comment << CRLF; //debugmg
         std::cout << ss.str() << '\n'; //debugmg
-        channel->sendToAll(user, ss.str(), 0);
+        //channel->sendToAll(user, ss.str(), 0);
+                
+        // ctx._client.removeChannel(channel->getName()); // remove channel's name from client's registry
+        Client *target = ctx._server.getClientByNick(user);
+        if (!target)
+        {
+            // ouib ouin
+            return ;
+        }
+        channel->sendToAll(user, ss.str(), false); // avant ou apres Channel::removeMember() ?
+        target->removeChannel(channel->getName());
+        channel->removeMember(user); // remove user from channel's registry 
         
-        // is it possible for a chanOp to kick another chanOp ?
-        
-        //todo : Server::removeMemberFromChannel(), which calls Channel::removeMemver() and then checks if channel is then empty to potentially delete it
-        // channel->removeMember(user); // remove user from channel's registry 
-        if (channel->isOperator(user))
-            channel->removeOperator(user);
-        else
-            channel->removeMember(user);
-            
         // in case the only user in that channel kicked itself out 
         if (channel->isEmpty())
-            ctx._server.removeChannel(channelName); 
+        {
+            ctx._server.removeChannel(channel->getName());
+            ctx._server._log(DEBUG, "Removing channel " + channel->getName());
+        }
+        
 
         /*
         This message may be sent from a server to a client to notify the client that 

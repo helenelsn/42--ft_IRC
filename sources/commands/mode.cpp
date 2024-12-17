@@ -37,7 +37,7 @@ void	channelModeIs(CommandContext &ctx)
 	if (!operatorsList.empty())
 		activeMode.append("o");
 	
-		ctx._client.addToWriteBuffer(RPL_CHANNELMODEIS(clientName, channelName, activeMode, kParams, lParams));
+	ctx._client.addToWriteBuffer(RPL_CHANNELMODEIS(clientName, channelName, activeMode, kParams, lParams));
 
 	std::stringstream ss;
 	ss << RPL_NAMREPLY(clientName, "=", channelName);
@@ -50,6 +50,7 @@ void	channelModeIs(CommandContext &ctx)
 		ss << " @" << it->first;
 	ss << CRLF;
 	ctx._client.addToWriteBuffer(ss.str());
+    // ctx._client.addToWriteBuffer(RPL_ENDOFNAMES(clientName, channelName));
 	return;
 }
 
