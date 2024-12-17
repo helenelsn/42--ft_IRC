@@ -90,11 +90,12 @@ bool	parseModeWithParams(char mode, std::string param, Channel *chan)
 	{
 		unsigned long int	i = std::atol(param.c_str());
 		if (i > 4294967295)
+		// if (i > SIZ)
 			return false;
 		else
 			return true;
 	}
-	else if (mode == 'k'/* check if password max lenght exist, asked question to group */)
+	else if (mode == 'k' && !param.empty()/* check if password max lenght exist, asked question to group */)
 		return true;
 	else
 		return false;

@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 19:03:14 by Helene            #+#    #+#             */
-/*   Updated: 2024/12/17 15:52:34 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/12/17 16:27:56 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ A numeric reply is not allowed to originate from a client.
 
 # define SERVER_NAME "LadyGaga"
 # define VERSION    "13.12"
-# define USER_MODES " a remplir "
+# define USER_MODES " no user modes available "
 # define CHANNEL_MODES " itkol "
 # define DEPARTURE_REASON "Leaving, bye bye"
 

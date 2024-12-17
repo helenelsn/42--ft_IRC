@@ -2,15 +2,15 @@
 
 A checker :
 
+- Cmd User : checker si realname peut etre empty, ou s'il y a une taille minimale par ex.
+
 - err_notregistered (451) : envoyer qd envoie une cmd alors aue pas encore registered (checker le comportement actuel) 
 
 - peut creer un channel avec un nom vide (check la validite de noms de channels)
 
 - mettre a jour unknowncommand : doit prendre le nick du client qui a emit la cmd, et la mauvaise cmd en question
 
-- Quand cree un channel (premier a joi ce channel), envoyer un server rpl pour dire quand a ete cree le channel, etc
-
-- Erase la liste des invited users quand le mode invitation est desactive 
+- Quand cree un channel (premier a join ce channel), envoyer un server rpl pour dire quand a ete cree le channel, etc
 
 - checker le format des RPL et ERR messages (ils ne sont tres surement pas exacts ici)
 - checker que les signaux sont bien geres 

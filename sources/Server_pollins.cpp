@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 15:32:32 by hlesny            #+#    #+#             */
-/*   Updated: 2024/12/17 15:26:55 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/12/17 16:06:14 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,13 @@ void    Server::ReadData(int fd)
         
         // check limite des 512 caractères ou balec ?
 
-
+        
+        if (bytes_read > 511)
+        {
+            buffer[510] = '\r'; // a changer c est trop moche 
+            buffer[511] = '\n';
+            bytes_read = 512;
+        }
         client->addToReadBuffer(std::string(&buffer[0], &buffer[bytes_read]));
         
         // Gestion Ctrl+D
@@ -266,3 +272,4 @@ void    Server::ProcessBuffer(Client* &client)
         pos = client->getReadBuffer().find(CRLF);
     }
 }
+
