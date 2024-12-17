@@ -37,7 +37,7 @@ void	channelModeIs(CommandContext &ctx)
 	if (!operatorsList.empty())
 		activeMode.append("o");
 	
-		ctx._client.addToWriteBuffer(RPL_CHANNELMODEIS(clientName, channelName, activeMode, kParams, lParams));
+	ctx._client.addToWriteBuffer(RPL_CHANNELMODEIS(clientName, channelName, activeMode, kParams, lParams));
 
 	std::stringstream	ss;
 	std::string			prefix;
