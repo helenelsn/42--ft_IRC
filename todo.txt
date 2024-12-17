@@ -135,9 +135,9 @@ Peut etre implemente en plus :
 
 
 
+    For all 5 mode commands : sent to all users on channel, even the one that sent the command
 
-
-   - Invite only (sent to all users on channel, even the one that sent the command)
+   - Invite only
         Added :
             MODE #ChanName +i 
             (UserID MODE #ChanName +i) 
@@ -145,7 +145,7 @@ Peut etre implemente en plus :
             MODE #ChanName -i 
             (UserID MODE #ChanName -i) 
 
-    - User limit (sent to all users on channel, even the one that sent the command)
+    - User limit
         Added :
             MODE #ChanName +l <limit>
             (UserID MODE #ChanName +l)
@@ -153,7 +153,7 @@ Peut etre implemente en plus :
             MODE #ChanName -l
             (UserID MODE #ChanName -l)
         
-    - Operator (sent to all users on channel, even the one that sent the command)
+    - Operator
         Added user : 
             MODE #ChanName +o <nick of user that became operator>
             (UserID MODE #ChanName +o)
@@ -161,13 +161,13 @@ Peut etre implemente en plus :
             MODE #ChanName -o <nick of user that was removed from operators>
             (UserID MODE #ChanName -o)
 
-    - Topic restrictions (sent to all users on channel, even the one that sent the command)
+    - Topic restrictions
         Added : 
             MODE #ChanName +t
         Removed : 
             MODE #ChanName -t
 
-    - Channel password (sent to all users on channel, even the one that sent the command)
+    - Channel password
         Added :
             MODE #ChanName +k ChanKey
             (UserID MODE #ChanName +k (without the <channel key>))
