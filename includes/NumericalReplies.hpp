@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 19:03:14 by Helene            #+#    #+#             */
-/*   Updated: 2024/12/17 09:46:18 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/12/17 15:52:34 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ A numeric reply is not allowed to originate from a client.
 # define ERR_UMODEUNKNOWNFLAG(client) (": 501 " + client + " :Unknown MODE flag" + CRLF) // préciser le flag ?
 # define ERR_USERSDONTMATCH(client) (": 502 " + client + " :Can't change mode for other users" + CRLF)
 
+# define ERR_ALREADYJOINED(client, channel) (client + " : cannot join " + channel + " : already on channel" + CRLF)
 
 
 /* ---- In case HELP and INFO turn out to be implemented */

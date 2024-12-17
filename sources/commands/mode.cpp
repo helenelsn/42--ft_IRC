@@ -188,7 +188,7 @@ void	channelMode(CommandContext &ctx)
 							if (*it == 'i' || *it == 't')
 							{
 								addModeWithoutParam(*it, chan);
-								addedParams += *it;
+					 			addedParams += *it;
 							}
 							else
 							{
@@ -207,7 +207,8 @@ void	channelMode(CommandContext &ctx)
 					}
 					else
 					{
-						ctx._client.addToWriteBuffer(ERR_UNKNOWNCOMMAND(ctx._client.getNickname()));
+						if (*it != '+')
+							ctx._client.addToWriteBuffer(ERR_UNKNOWNCOMMAND(ctx._client.getNickname()));
 						std::cout << "From cmdMode\n"; //debug
 					}
 					it++;
@@ -240,13 +241,17 @@ void	channelMode(CommandContext &ctx)
 						}
 					}
 					else
-						ctx._client.addToWriteBuffer(ERR_UNKNOWNCOMMAND(ctx._client.getNickname()));
+					{
+						if (*it != '-')
+							ctx._client.addToWriteBuffer(ERR_UNKNOWNCOMMAND(ctx._client.getNickname()));
+					}
 					it++;
 					i++;
 				}
 			}
 		}
 		std::cout << "list of added params : " << addedParams << std::endl; //debugmg
+		// channelModeIs(ctx);
 	}
 
 /*	
@@ -310,3 +315,4 @@ void	cmdMode(CommandContext &ctx)
 			ctx._client.addToWriteBuffer(ERR_NOSUCHCHANNEL(ctx._client.getNickname(), ctx._parameters[0]));
 	}
 }
+

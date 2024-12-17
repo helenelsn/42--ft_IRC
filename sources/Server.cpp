@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:49 by Helene            #+#    #+#             */
-/*   Updated: 2024/12/17 12:21:53 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/12/17 15:23:17 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,11 @@ void    Server::InitServer(void)
         throw(std::runtime_error("getaddrinfo() call failed"));
     }
     _server_socket = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+    if (_server_socket == -1)
+    {
+        serverShutdown = true;
+        throw(std::runtime_error("socket() call failed"));
+    }
     
     this->_logger.log(INFO, "Connection socket created");
     // maybe add a check to verify that it returned 0 and not -1 

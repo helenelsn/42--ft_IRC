@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server_pollins.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: itahani <itahani@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 15:32:32 by hlesny            #+#    #+#             */
-/*   Updated: 2024/11/21 17:11:36 by itahani          ###   ########.fr       */
+/*   Updated: 2024/12/17 15:26:55 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void    Server::AcceptClientConnection(void)
     }
     
     // la rend non bloquante, car accept() est une fonction bloquante 
-    if (fcntl(newClient, F_SETFL, O_NONBLOCK))
+    if (fcntl(newClient, F_SETFL, O_NONBLOCK) == -1)
     {
         perror("fcntl : ");
         close(newClient);
