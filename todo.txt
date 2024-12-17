@@ -2,6 +2,82 @@
 
 A checker :
 
+Mode : Expected server rpl 
+
+    Cmd : MODE #a 
+    :localhost 324 ines #a
+
+    Cmd : MODE #a +o ines (sent from @ln)
+    ->  MODE #a +o ines
+        :ln!hlesny@127.0.0.1 MODE #a +o
+        (both sent to the two users that shared that channel)
+        ===================================
+        :localhost MODE #a +o ines (sent to both users on the channel)
+
+    Unknown mode char : RECV <127.0.0.1> 'MODE #a b'
+    -> <127.0.0.1> Replied with ERR_UNKNOWNMODE: 'b :is unknown mode char to me for #a'
+
+
+    - Invite only (i)
+        Added : :ln!hlesny@127.0.0.1 MODE #a +i
+                =================
+                nothing
+        Removed :   :ln!hlesny@127.0.0.1 MODE #a -i
+                    =================
+                    nothing
+
+    - User limit (l)
+        Added : :ln!hlesny@127.0.0.1 MODE #a +l
+                =================
+                :localhost MODE #a +l 2 (sent to all users on channel, even the one that sent the command)
+            -> MODE #ChanName +l <limit>
+        Removed :   :ln!hlesny@127.0.0.1 MODE #a -l
+                    =================
+                    :localhost MODE #a -l (sent to all users on channel, even the one that sent the command)
+            ->  MODE #ChanName -l 
+    - Operator (o)
+        Added user :    RECV <127.0.0.1> 'MODE #a +o ines'
+                        SEND <127.0.0.1> 'MODE #a +o ines'
+                        SEND <127.0.0.1> 'MODE #a +o ines'
+                        SEND <127.0.0.1> ':ln!hlesny@127.0.0.1 MODE #a +o'
+                        SEND <127.0.0.1> ':ln!hlesny@127.0.0.1 MODE #a +o'
+                        =================
+                        :localhost MODE #a +o ines (sent to all users on channel, even the one that sent the command)
+            -> MODE #ChanName -o <nick of user that became operator>
+        Removed user :  RECV <127.0.0.1> 'MODE #a -o ines'
+                        SEND <127.0.0.1> 'MODE #a -o'
+                        SEND <127.0.0.1> 'MODE #a -o'
+                        SEND <127.0.0.1> ':ln!hlesny@127.0.0.1 MODE #a -o'
+                        SEND <127.0.0.1> ':ln!hlesny@127.0.0.1 MODE #a -o'
+                        =================
+                        :localhost MODE #a -o ines (sent to all users on channel, even the one that sent the command)
+            -> MODE #ChanName -o <nick of user that was removed from operators>
+    - Topic restrictions (t) 
+        Added : :localhost MODE #a +t (sent to both)
+        Removed : :localhost MODE #a -t (sent to both)
+
+    - Channel password (k)
+        Added :     RECV <127.0.0.1> 'MODE #a +k lol'
+                    SEND <127.0.0.1> 'MODE #a +k lol'
+                    SEND <127.0.0.1> 'MODE #a +k lol'
+                    SEND <127.0.0.1> ':ln!hlesny@127.0.0.1 MODE #a +k'
+                    SEND <127.0.0.1> ':ln!hlesny@127.0.0.1 MODE #a +k'
+                    =================
+                    :localhost MODE #a +k lol (sent to all users on channel, even the one that sent the command)
+            -> MODE #ChanName +k ChanKey
+        Removed :   RECV <127.0.0.1> 'MODE #a -k'
+                    SEND <127.0.0.1> 'MODE #a -k'
+                    SEND <127.0.0.1> 'MODE #a -k'
+                    SEND <127.0.0.1> ':ln!hlesny@127.0.0.1 MODE #a -k'
+                    SEND <127.0.0.1> ':ln!hlesny@127.0.0.1 MODE #a -k'
+                    =================
+                    :localhost MODE #a -k lol (sent to all users on channel, even the one that sent the command)
+            -> MODE #ChanName -k (Chankey mais pas oblige)
+    
+
+
+- Quelles regles pour la validite de syntaxe des noms de channels et des nicknames ?
+
 - Cmd User : checker si realname peut etre empty, ou s'il y a une taille minimale par ex.
 
 - err_notregistered (451) : envoyer qd envoie une cmd alors aue pas encore registered (checker le comportement actuel) 
@@ -11,6 +87,7 @@ A checker :
 - mettre a jour unknowncommand : doit prendre le nick du client qui a emit la cmd, et la mauvaise cmd en question
 
 - Quand cree un channel (premier a join ce channel), envoyer un server rpl pour dire quand a ete cree le channel, etc
+-> Rpl_created ?
 
 - checker le format des RPL et ERR messages (ils ne sont tres surement pas exacts ici)
 - checker que les signaux sont bien geres 
@@ -52,3 +129,48 @@ Peut etre implemente en plus :
 
 - Commandes Names et Help 
 - Transfert fichiers (surtout si pas bcp de code a rajouter)
+
+
+
+
+
+
+
+
+   - Invite only (sent to all users on channel, even the one that sent the command)
+        Added :
+            MODE #ChanName +i 
+            (UserID MODE #ChanName +i) 
+        Removed :
+            MODE #ChanName -i 
+            (UserID MODE #ChanName -i) 
+
+    - User limit (sent to all users on channel, even the one that sent the command)
+        Added :
+            MODE #ChanName +l <limit>
+            (UserID MODE #ChanName +l)
+        Removed : 
+            MODE #ChanName -l
+            (UserID MODE #ChanName -l)
+        
+    - Operator (sent to all users on channel, even the one that sent the command)
+        Added user : 
+            MODE #ChanName +o <nick of user that became operator>
+            (UserID MODE #ChanName +o)
+        Removed user :  
+            MODE #ChanName -o <nick of user that was removed from operators>
+            (UserID MODE #ChanName -o)
+
+    - Topic restrictions (sent to all users on channel, even the one that sent the command)
+        Added : 
+            MODE #ChanName +t
+        Removed : 
+            MODE #ChanName -t
+
+    - Channel password (sent to all users on channel, even the one that sent the command)
+        Added :
+            MODE #ChanName +k ChanKey
+            (UserID MODE #ChanName +k (without the <channel key>))
+        Removed :
+            MODE #ChanName -k (<Channel key> mais pas oblige)
+            (UserID MODE #ChanName -k)
