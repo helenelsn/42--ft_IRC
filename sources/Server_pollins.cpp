@@ -224,7 +224,7 @@ void Server::ProcessCommand(std::string const& line, Client* &client) // Client*
     std::map<std::string, CommandExecutor>::iterator it = _commandsHandler._commands.find(cmd);
     if (it == _commandsHandler._commands.end())
     {
-        client->addToWriteBuffer(ERR_UNKNOWNCOMMAND(cmd));
+        client->addToWriteBuffer(ERR_UNKNOWNCOMMAND(client->getNickname(), cmd));
         return ; // unknown command
     }
     
