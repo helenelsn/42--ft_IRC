@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 19:03:14 by Helene            #+#    #+#             */
-/*   Updated: 2024/12/17 21:37:13 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/12/18 09:46:49 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ A numeric reply is not allowed to originate from a client.
 # define USER_MODES " no user modes available "
 # define CHANNEL_MODES " itkol "
 # define DEPARTURE_REASON "Leaving, bye bye"
+# define ERROR_DEPARTURE "Suddenly disconnected"
 
 # define userID(nick, user, host) (nick + "!" + user + "@localhost") //  + host
 

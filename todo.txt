@@ -9,7 +9,7 @@ A checker :
 - Quand cree un channel (premier a join ce channel), envoyer un server rpl pour dire quand a ete cree le channel, etc
 -> Rpl_created ?
 
-- checker le format des RPL et ERR messages (ils ne sont tres surement pas exacts ici)
+- checker le format des RPL et ERR messages 
 
 - checker cas speciaux, et si ils sont geres correctement (password is an empty string, ...)
 - checker comportement si arguments du programme existent et sont vides (ou juste un des deux)  

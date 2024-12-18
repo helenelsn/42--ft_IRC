@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 15:32:32 by hlesny            #+#    #+#             */
-/*   Updated: 2024/12/17 21:09:36 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/12/18 09:47:12 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ void    Server::ReadData(int fd)
         std::stringstream ss;
         ss << client->getSockFd();
         this->_logger.log(INFO, "Client " + ss.str() + " disconnected"); 
-        DisconnectClient(client, DEPARTURE_REASON);
+        DisconnectClient(client, ERROR_DEPARTURE);
         RemoveClient(client);
     }
     else
