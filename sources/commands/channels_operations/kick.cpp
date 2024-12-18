@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/27 18:13:19 by Helene            #+#    #+#             */
-/*   Updated: 2024/12/17 21:37:34 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/12/18 13:11:34 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,12 @@ Servers MUST NOT send multiple users in this message to clients, and MUST distri
     these multiple-user KICK messages as a series of messages with a single user name on each.
     If a KICK message is distributed in this way, <comment> (if it exists) 
     should be on each of these messages.
+
+Checks performed :
+    - check if channel exists : ERR_NOSUCHCHANNEL
+    - check if the client issuing the kick command is not in the channel : ERR_NOTONCHANNEL
+    - check if client issuing the kick command is channel op : ERR_CHANOPRIVSNEEDED
+    - check if user to be kicked is in given channel : ERR_USERNOTINCHANNEL
 */
 
 void    cmdKick(CommandContext &ctx)
@@ -35,13 +41,10 @@ void    cmdKick(CommandContext &ctx)
         return ;
     }
 
-    // no need to check if the channel mask is valid ? (is marked as deprecated numeric reply on ircdocs.horse )
-
     std::string channelName = params[0];
     std::string user = params[1];
     std::string comment = params.size() > 2 ? params[2] : DEFAULT_KICK_REASON;
     Channel *channel = ctx._server.getChannel(channelName);
-    std::cout << "entering kick command\nuser is " << user << '\n'; //debugmg
     
     if (!channel)
         ctx._client.addToWriteBuffer(ERR_NOSUCHCHANNEL(ctx._client.getNickname(), channelName));
@@ -54,20 +57,12 @@ void    cmdKick(CommandContext &ctx)
     else
     {
         std::stringstream ss;
-
-        // ss << ctx._client.getUserID() << " KICK " << channelName << " " << ctx._client.getNickname() << " : " << comment << CRLF;
-        ss << ctx._client.getUserID() << " KICK " << channelName << " " << user << " : " << comment << CRLF; //debugmg
-        std::cout << ss.str() << '\n'; //debugmg
-        //channel->sendToAll(user, ss.str(), 0);
+        ss << ctx._client.getUserID() << " KICK " << channelName << " " << user << " : " << comment << CRLF; 
                 
-        // ctx._client.removeChannel(channel->getName()); // remove channel's name from client's registry
         Client *target = ctx._server.getClientByNick(user);
         if (!target)
-        {
-            // ouib ouin
             return ;
-        }
-        channel->sendToAll(user, ss.str(), false); // avant ou apres Channel::removeMember() ?
+        channel->sendToAll(user, ss.str(), false);
         target->removeChannel(channel->getName());
         channel->removeMember(user); // remove user from channel's registry 
         
@@ -77,22 +72,5 @@ void    cmdKick(CommandContext &ctx)
             ctx._server.removeChannel(channel->getName());
             ctx._server._log(DEBUG, "Removing channel " + channel->getName());
         }
-        
-
-        /*
-        This message may be sent from a server to a client to notify the client that 
-            someone has been removed from a channel. 
-        In this case, the message <source> will be the client who is being removed, 
-            and <channel> will be the channel which that client has been removed from.
-        
-        -> send a part msg to all users from channel, when a client is being kicked out of that channel, additionnally from the KICK msg that 
-            is already being broadcasted to entire channel ?
-        ie : clientBeingKicked.ID + PART + channelName + reason (if exists)
-        */
     }
-
-    // check if channel exists : ERR_NOSUCHCHANNEL
-    // check if the client issuing the kick command is not in the channel : ERR_NOTONCHANNEL
-    // check if client issuing the kick command is channel op : ERR_CHANOPRIVSNEEDED
-    // check if user to be kicked is in given channel : ERR_USERNOTINCHANNEL
 }

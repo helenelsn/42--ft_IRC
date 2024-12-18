@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/27 17:09:33 by Helene            #+#    #+#             */
-/*   Updated: 2024/12/17 15:49:31 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/12/18 13:04:32 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,15 @@ The INVITE message is used to invite users to a channel.  The
    +i), the client sending the invite must be recognised as being a
    channel operator on the given channel.
 
+    Checks to perform when processing the command :
+        - check if channel exists : if not, ERR_NOSUCHCHANNEL
+        - check if the user inviting the other user is on that channel. if not, ERR_NOTONCHANNEL
+        - check if the nickname given as parameter exists. if not, ERR_NOSUCHNICK
+        - check if the invited user is already in the channel. if it is, ERR_USERONCHANNEL
+        - if channel is invite-only, check if client inviting the other user is operator
+        - -> if not, ERR_CHANOPRIVSNEEDED
+        - if invite is successful : RPL_INVITING
+
    Numeric Replies:
     ERR_NEEDMOREPARAMS              ERR_NOSUCHNICK
     ERR_NOTONCHANNEL                ERR_USERONCHANNEL
@@ -43,8 +52,6 @@ void    cmdInvite(CommandContext &ctx)
         return ;
     }
 
-    // vérifier l'ordre des checks
-    // ERR_BADCHANMASK aussi ? 
     std::string nickToInvite = ctx._parameters[0];
     std::string channelName = ctx._parameters[1];
     Channel *channel = ctx._server.getChannel(channelName);
@@ -64,23 +71,15 @@ void    cmdInvite(CommandContext &ctx)
         Client *invitedUser = ctx._server.getClientByNick(nickToInvite);
         if (!invitedUser)
             return ;
-        if (channel->isInvited(nickToInvite)) // meaning the user is already on the invitedUsers list -> error/warning/info msg ?
+        if (channel->isInvited(nickToInvite))
             return ;
         channel->addInvitedUser(nickToInvite);
        
-        ctx._client.addToWriteBuffer(RPL_INVITING(ctx._client.getNickname(), nickToInvite, channelName)); // vérifier les arguments, parait chelou
+        ctx._client.addToWriteBuffer(RPL_INVITING(ctx._client.getNickname(), nickToInvite, channelName));
         
-        // invited user must receive : :lnnn!hlesny@127.0.0.1 INVITE lnick #test42 (ie :<userID> INVITE <userNick> <channelName)
         std::stringstream ss;
         ss << ctx._client.getUserID() << " INVITE " << nickToInvite << " " << channelName << CRLF; 
         invitedUser->addToWriteBuffer(ss.str());
     }
 
-    // check if channel exists : if not, ERR_NOSUCHCHANNEL
-    // check if the user inviting the other user is on that channel. if not, ERR_NOTONCHANNEL
-    // check if the nickname given as parameter exists. if not, ERR_NOSUCHNICK
-    // check if the invited user is already in the channel. if it is, ERR_USERONCHANNEL
-    // if channel is invite-only, check if client inviting the other user is operator
-    // -> if not, ERR_CHANOPRIVSNEEDED
-    // if invite is successful : RPL_INVITING
 }

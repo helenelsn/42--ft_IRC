@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 18:05:03 by Helene            #+#    #+#             */
-/*   Updated: 2024/12/17 21:26:39 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/12/18 13:09:18 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,11 @@ static void    joinRpl(Client &client, Channel &channel)
     for (std::map<std::string, Client*>::iterator it = channel.getAllMembers().begin(); it != channel.getAllMembers().end(); it++)
     {
         prefix = getPrefix(*it->second, channel);
-        if (it != channel.getAllMembers().begin()) // && *(it->second) != client)
-            ss << " "; // sépare chaque client par un espace
+        if (it != channel.getAllMembers().begin())
+            ss << " ";
         ss << prefix << it->first;
     }
     ss << CRLF;
-    std::cout << ss.str() << " is ss in joinRpl()\n"; //debugmg
     client.addToWriteBuffer(ss.str());
     client.addToWriteBuffer(RPL_ENDOFNAMES(client.getNickname(), channel.getName()));
 }
@@ -65,16 +64,7 @@ void    joinChannel(CommandContext &ctx, std::string const& channelName, std::st
         joinRpl(ctx._client, newChannel);
         return ;
     }
-    std::cout << "in command join after entering joinChannel\n"; //debugmg
-    
-        std::map<std::string, Client*>   members = ctx._server.getChannel(channelName)->getAllMembers(); //debumg
-        std::cout << "list of members\n"; //debumg
-        for (std::map<std::string, Client*>::iterator it = members.begin(); it != members.end(); it++) //debugmg
-            std::cout << it->first << std::endl; //debugmg
 
-    
-    // if (channel->isInvited(ctx._client.getNickname()))
-        // channel->addInvitedUser(ctx._client.getNickname()); // commente, verifier que change r
     if (channel->isMember(ctx._client.getNickname()))
         ctx._client.addToWriteBuffer(ERR_ALREADYJOINED(ctx._client.getNickname(), channel->getName()));
     else if (channel->isFull())
@@ -86,11 +76,6 @@ void    joinChannel(CommandContext &ctx, std::string const& channelName, std::st
     else
     {
         channel->addMember(&ctx._client);
-        std::map<std::string, Client*>   members = ctx._server.getChannel(channelName)->getAllMembers(); //debumg
-        std::cout << "list of members\n"; //debumg
-        for (std::map<std::string, Client*>::iterator it = members.begin(); it != members.end(); it++) //debugmg
-            std::cout << it->first << std::endl; //debugmg
-        //check
         ctx._client.addChannel(channelName); // add new channel to clientś list of channels they are currently in
         joinRpl(ctx._client, *channel);
         channel->sendToAll(ctx._client.getNickname(), ctx._client.getUserID() + " JOIN " + channel->getName() + CRLF);
@@ -132,7 +117,6 @@ void    cmdJoin(CommandContext &ctx)
     std::vector<std::string> channels;
     std::vector<std::string> keys;
     parseParameters(params, channels, keys);
-    std::cout << "in command join after parseParam\n"; //debugmg
     size_t j = 0;
     for (size_t i = 0; i < channels.size(); i++)
     {     
@@ -145,7 +129,7 @@ void    cmdJoin(CommandContext &ctx)
         }
         if (j < keys.size())
         {
-            joinChannel(ctx, channels[i], keys[j]); // checker si une erreur pour l'un des channels fait que l'on arrete de checker pour les suivants
+            joinChannel(ctx, channels[i], keys[j]);
             j++;   
         }
         else

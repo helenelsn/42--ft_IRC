@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:29 by Helene            #+#    #+#             */
-/*   Updated: 2024/12/17 09:56:11 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/12/18 12:59:34 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 #include "Channel.hpp"
 
 # define    BACKLOG 10 // nombre max de demandes de connexions dans la file d'attente
-// -> voir comment la gérer
 
 extern bool serverShutdown;
 
@@ -55,7 +54,7 @@ class Server
         void                InitServer(); // creates server socket, binds it to the given port, listen() on server socket
         void                RunServer(); // looping calls to poll()
          
-        Client              *getClient(int fd); // checker si peut pas juste renvoyer une référence
+        Client              *getClient(int fd);
         Client              *getClientByNick(std::string const& nick);
         Channel             *getChannel(std::string const& name); 
         
@@ -100,13 +99,7 @@ class Server
         void                removeChannel(std::string const& name);
         bool                channelExists(std::string const& channel);
         void                updateNick(std::string const& oldNick, std::string const& newNick); // when a client changes its nick, updates the nick associated with them in the channels they're in
-        // void                updateNick(Client &client, std::string const& oldNick, std::string const& newNick); // when a client changes its nick, updates the nick associated with them in the channels they're in
 };
-
-/*
-Functionalities that might have to be implemented :
-The server pings its clients periodically in order to identify timed out clients. 
-*/
 
 /*
 -   cant copy or assign server class, can only be created with port and password

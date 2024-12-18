@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: itahani <itahani@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/27 17:24:51 by Helene            #+#    #+#             */
-/*   Updated: 2024/12/17 11:24:43 by itahani          ###   ########.fr       */
+/*   Updated: 2024/12/18 13:13:11 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,6 @@
 std::string  getPrefix(Client &client, Channel &channel)
 {
     std::string prefix;
-    // if (channel.isFounder(client.getNickname()))
-    //     prefix = "~";
     if (channel.isOperator(client.getNickname()))
         prefix = "@";
     else // halfops are not implemented here
@@ -30,5 +28,5 @@ std::string  getPrefix(Client &client, Channel &channel)
 bool    checkChanMask(std::string const& chanName)
 {
     return (!chanName.empty() && chanName[0] == '#' && chanName.size() <= 50
-        && (chanName.find_first_of("\r\n\b:, ") == std::string::npos)); // need to implement &channelName as well as #channelName ?
+        && (chanName.find_first_of("\r\n\b:, ") == std::string::npos));
 }
