@@ -25,7 +25,7 @@ A numeric reply is not allowed to originate from a client.
 
 # define SERVER_NAME "LadyGaga"
 # define VERSION    "13.12"
-# define USER_MODES " no user modes available "
+# define USER_MODES " No user modes available "
 # define CHANNEL_MODES " itkol "
 # define DEPARTURE_REASON "Leaving, bye bye"
 # define ERROR_DEPARTURE "Suddenly disconnected"
@@ -38,15 +38,14 @@ A numeric reply is not allowed to originate from a client.
 # define ERROR_RPL(reason) ("Error :" + reason + CRLF)
 # define QUIT_RPL(source, reason) (source + " QUIT :" + reason + CRLF)
 
-# define RPL_WELCOME(client, nick, user, host) (": 001 " + client + " :Welcome to the Internet Relay Network " + userID(nick, user, host) + CRLF)
+# define RPL_WELCOME(client, server, nick, user, host) (": 001 " + client + " :Welcome to the " + server + " Network " + userID(nick, user, host) + CRLF)
 # define RPL_YOURHOST(client, server, version) (": 002 " + client + " :Your host is " + server + ", running on version " + version + CRLF)
 # define RPL_CREATED(client, date) (": 003 " + client + " :This server was created " + date + CRLF)
-# define RPL_MYINFO(client, server, version, userModes, channelModes) (": 004 " + client + " :" + server + ", version " + version + ". Available user modes : " + userModes + ". Available channel modes : " + channelModes + CRLF) // "<servername> <version> <available user modes> <available channel modes>"
-# define RPL_MOTDSTART(client, server) (": 375 " + client + " :- " + server + " Message of the day -" + CRLF)
-# define RPL_MOTD(client, line) (": 372 " + client + " :- " + line + CRLF)
-# define RPL_ENFODMOTD(client) (": 376 " + client + " :End of MOTD command" + CRLF)
+# define RPL_MYINFO(client, server, version, userModes, channelModes) (": 004 " + client + " " + server + " " + version + ". " + userModes + ". Available channel modes : " + channelModes + CRLF) // "<servername> <version> <available user modes> <available channel modes>"
+# define RPL_MOTDSTART(client, server) (": 375 " + client + " :- " + server + " Message of the day - " + CRLF)
+# define RPL_MOTD(client, line) (": 372 " + client + " :" + line + CRLF)
+# define RPL_ENFODMOTD(client) (": 376 " + client + " :End of /MOTD command." + CRLF)
 
-# define RPL_UMODEIS(client, user_modes) (": 221 " + client + " " + user_modes + CRLF)
 # define RPL_NOTOPIC(client, channel) (":331 " + client + " " + channel + " :No topic is set" + CRLF)
 # define RPL_TOPIC(client, channel, topic) (": 332 " + client + " " + channel + " :" + topic + CRLF)
 # define RPL_TOPICWHOTIME(client, channel, nick, setat) (": 333 " + client + " " + channel + " " + nick + " " + setat + CRLF)

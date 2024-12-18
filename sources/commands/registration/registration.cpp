@@ -37,7 +37,7 @@ void    Server::tryLogin(Client &client)
     // todo
     // The first parameter of the RPL_WELCOME (001) message is the nickname assigned by the network to the client -> comment faire avec netcat ? 
     
-    client.addToWriteBuffer(RPL_WELCOME(client.getNickname(), client.getNickname(), client.getUsername(), client.getHostname()));
+    client.addToWriteBuffer(RPL_WELCOME(client.getNickname(), std::string(SERVER_NAME), client.getNickname(), client.getUsername(), client.getHostname()));
     client.addToWriteBuffer(RPL_YOURHOST(client.getNickname(), std::string(SERVER_NAME), std::string(VERSION)));
     client.addToWriteBuffer(RPL_CREATED(client.getNickname(), this->getCreationDate()));
     client.addToWriteBuffer(RPL_MYINFO(client.getNickname(), std::string(SERVER_NAME), std::string(VERSION), std::string(USER_MODES), std::string(CHANNEL_MODES)));
