@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 15:32:32 by hlesny            #+#    #+#             */
-/*   Updated: 2024/12/18 09:47:12 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/12/18 14:04:55 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ void    Server::AcceptClientConnection(void)
         return ;
     }
     
-    // AddToPoll(newClient, POLLIN | POLLOUT);
     AddClient(newClient);
     
     std::stringstream ss;
@@ -58,7 +57,7 @@ void    Server::ReadData(int fd)
         return ;
     }
 
-    if (client->checkState(Disconnected)) // add 'Removed' state ? 
+    if (client->checkState(Disconnected))
     {
         this->RemoveClient(client);
         return ;
@@ -66,17 +65,14 @@ void    Server::ReadData(int fd)
     
 
     int bytes_read = recv(client->getSockFd(), buffer, BUFSIZ, 0);
-    std::cout << "buffer printed from ReadData()\n" << buffer << std::endl; //DEBUGmg
-    // std::cout << "founder is " << client->getServer().getChannel()->getName() //debugmg
     if (bytes_read == -1)
     {
         int errNum = errno;
         std::stringstream ss;
         ss << client->getSockFd();
-        this->_logger.log(INFO, "Client " + ss.str() + " : recv() failed"); // ou perror ?
+        this->_logger.log(INFO, "Client " + ss.str() + " : recv() failed");
         DisconnectClient(client, std::string(strerror(errNum))); 
         RemoveClient(client);
-        // exception ?
     }
     else if (!bytes_read) // EOF, ie closed connection on the other side
     {
@@ -88,21 +84,9 @@ void    Server::ReadData(int fd)
     }
     else
     {
-        // while (bytes_read > 0) // si jamais BUFSIZ n etait pas assez grand
-        // {
-        //     msg += buffer;
-        //     memset(&buffer, 0, BUFSIZ);
-        //     bytes_read = recv(client->getSockFd(), buffer, BUFSIZ, 0);
-        // }
-        // if (bytes_read == -1)
-        //     ; // throw exception
-        
-        // check limite des 512 caractères ou balec ?
-
-        
         if (bytes_read > 511)
         {
-            buffer[510] = '\r'; // a changer c est trop moche 
+            buffer[510] = '\r';
             buffer[511] = '\n';
             bytes_read = 512;
         }
@@ -113,10 +97,6 @@ void    Server::ReadData(int fd)
         if (pos == std::string::npos)
             return ;
         
-        std::stringstream ss;
-        ss << client->getSockFd();
-        // _logger.log(DEBUG, "<Client " + ss.str() + "><RECV> " + client->getReadBuffer());
-
         ProcessBuffer(client);
     }
 }
@@ -142,7 +122,6 @@ void    Server::ReadData(int fd)
 
 void    Server::ParseLine(std::string line, CommandContext &ctx)
 {
-    // std::string temp;
     std::string prefix;
     std::string command;
     std::vector<std::string> parameters;
@@ -171,10 +150,6 @@ void    Server::ParseLine(std::string line, CommandContext &ctx)
     if (begin != line.end())
         begin++;
 
-    // put parameters in vector of strings
-    /* Software SHOULD AVOID sending more than 15 parameters, as older client protocol documents 
-    specified this was the maximum and some clients may have trouble reading more than this. 
-    However, clients MUST parse incoming messages with any number of them */
     while (it != line.end())
     {
         while (begin != line.end() && *begin == ' ')
@@ -182,7 +157,7 @@ void    Server::ParseLine(std::string line, CommandContext &ctx)
         if (begin != line.end() && (*begin) == ':')
         {
             begin++;
-            parameters.push_back(std::string(begin, line.end())); // tej le ':' du debut 
+            parameters.push_back(std::string(begin, line.end())); // retire le ':' du debut 
             break;
         }
         it = std::find(begin, line.end(), ' ');
@@ -193,39 +168,27 @@ void    Server::ParseLine(std::string line, CommandContext &ctx)
     }
 
     ctx.fillCommand(prefix, command, parameters);
-    
-    // logger
-    // this->_logger.log(DEBUG, "prefix = " + prefix);
-    // this->_logger.log(DEBUG, "command = " + command);
-    // for (size_t i = 0; i < parameters.size(); i++)
-    // {
-    //     std::stringstream ss;
-    //     ss << i;
-    //     this->_logger.log(DEBUG, "parameter " + ss.str() + " = " + parameters[i]);
-    // }
 }
 
-// a faire dans CommandsHandler directement plutôt, non ?
-void Server::ProcessCommand(std::string const& line, Client* &client) // Client* &client ?? verifier syntaxe, et si comprend bien ce qu'a écrit 
+void Server::ProcessCommand(std::string const& line, Client* client)
 {
     if (line.empty()) // Empty messages are silently ignored (rfc 2812)
         return ;
         
-    CommandContext ctx(*client); // est ce que le client pourra ensuite bien etre modifié via CommandContext ? Ou faut il passer un pointeur ? Pas encore tres au clair sur l'utilisation references/pointeurs 
+    CommandContext ctx(*client);
 
-    // extract prefix, command and command parameters from the line sent by client. update command's context ctx
+    // extract prefix, command and command parameters from the line sent by client.
     ParseLine(line, ctx);
     
     std::string cmd = ctx.getCommand();
     std::transform(cmd.begin(), cmd.end(), cmd.begin(), toupper);
-    // peut utiliser std::transform directement sur ctx.cmd, suffit juste de renvoyer une référence pour getCommand(), et non pas une copie de cmd
     ctx.setCommand(cmd);
     
     std::map<std::string, CommandExecutor>::iterator it = _commandsHandler._commands.find(cmd);
     if (it == _commandsHandler._commands.end())
     {
         client->addToWriteBuffer(ERR_UNKNOWNCOMMAND(client->getNickname(), cmd));
-        return ; // unknown command
+        return ;
     }
     
     this->_logger.log(DEBUG, "Processing command <" + cmd + ">");
@@ -242,11 +205,7 @@ si la socket etait bloquée, peut avoir écrit plusieurs messages à la suite qu
     dedans plus que le début de message ne finissant pas encore par un CRLF, le reste aura été éffacé)
 ->  pour chaque message reçu, le parser et éxecuter la commande correspondante 
  */
-/*
-Reflechir a la structure du code : Où faire le parsing ? 
-    -> méthode serveur : doit alors écrire une méthode Client qui permette de modifier son ReadBuffer
-    -> méthode client : pour chaque commande extraite, devra repasser par le Serveur pour l'executer (avoir un pointeur vers le Serveur pour chaque client ?)
-*/
+
 void    Server::ProcessBuffer(Client* &client) 
 {
     std::string::iterator it;
@@ -259,13 +218,10 @@ void    Server::ProcessBuffer(Client* &client)
         it = client->getReadBuffer().begin();
         std::string test = std::string(it, it + pos);
 
-        // std::stringstream ss; ss << client->getSockFd();
-        std::stringstream ss; ss << client->getSockFd() << ' ' << client->getNickname(); //debugmg
+        std::stringstream ss; ss << client->getSockFd() << ' ' << client->getNickname();
         this->_logger.log(DEBUG, "<Client " + ss.str() + "><RECV> " + std::string(it, it + pos));
-        // this->_logger.log(DEBUG, "current parsed command : " + std::string(it, it + pos));
         
         ProcessCommand(std::string(it, it + pos), client);
-        // ParseLine(std::string(it, it + pos));
         
         updatedBuffer = client->getReadBuffer().substr(pos + 2);
         client->resetReadBuffer(updatedBuffer);

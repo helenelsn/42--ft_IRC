@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 13:26:30 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/04 17:54:50 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/12/18 13:45:59 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,9 @@ void    Server::HandlePollErr(int fd)
     if (!client)
     {
         RemoveSocket(fd);
-        return ; // msg d'erreur ?
+        return ;
     }
     
     DisconnectClient(getClient(fd), reason); 
-    RemoveClient(getClient(fd)); // remove client from server here or after ?
+    RemoveClient(getClient(fd));
 }

@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:29 by Helene            #+#    #+#             */
-/*   Updated: 2024/12/18 12:59:34 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/12/18 14:18:13 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ class Server
         void                AddClient(int fd);
         void                ReadData(int fd);
         void                ProcessBuffer(Client* &client);
-        void                ProcessCommand(std::string const& line, Client* &client);
+        void                ProcessCommand(std::string const& line, Client* client);
         void                ParseLine(std::string line, CommandContext &ctx);
 
             // POLLOUT
@@ -88,7 +88,6 @@ class Server
         void                RemoveSocket(int client_fd);
         void                removeClientFromChannels(Client *client);
         
-        void                RestartServer();
         void                ShutdownServer();
 
         void                _log(e_logLevel level, std::string const& msg) { _logger.log(level, msg); }

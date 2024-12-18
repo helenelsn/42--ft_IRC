@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 16:55:46 by Helene            #+#    #+#             */
-/*   Updated: 2024/12/18 13:16:46 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/12/18 14:15:52 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static bool    validNick(std::string const& s)
 {
     std::string::const_iterator it = s.begin();
 
-    if (s.size() > 9)
+    if (s.empty() || s.size() > 9)
         return false;
     
     if (!std::isalpha(*it) && !validChar(*it))

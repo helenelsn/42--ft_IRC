@@ -6,7 +6,7 @@
 #    By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/21 14:23:25 by Helene            #+#    #+#              #
-#    Updated: 2024/12/18 12:57:25 by hlesny           ###   ########.fr        #
+#    Updated: 2024/12/18 14:20:01 by hlesny           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,8 +43,6 @@ SRCS = 	main.cpp \
 		commands/quit.cpp \
 		commands/privmsg.cpp \
 		commands/mode.cpp \
-		# commands/mode.cpp \
-		# commands/help.cpp 
 		
 OBJS = $(addprefix $(OBJS_DIR), $(SRCS:.cpp=.o))
 DEPS = $(addprefix $(OBJS_DIR), $(SRCS:.cpp=.d))
@@ -68,17 +66,6 @@ clean :
 
 fclean : clean
 	$(RM) $(NAME)
-
-docker :
-	docker build -t debian .
-	docker run -it -v /Users/Helene/Desktop/42/42-projets/42--IRC_and_doc:$$HOME/irc debian
-	# docker run -it -v /mnt/nfs/homes/hlesny/42/42cursus/ft_IRC_and_docs:$$HOME/irc debian 
-
-dclean :
-	docker rm $$(docker ps -aq);
-	docker rmi $$(docker image ls -q)
-	yes | docker container prune 
-	yes | docker image prune 
 
 re : fclean all
 

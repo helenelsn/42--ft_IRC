@@ -11,6 +11,3 @@ sources/commands/cmd.txt
 sources/commands/channels_operations/rfc_channels.txt
 sources/commands/registration/rfc_registration.txt
 
-# delete from the gitignore gradually when implementing them
-*help.cpp
-*names.cpp 

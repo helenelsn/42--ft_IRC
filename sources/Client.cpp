@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:46 by Helene            #+#    #+#             */
-/*   Updated: 2024/12/17 11:06:32 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/12/18 13:38:41 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ Client::Client(int fd, Server *server)
 
 Client::~Client()
 {
-    //close(_sockFd);
 }
 
 bool Client::operator!=(Client const& other)
@@ -64,7 +63,7 @@ Client& Client::operator=(Client const& other)
 
 bool Client::operator==(Client const& other)
 {
-    return (this->_nickname == other._nickname); // autre chose ?
+    return (this->_nickname == other._nickname);
 }
 
 
@@ -83,13 +82,13 @@ std::string Client::getPassword(void)
 
 std::string Client::getUserID(void) const
 {
-    std::string userID = ":" + getNickname() + "!" + getUsername() + "@localhost"; //  + getHostname()
+    std::string userID = ":" + getNickname() + "!" + getUsername() + "@localhost";
     return userID;
 }
 
 Server& Client::getServer()
 {
-    return *(this->_server); // vérifier
+    return *(this->_server);
 }
 
 int Client::getSockFd(void)
@@ -97,7 +96,6 @@ int Client::getSockFd(void)
     return this->_sockFd;
 }
 
-// added reference to vector as return value
 std::vector<std::string> &Client::getChannels(void)
 {
     return this->_channelNames;
@@ -105,35 +103,25 @@ std::vector<std::string> &Client::getChannels(void)
 
 void    Client::addChannel(std::string const& channel)
 {
-    // sans doute inutile et a enlever
     if (std::find(this->_channelNames.begin(), this->_channelNames.end(), channel) != this->_channelNames.end())
     {
-        // error log
         return ;
     }
-    
     this->_channelNames.push_back(channel);
 }
 
 void    Client::removeChannel(std::string const& channel)
 {
     if (this->_channelNames.empty())
-    {
-        // error log
         return ;
-    }
     std::vector<std::string>::iterator it = std::find(this->_channelNames.begin(), this->_channelNames.end(), channel);
     if (it == this->_channelNames.end())
-    {
-        // error log
         return;
-    }
     this->_channelNames.erase(it);
 }
 
 // ---------------- Client's state methods ----------------
 
-// ou juste int& getState(), renvoie une reference au state que peut direct modifier, et pas besoin de setState() ?
 int             Client::getState(void) const
 {
     return this->_state;
@@ -146,7 +134,6 @@ void            Client::setState(int newState)
 
 void    Client::addState(int state)
 {
-    // if ((_state & state) != state)
     _state |= state;
 }
 
@@ -155,13 +142,10 @@ void    Client::removeState(int state)
     _state &= (~state);
 }
 
-// returns true if the client is in this state, false otherwise
 bool    Client::checkState(int state)
 {
     return ((_state & state) == state);   
 }
-
-
 
 // ------------ other getters && setters --------------
 
@@ -211,8 +195,6 @@ void            Client::setRealname(std::string const& real)
 {
     _realname = real;
 }
-
-
 
 // --------------- getters, setters on read and write buffers -------------------
 

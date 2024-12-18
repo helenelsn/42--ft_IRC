@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CommandsHandler.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: itahani <itahani@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:51:07 by Helene            #+#    #+#             */
-/*   Updated: 2024/12/17 10:58:52 by itahani          ###   ########.fr       */
+/*   Updated: 2024/12/18 13:39:33 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 CommandContext::CommandContext(std::string const& prefix, std::string const& cmd, std::vector<std::string> const& parameters, Client &client)
 : _prefix(prefix), _command(cmd), _parameters(parameters), _client(client), _server(client.getServer())
 {
-    
 }
 
 CommandContext::CommandContext(Client &client)
@@ -48,7 +47,6 @@ CommandsHandler::CommandsHandler()
     _commands["CAP"] = NULL;
     _commands["PASS"] = &cmdPass;
     _commands["USER"] = &cmdUser;
-    // _commands["userhost"] = &cmdUser;
     _commands["NICK"] = &cmdNick;
     _commands["MOTD"] = &cmdMotd;
     _commands["QUIT"] = &cmdQuit;
@@ -60,9 +58,4 @@ CommandsHandler::CommandsHandler()
 	_commands["INVITE"] = &cmdInvite;
 	_commands["TOPIC"] = &cmdTopic;
 	_commands["MODE"] = &cmdMode;
-}
-
-void    CommandsHandler::execCommand(std::string const& name)
-{
-    (void) name;
 }

@@ -37,5 +37,4 @@ class   CommandsHandler
     public :
         CommandsHandler();
         ~CommandsHandler() {}
-        void                    execCommand(std::string const& name);
 };

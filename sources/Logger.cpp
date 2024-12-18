@@ -12,18 +12,20 @@
 
 #include "../includes/Logger.hpp"
 
+/* 
+std::ofstream::out : flag to open a file in writting mode
+std::ofstream::app : flag to open a file in append mode, everything will be added
+    to the end of the file
+when combined with '|' it opens the fill for writting and it will append to the
+    of the file
+ */
+
 Logger::Logger(std::string const& logFileName)
 {
-    _logFile.open(logFileName.c_str(), std::ofstream::out | std::ofstream::app); // if open fails, the failbit state flag if set for the stream (how do we check the stream's state flags ?)
+    _logFile.open(logFileName.c_str(), std::ofstream::out | std::ofstream::app); // if open fails, the failbit state flag if set for the stream
     if (!_logFile.is_open())
         std::cerr << "[Logger Error] : failed to open the given log file" << std::endl;
 }
-
-// std::ofstream::out : flag to open a file in writting mode
-// std::ofstream::app : flag to open a file in append mode, everything will be added
-    // to the end of the file
-// when combined with '|' it opens the fill for writting and it will append to the
-    // of the file
 
  Logger::~Logger()
  {
@@ -82,8 +84,6 @@ void    Logger::log(e_logLevel const& level, std::string const& msg)
     if (_logFile.is_open())
     {
         _logFile << logEntry.str();
-        _logFile.flush(); // same as _logFile << std::endl ? minus the '\n' obv
+        _logFile.flush();
     }
 }
-
-// std::ostringstream : use for dinamically building formated string, output only
