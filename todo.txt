@@ -1,5 +1,6 @@
 Todo :
 Changer le motd file
+Changer Default kick reason
 Virer les acab du code + les msg de debug 
 
 A checker :
@@ -10,9 +11,6 @@ A checker :
 -> Rpl_created ?
 
 - checker le format des RPL et ERR messages 
-
-- checker cas speciaux, et si ils sont geres correctement (password is an empty string, ...)
-- checker comportement si arguments du programme existent et sont vides (ou juste un des deux)  
 
 
 - QUIT :

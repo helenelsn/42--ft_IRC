@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 19:03:14 by Helene            #+#    #+#             */
-/*   Updated: 2024/12/18 09:46:49 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/12/18 11:02:18 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ A numeric reply is not allowed to originate from a client.
 # define CHANNEL_MODES " itkol "
 # define DEPARTURE_REASON "Leaving, bye bye"
 # define ERROR_DEPARTURE "Suddenly disconnected"
+# define DEFAULT_KICK_REASON "N'aime pas les coquilettes"
 
 # define userID(nick, user, host) (nick + "!" + user + "@localhost") //  + host
 
@@ -56,20 +57,9 @@ A numeric reply is not allowed to originate from a client.
 # define RPL_YOUREOPER(client) (": 381 " + client + " :You are now an IRC operator" + CRLF)
 # define RPL_TIME(client, server, time) (": 391 " + client + " " + server + " :" + time + CRLF) // vérifier le format du message
 
-//todo
 # define RPL_CHANNELMODEIS(client, channel, activeMode, kParams, lParams) (": 324 " + client + " " + channel + " " + activeMode + kParams + lParams + CRLF ) // pas compris si mode_string etait celui de la commande MODE, ou les current channel modes du channel en question ? 
 
 # define RPL_MODEMSG(source, channelName, modeParams) (source + " MODE " + channelName + " " + modeParams + CRLF)
-
-// 381    RPL_YOUREOPER
-//               ":You are now an IRC operator"
-
-//          - RPL_YOUREOPER is sent back to a client which has
-//            just successfully issued an OPER message and gained
-//            operator status.
-
-// 472    ERR_UNKNOWNMODE
-            //   "<char> :is unknown mode char to me for <channel>"
 
 /* -------------------------- Numerics : Errors ------------------------------- */
 
@@ -87,16 +77,15 @@ A numeric reply is not allowed to originate from a client.
 # define ERR_NOTONCHANNEL(client, channel) (": 442 " + client + " " + channel + " :You're not on that channel" + CRLF)
 # define ERR_USERONCHANNEL(client, nick, channel) (": 443 " + client + " " + nick + " " + channel + " :is already on channel" + CRLF)
 # define ERR_NEEDMOREPARAMS(client, command) (": 461 " + client + " " + command + " :Not enough parameters" + CRLF)
-# define ERR_ALREADYREGISTERED(client) (": 462 " + client + " :You may not reregister" + CRLF) // 462
-# define ERR_PASSWDMISMATCH(client) (": 464 " + client + " :Password incorrect" + CRLF) // 464
+# define ERR_ALREADYREGISTERED(client) (": 462 " + client + " :You may not reregister" + CRLF) 
+# define ERR_PASSWDMISMATCH(client) (": 464 " + client + " :Password incorrect" + CRLF)
 # define ERR_CHANNELISFULL(client, channel) (": 471 " + client + " " + channel + " :Channel is full (+l)" + CRLF)
 # define ERR_INVITEONLYCHAN(client, channel) (": 473 " + client + " " + channel + " :Cannot join channel (+i)" + CRLF)
-# define ERR_BANNEDFROMCHAN(client, channel) (": 474 " + client + " " + channel + " :Cannot join channel (+b)" + CRLF)  // doit pas gérer MODE +b, si ?
+# define ERR_BANNEDFROMCHAN(client, channel) (": 474 " + client + " " + channel + " :Cannot join channel (+b)" + CRLF)
 # define ERR_BADCHANNELKEY(client, channel) (": 475 " + client + " " + channel + " :Cannot join channel (+k)" + CRLF)
 # define ERR_BADCHANMASK(channel) (": 476 " + channel + " :Bad Channel Mask" + CRLF)
 # define ERR_NOPRIVILEGES(client, channel) (": 481 " + client + " " + channel + " :Permision denied not an IRC operator" + CRLF)
 # define ERR_CHANOPRIVSNEEDED(client, channel) (": 482 " + client + " " + channel + " :You're not channel operator" + CRLF)
-# define ERR_UMODEUNKNOWNFLAG(client) (": 501 " + client + " :Unknown MODE flag" + CRLF) // préciser le flag ?
 # define ERR_USERSDONTMATCH(client) (": 502 " + client + " :Can't change mode for other users" + CRLF)
 # define ERR_UNKNOWNMODE(mode, channel) (": 472 " + mode + " :is unknown mode char to me for " + channel + CRLF)
 # define ERR_ALREADYJOINED(client, channel) (client + " : cannot join " + channel + " : already on channel" + CRLF)
