@@ -1,9 +1,10 @@
-Todo :
-Changer le motd file
-Virer les acab du code + les msg de debug 
+
 
 A checker :
 
+- If <target> is a channel name, it may be prefixed with one or more channel 
+    membership prefix character (@, +, etc) and the message will be delivered 
+    only to the members of that channel with the given or higher status in the channel. 
 
 - Quand cree un channel (premier a join ce channel), envoyer un server rpl pour dire quand a ete cree le channel, etc
 -> Rpl_created ?

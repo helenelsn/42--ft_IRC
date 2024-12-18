@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 14:51:52 by Helene            #+#    #+#             */
-/*   Updated: 2024/12/17 19:30:06 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/12/18 12:52:48 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ Channel& Channel::operator = (Channel& other) //debugmg
 	// this->_founder = other._founder;
 	return (*this);
 }
-
+ 
 
 
 // ######## MEMBER METHODS #################

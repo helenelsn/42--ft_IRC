@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:56:26 by Helene            #+#    #+#             */
-/*   Updated: 2024/12/17 11:06:38 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/12/18 12:54:38 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,11 @@ typedef enum
     Registering = Nick | User, 
     Registered = 1 << 2,
     Disconnected = 1 << 3
-    // Connected = 1 << 4,
 }       e_state; 
 
 /* Contains all informations about a client inside a server. 
-Read incoming data on the associated socket and parse the messages. */
-// A uniquement besoin d'une socket qui se connecte a un serveur distant
+Read incoming data on the associated socket and parse the messages. 
+A uniquement besoin d'une socket qui se connecte a un serveur distant*/
 class Client 
 {
     private :
@@ -70,14 +69,14 @@ class Client
         void            setPassword(std::string const& newPass);
         std::string     getPassword(void);
         void            addModes(std::string const& modes);
-        std::string     getModes(void); // ?
-        std::string     getNickname(void) const; // retourner une référence ?
+        std::string     getModes(void);
+        std::string     getNickname(void) const; 
         void            setNickname(std::string const& nick);
-        std::string     getUsername(void) const; // retourner une référence ?
+        std::string     getUsername(void) const; 
         void            setUsername(std::string const& user);
-        std::string     getHostname(void) const; // retourner une référence ?
+        std::string     getHostname(void) const; 
         void            setHostname(std::string const& host);
-        std::string     getRealname(void) const; // retourner une référence ?
+        std::string     getRealname(void) const; 
         void            setRealname(std::string const& real);
         
         std::string&    getReadBuffer(void);

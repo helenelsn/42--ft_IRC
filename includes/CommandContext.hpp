@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CommandContext.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 16:48:43 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/05 14:19:07 by Helene           ###   ########.fr       */
+/*   Updated: 2024/12/18 12:54:46 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ class Client;
 class   CommandContext
 {
     public :
-        std::string                 _prefix; // utile ?
+        std::string                 _prefix;
         std::string                 _command;
         std::vector<std::string>    _parameters;
         Client&                     _client;

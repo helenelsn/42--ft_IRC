@@ -32,7 +32,7 @@ class   CommandsHandler
         typedef commandsMap::iterator commandsMapIt;
     
     public : 
-        commandsMap    _commands; // a moyen de la mettre en private ?
+        commandsMap    _commands;
 
     public :
         CommandsHandler();

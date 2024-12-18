@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 19:03:14 by Helene            #+#    #+#             */
-/*   Updated: 2024/12/18 12:06:56 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/12/18 12:56:36 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,10 @@ Distinct from a normal message, a numeric reply MUST contain a <source> and use 
 numeric as the command. 
 A numeric reply SHOULD contain the target of the reply as the first parameter of the message. 
 A numeric reply is not allowed to originate from a client.
-*/
 
-// dynamic macros for server 'command responses' (RPL_...) and error replies (ERR_...)
+Dynamic macros for server 'command responses' (RPL_...) and error replies (ERR_...)
+*/
+ 
 
 # define SERVER_NAME "LadyGaga"
 # define VERSION    "13.12"
@@ -31,19 +32,19 @@ A numeric reply is not allowed to originate from a client.
 # define ERROR_DEPARTURE "Suddenly disconnected"
 # define DEFAULT_KICK_REASON "N'aime pas les coquillettes"
 
-# define userID(nick, user, host) (nick + "!" + user + "@localhost") //  + host
+# define userID(nick, user, host) (nick + "!" + user + "@localhost")
 
 /* -------------------------- Numerics : Replies ------------------------------- */
 
 # define RPL_WELCOME(client, server, nick, user, host) (": 001 " + client + " :Welcome to the " + server + " Network " + userID(nick, user, host) + CRLF)
 # define RPL_YOURHOST(client, server, version) (": 002 " + client + " :Your host is " + server + ", running on version " + version + CRLF)
 # define RPL_CREATED(client, date) (": 003 " + client + " :This server was created " + date + CRLF)
-# define RPL_MYINFO(client, server, version, userModes, channelModes) (": 004 " + client + " " + server + " " + version + ". " + userModes + ". Available channel modes : " + channelModes + CRLF) // "<servername> <version> <available user modes> <available channel modes>"
-# define RPL_CHANNELMODEIS(client, channel, activeMode, kParams, lParams) (": 324 " + client + " " + channel + " " + activeMode + kParams + lParams + CRLF ) // pas compris si mode_string etait celui de la commande MODE, ou les current channel modes du channel en question ? 
+# define RPL_MYINFO(client, server, version, userModes, channelModes) (": 004 " + client + " " + server + " " + version + ". " + userModes + ". Available channel modes : " + channelModes + CRLF)
+# define RPL_CHANNELMODEIS(client, channel, activeMode, kParams, lParams) (": 324 " + client + " " + channel + " " + activeMode + kParams + lParams + CRLF )
 # define RPL_NOTOPIC(client, channel) (":331 " + client + " " + channel + " :No topic is set" + CRLF)
 # define RPL_TOPIC(client, channel, topic) (": 332 " + client + " " + channel + " :" + topic + CRLF)
 # define RPL_INVITING(client, nick, channel) (": 341 " + client + " " + nick + " " + channel + CRLF)
-# define RPL_NAMREPLY(client, symbol, channel) (": 353 " + client + " " + symbol + " " + channel + " :") // [prefix]<nick>{ [prefix]<nick>}, <prefix> is the highest channel membership prefix that client has in the channel, if they have one
+# define RPL_NAMREPLY(client, symbol, channel) (": 353 " + client + " " + symbol + " " + channel + " :")
 # define RPL_ENDOFNAMES(client, channel) (": 366 " + client + " " + channel + " :End of /NAMES list" + CRLF)
 # define RPL_MOTD(client, line) (": 372 " + client + " :" + line + CRLF)
 # define RPL_MOTDSTART(client, server) (": 375 " + client + " :- " + server + " Message of the day - " + CRLF)
@@ -52,9 +53,6 @@ A numeric reply is not allowed to originate from a client.
 # define RPL_MODEMSG(source, channelName, modeParams) (source + " MODE " + channelName + " " + modeParams + CRLF)
 # define ERROR_RPL(reason) ("Error :" + reason + CRLF)
 # define QUIT_RPL(source, reason) (source + " QUIT :" + reason + CRLF)
-
-// # define RPL_TIME(client, server, time) (": 391 " + client + " " + server + " :" + time + CRLF) // vérifier le format du message
-// # define RPL_YOUREOPER(client) (": 381 " + client + " :You are now an IRC operator" + CRLF)
 
 /* -------------------------- Numerics : Errors ------------------------------- */
 
