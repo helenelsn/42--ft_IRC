@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 19:03:14 by Helene            #+#    #+#             */
-/*   Updated: 2024/12/18 11:02:18 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/12/18 12:06:56 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,11 @@ A numeric reply is not allowed to originate from a client.
 
 # define SERVER_NAME "LadyGaga"
 # define VERSION    "13.12"
-# define USER_MODES " No user modes available "
-# define CHANNEL_MODES " itkol "
+# define USER_MODES "No user modes available"
+# define CHANNEL_MODES "itkol"
 # define DEPARTURE_REASON "Leaving, bye bye"
 # define ERROR_DEPARTURE "Suddenly disconnected"
-# define DEFAULT_KICK_REASON "N'aime pas les coquilettes"
+# define DEFAULT_KICK_REASON "N'aime pas les coquillettes"
 
 # define userID(nick, user, host) (nick + "!" + user + "@localhost") //  + host
 

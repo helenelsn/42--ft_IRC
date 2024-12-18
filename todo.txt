@@ -1,17 +1,12 @@
 Todo :
 Changer le motd file
-Changer Default kick reason
 Virer les acab du code + les msg de debug 
 
 A checker :
 
-- Cmd User : checker si realname peut etre empty, ou s'il y a une taille minimale par ex.
 
 - Quand cree un channel (premier a join ce channel), envoyer un server rpl pour dire quand a ete cree le channel, etc
 -> Rpl_created ?
-
-- checker le format des RPL et ERR messages 
-
 
 - QUIT :
         Quand un client envoie la commande QUIT, il faut attendre d'avoir send() a ce meme client le RPL du serveur
