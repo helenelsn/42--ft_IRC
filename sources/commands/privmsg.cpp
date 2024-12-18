@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 19:17:33 by hepompid          #+#    #+#             */
-/*   Updated: 2024/11/22 18:47:10 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/12/18 13:26:53 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,10 @@
 #include "../../includes/Client.hpp"
 #include "../../includes/Server.hpp"
 
-// static std::string getFinalText(CommandContext &ctx, std::string const& text, std::string target, bool toChannel = true)
 static std::string getFinalText(CommandContext &ctx, std::string const& text, std::string target)
 {
     std::stringstream ss;
-    // if (toChannel)
-        ss << ctx._client.getUserID();
-    // else 
-        // ss << ctx._client.getNickname();
+    ss << ctx._client.getUserID();
     ss << " PRIVMSG " << target << " :" << text << CRLF;
     
     return ss.str();   
@@ -52,11 +48,8 @@ void    msgToChannel(CommandContext& ctx)
     std::string text = params[1];
     
     bool operators = false;
-    // bool founder = false;
     for (std::string::iterator it = target.begin(); it != target.end() && *it != '#'; it++)
     {
-        // if (*it == '~')
-            // founder = true;
         if (*it == '@')
             operators = true;
     }
@@ -93,17 +86,10 @@ void    msgToClient(CommandContext& ctx)
         return ;
     }
     recipient->addToWriteBuffer(getFinalText(ctx, text, target));
-    // recipient->addToWriteBuffer(getFinalText(ctx, text, target, false));
 }
 
 void    cmdPrivmsg(CommandContext& ctx)
 {
-    /*
-    check if "#" in first command parameter.
-        if so, treat the command as a message sent by the client to a channel.
-        else, treat it as a one-to-one message, ie from the client to another client        
-    */
-
    if (ctx._parameters.empty())
         ctx._client.addToWriteBuffer(ERR_NORECIPIENT(ctx._client.getNickname(), ctx._command));
     else if (ctx._parameters.size() < 2)
@@ -111,7 +97,7 @@ void    cmdPrivmsg(CommandContext& ctx)
     else 
     {
         
-        if (ctx._parameters[0].find('#') != std::string::npos) //  est un caractere interdit pr les nicks et noms de channels donc aura pas de doublons
+        if (ctx._parameters[0].find('#') != std::string::npos)
             msgToChannel(ctx);
         else
             msgToClient(ctx);

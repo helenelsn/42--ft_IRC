@@ -43,9 +43,6 @@ void	channelModeIs(CommandContext &ctx)
 	std::string			prefix;
 	ss << RPL_NAMREPLY(clientName, "=", channelName);
 
-	// std::string	founder = chan->getFounder();
-	// if (chan->isMember(founder))
-	// 	ss << " ~" << founder;
 	for (std::map<std::string, Client*>::iterator it = chan->getAllOperators().begin(), end = chan->getAllOperators().end(); it != end; it++)
 	{
 		prefix = getPrefix(*it->second, *chan);
@@ -55,7 +52,6 @@ void	channelModeIs(CommandContext &ctx)
 	}	
 	ss << CRLF;
 	ctx._client.addToWriteBuffer(ss.str());
-    // ctx._client.addToWriteBuffer(RPL_ENDOFNAMES(clientName, channelName));
 	return;
 }
 
@@ -78,24 +74,19 @@ bool	isStrAllDigit(std::string str)
 
 bool	parseModeWithParams(char mode, std::string param, Channel *chan)
 {
-	std::cout << param << " is param\n"; //debugmg
 	if (param.empty())
 		return false;
 	else if (mode == 'o' && chan->isMember(param) && !chan->isOperator(param))
-	{
-		std::cout << "o check works\n"; //debugmg
 		return true;
-	}
 	else if (mode == 'l' && isStrAllDigit(param))
 	{
 		unsigned long int	i = std::atol(param.c_str());
 		if (i > 4294967295)
-		// if (i > SIZ)
 			return false;
 		else
 			return true;
 	}
-	else if (mode == 'k' && !param.empty()/* check if password max lenght exist, asked question to group */)
+	else if (mode == 'k' && !param.empty())
 		return true;
 	else
 		return false;
@@ -104,12 +95,7 @@ bool	parseModeWithParams(char mode, std::string param, Channel *chan)
 void	addModeWithParam(char mode, std::string param, Channel *chan, Client *client)
 {
 	if (mode == 'o')
-	{
-		std::cout << client->getNickname() << " is client nickname\n"; //debugmg
-		std::cout << client->getUsername() << " is client username\n"; //debugmg
-		std::cout << client->getRealname() << " is client realname\n"; //debugmg
 		chan->addOperator(client);
-	}
 	else if (mode == 'l')
 	{
 		chan->setUserLimitMode(true);
@@ -121,11 +107,6 @@ void	addModeWithParam(char mode, std::string param, Channel *chan, Client *clien
 		chan->setPassword(param);
 	}
 }
-
-// void	removeOpParam(std::string param, Channel *chan, Client *client)
-// {
-// 	chan->removeOperator(param)
-// }
 
 void	removeMode(char mode, Channel *chan)
 {
@@ -145,7 +126,6 @@ void	removeMode(char mode, Channel *chan)
 void	channelMode(CommandContext &ctx)
 {
 	std::string	channelName = ctx._parameters[0];
-	/* ###### check how else if work pour etre sur que si rentre dans un ne va pas dans les autres */
 	if (!ctx._server.getChannel(channelName))
 		ctx._client.addToWriteBuffer(ERR_NOSUCHCHANNEL(ctx._client.getNickname(), channelName));
 	else if (!ctx._server.getChannel(channelName)->isMember(ctx._client.getNickname()))
@@ -156,12 +136,6 @@ void	channelMode(CommandContext &ctx)
 		ctx._client.addToWriteBuffer(ERR_CHANOPRIVSNEEDED(ctx._client.getNickname(), channelName));
 	else
 	{
-		std::cout << "ctx has this inside :\nprefix :\t" << ctx._prefix << "\ncommand :\t";//debugmg
-		std::cout << ctx._command << "\nparameters :\n";//debugmg
-		for (std::vector<std::string>::iterator it = ctx._parameters.begin(), end = ctx._parameters.end();//debugmg
-				it != end; it++)//DEBUGmg
-			std::cout << "\t\t" << *it << std::endl; //DEBUGmg
-		
 		std::string	mode = ctx._parameters[1];
 		std::string	validMode = "itkol";
 		std::string	addedParams;
@@ -189,7 +163,6 @@ void	channelMode(CommandContext &ctx)
 							if (*it == 'i' || *it == 't')
 							{
 								addModeWithoutParam(*it, chan);
-								// ln
 								chan->sendToAll(ctx._client.getNickname(), RPL_MODEMSG(ctx._client.getUserID(), chan->getName(), "+" + *it), false);
 					 			addedParams += *it;
 							}
@@ -197,9 +170,7 @@ void	channelMode(CommandContext &ctx)
 							{
 								if (!modeParams.empty() && parseModeWithParams(*it, modeParams[0], chan))
 								{
-									std::cout << modeParams[0] << " is modeParams[0]\n"; //debugmg
 									addModeWithParam(*it, modeParams[0], chan, ctx._server.getChannel(channelName)->getMember(modeParams[0]));
-									// ln
 									chan->sendToAll(ctx._client.getNickname(), RPL_MODEMSG(ctx._client.getUserID(), chan->getName(), "+" + *it + " " + modeParams[0]), false);
 									modeParams.erase(modeParams.begin());
 									if (*it != 'o')
@@ -218,8 +189,6 @@ void	channelMode(CommandContext &ctx)
 							umode += *it;
 							ctx._client.addToWriteBuffer(ERR_UNKNOWNMODE(umode, channelName));
 						}
-							// ctx._client.addToWriteBuffer(ERR_UNKNOWNMODE(*it, channelName));
-						std::cout << "From cmdMode\n"; //debug
 					}
 					it++;
 					i++;
@@ -238,7 +207,6 @@ void	channelMode(CommandContext &ctx)
 								if (chan->isMember(modeParams[0]) && chan->isOperator(modeParams[0]))
 								{
 									chan->removeOperator(modeParams[0]);
-									// ln
 									chan->sendToAll(ctx._client.getNickname(), RPL_MODEMSG(ctx._client.getUserID(), chan->getName(), "-" + *it + " " + modeParams[0]), false);
 									modeParams.erase(modeParams.begin());
 								}
@@ -248,7 +216,6 @@ void	channelMode(CommandContext &ctx)
 							else
 							{
 								removeMode(*it, chan);
-								// ln
 								chan->sendToAll(ctx._client.getNickname(), RPL_MODEMSG(ctx._client.getUserID(), chan->getName(), "-" + *it), false);
 								removedParams += *it;
 							}
@@ -268,52 +235,7 @@ void	channelMode(CommandContext &ctx)
 				}
 			}
 		}
-		std::cout << "list of added params : " << addedParams << std::endl; //debugmg
-		// channelModeIs(ctx);
 	}
-
-/*	
-	if only param = <chanel_name> send this
-	# define RPL_CHANNELMODEIS(client, channel, channel_string, mode_arguments) ()
-	324 your_nickname #example +itkol secretpass 50
-	# define RPL_NAMREPLY(client, symbol, channel) (": 353 " + client + " " + symbol + " " + channel + " :") // [prefix]<nick>{ [prefix]<nick>}, <prefix> is the highest channel membership prefix that client has in the channel, if they have one
-	353 your_nickname #example @operator_nick
-	pas compris si mode_string etait celui de la commande MODE, ou les current channel
-	modes du channel en question ?
-
-to do :	if '-'
-			if mode that need param, look for the first param
-				if first param good
-					check if mode already removed
-					update mode
-					add mode to removed mode
-					switch to second param
-				else
-					not enough params
-			else if mode doesn't need param
-				check if mode already removed
-				update mode
-				add mode to removed mode
-			else
-				unknown mode
-			next mode
-		if '+'
-			if mode that need param, look for the first param
-			if first param good
-				check if mode already added
-				update mode
-				add mode to added mode
-				switch to second param
-			else
-				not enough params
-			else if mode doesn't need param
-			check if mode already added
-			update mode
-			add mode to added mode
-			else
-			unkown mode
-			next mode
-*/
 }
 
 void	cmdMode(CommandContext &ctx)

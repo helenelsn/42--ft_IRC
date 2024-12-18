@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   motd.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Helene <Helene@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 11:23:46 by Helene            #+#    #+#             */
-/*   Updated: 2024/10/03 14:29:18 by Helene           ###   ########.fr       */
+/*   Updated: 2024/12/18 13:22:38 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,9 @@ void    Server::sendMotd(Client &client)
     std::ifstream motdFile;
     std::string line;
 
-    // Va pas l'ouvrir à chaque commande MOTD, si ? Plutot le stocker dans le serveur 
     motdFile.open("motd.txt");
     if (!motdFile.is_open())
     {
-        // Error : could not open Motd file (missing or bad access rights)
         client.addToWriteBuffer(ERR_NOMOTD(client.getNickname()));
         return ;
     }
@@ -39,8 +37,5 @@ void    Server::sendMotd(Client &client)
 
 void    cmdMotd(CommandContext &ctx)
 {
-    // arguments checks etc
-    // inutile car n'aura dans tous les cas qu'un seul serveur
-    
     ctx._server.sendMotd(ctx._client);
 }
