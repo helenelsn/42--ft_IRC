@@ -6,7 +6,7 @@
 /*   By: hlesny <hlesny@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 16:55:46 by Helene            #+#    #+#             */
-/*   Updated: 2024/12/18 11:30:19 by hlesny           ###   ########.fr       */
+/*   Updated: 2024/12/18 13:16:46 by hlesny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,17 +20,6 @@ static bool validChar(char c)
     return (c == '[' || c == ']' || c == '{' || c == '}' 
         || c == '\\' || c == '|');
 }
-
-/*
-Is alphabetical
-Is not a digit
-Is a valid special char
-Is not any of the forbidden char
-*/
-/* static bool validFirstChar(char c)
-{
-    return (std::isalpha(c) || validChar(c));
-} */
 
 /*
 Servers MUST allow at least all alphanumerical characters, square and curly brackets ([]{}), 
@@ -47,12 +36,12 @@ static bool    validNick(std::string const& s)
     if (s.size() > 9)
         return false;
     
-    if (!std::isalpha(*it) && !validChar(*it)) // !(std::isalpha(c) || validChar(c))
+    if (!std::isalpha(*it) && !validChar(*it))
         return false;
     it++;
     for (std::string::const_iterator itt = it; itt != s.end(); itt++)
     {
-        if (! (std::isalnum(*itt) || validChar(*itt) || *itt == '-')) // suffit, ou rajouter des checks d'autres caractères ?
+        if (! (std::isalnum(*itt) || validChar(*itt) || *itt == '-')) 
             return false;
     }
     return true;
@@ -76,6 +65,10 @@ initial nickname, and after registration to change their nick.
 When used during registration, the server will silently accept the user’s request 
 (or reply with an appropriate error numeric). 
 If used after registration, the server will return a NICK message or appropriate error numerics.
+
+The NICK message may be sent from the server to clients to acknowledge their NICK command was successful,
+and to inform other clients about the change of nickname. In these cases, the <source> of the message 
+will be the old nickname [ [ "!" user ] "@" host ] of the user who is changing their nickname.
 
 */
 void    cmdNick(CommandContext &ctx)
@@ -104,30 +97,18 @@ void    cmdNick(CommandContext &ctx)
     // if client had not provided a nickname before
     if (!ctx._client.checkState(Nick) && !ctx._client.checkState(Registered))
     {
-        // oldNick = nickname;
         ctx._client.addState(Nick);
         if (ctx._client.checkState(Registering)) // a rentre NICK et USER
             ctx._server.tryLogin(ctx._client);
     }
     else
     {
-        // std::string oldNick = ctx._client.getNickname();
         std::stringstream ss;
         std::string oldUserID = userID(oldNick, ctx._client.getUsername(), ctx._client.getHostname());
         ss << ":" << oldUserID << " NICK " << nickname + CRLF;
-        ctx._client.addToWriteBuffer(ss.str()); //tocheck : commente car le fait deja dans InformOthers
-        // ctx._client.addToWriteBuffer("You are now known as " + nickname + CRLF);
-        // std::string oldUserID = oldNick + "!" + ctx._client.getUsername() + "@" + ctx._client.getHostname();
+        ctx._client.addToWriteBuffer(ss.str());
         ctx._server.InformOthers(ctx._client, ":" + oldUserID, "NICK " + nickname);
-        ctx._server.updateNick(oldNick, nickname);
-        // ctx._server.updateNick(ctx._client, oldNick, nickname);
-        // met a jour le nick dans tous les channels dans lesquels est le client (maniere plus simple de faire ?)
+        ctx._server.updateNick(oldNick, nickname); // met a jour le nick dans tous les channels dans lesquels est le client 
         
     }
-    
-    // RPL_NICK 
-    /* The NICK message may be sent from the server to clients to acknowledge their NICK command was successful,
-    and to inform other clients about the change of nickname. In these cases, the <source> of the message 
-    will be the old nickname [ [ "!" user ] "@" host ] of the user who is changing their nickname.
-    */
 } 
